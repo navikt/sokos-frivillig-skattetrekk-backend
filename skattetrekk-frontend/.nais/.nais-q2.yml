@@ -1,0 +1,64 @@
+apiVersion: "nais.io/v1alpha1"
+kind: "Application"
+metadata:
+  name: skattetrekk-frontend-borger-q2
+  namespace: pensjonselvbetjening
+  labels:
+    team: pensjonselvbetjening
+  annotations:
+    nais.io/run-as-user: "101" # nginx
+    nginx.ingress.kubernetes.io/proxy-buffer-size: "128k"
+spec:
+  image: "{{{ image }}}"
+  ingresses:
+    - https://skattetrekk-frontend-borger-q2.intern.dev.nav.no
+    - https://skattetrekk-frontend-borger-q2.ansatt.dev.nav.no
+  port: 8080
+  replicas:
+    min: 1
+    max: 2
+  liveness:
+    path: /internal/health/liveness
+    initialDelay: 20
+    periodSeconds: 20
+    failureThreshold: 5
+    timeout: 1
+  readiness:
+    path: /internal/health/readiness
+    initialDelay: 20
+    periodSeconds: 20
+    failureThreshold: 5
+    timeout: 1
+  frontend:
+    generatedConfig:
+      mountPath: /usr/share/nginx/html/assets/nais.js
+  idporten:
+    enabled: true
+    sidecar:
+      enabled: true
+      autoLogin: true
+      autoLoginIgnorePaths:
+        - /internal/ping
+  tokenx:
+    enabled: true
+  accessPolicy:
+    inbound:
+      rules:
+        - application: wonderwalled-idporten
+          namespace: aura
+    outbound:
+      rules:
+        - application: skattetrekk-backend-q2
+  env:
+    - name: "VITE_DECORATOR_URL"
+      value: "https://dekoratoren.ekstern.dev.nav.no"
+    - name: "SKATTETREKK_BACKEND_URL"
+      value: "https://skattetrekk-backend-q2.intern.dev.nav.no"
+    - name: "SKATTETREKK_BACKEND_SCOPE"
+      value: "api://dev-gcp.skattetrekk-backend-q2/.default"
+    - name: "SKATTETREKK_BACKEND_AUDIENCE"
+      value: "dev-gcp:pensjonselvbetjening:skattetrekk-backend-q2"
+    - name: "REPRESENTASJON_BANNER_URL"
+      value: "https://representasjon-banner-frontend-borger-q2.intern.dev.nav.no"
+    - name: "MODE"
+      value: "borger"

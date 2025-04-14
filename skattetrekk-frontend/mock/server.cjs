@@ -1,0 +1,38 @@
+const express = require('express')
+const fs = require("fs");
+const app = express()
+const port = 3000
+const cors = require('cors');
+
+const whitelist = "http://localhost:8080"
+
+app.use(cors({
+    credentials: true,
+    origin: function (origin, callback) {
+        if (whitelist.indexOf(origin) !== -1) {
+            callback(null, true)
+        } else {
+            callback(new Error('Not allowed by CORS'))
+        }
+    }
+}));
+
+let init = JSON.parse(fs.readFileSync('mock/skattetrekkInitResponse.json', 'utf8'));
+let send = JSON.parse(fs.readFileSync('mock/skattetrekkSendResponse.json', 'utf8'));
+
+
+app.get('/pensjon/selvbetjening/skattetrekk/api/initSkattetrekk', (req, res) => {
+    console.log("Kjører initiate");
+    console.log(process.argv)
+    res.send(init)
+})
+
+app.post('/pensjon/selvbetjening/skattetrekk/api/send', (req, res) => {
+    console.log("Kjører send");
+    res.send(send)
+})
+
+
+app.listen(port, () => {
+    console.log(`Example app listening on port ${port}`)
+})

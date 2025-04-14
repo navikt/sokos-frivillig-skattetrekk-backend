@@ -1,0 +1,12 @@
+#loading-holder {
+    display: flex;
+    align-items: center;
+    align-content: center;
+    margin: auto;
+}
+
+#loading {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}

@@ -1,0 +1,41 @@
+fragment folkeregistermetadata on Folkeregistermetadata {
+    ajourholdstidspunkt
+    gyldighetstidspunkt
+    opphoerstidspunkt
+    kilde
+    aarsak
+    sekvens
+}
+
+fragment metadata on Metadata {
+    master
+    historisk
+    opplysningsId
+    endringer {
+        kilde
+        registrert
+        registrertAv
+        systemkilde
+        type
+    }
+}
+
+query PdlPersonHistorikkQuery($ident: ID!) {
+    hentPerson(ident: $ident) {
+    	adressebeskyttelse(historikk: false) {
+            gradering
+            folkeregistermetadata{
+                ...folkeregistermetadata
+            }
+            metadata{
+                ...metadata
+            }
+    	}
+  	}
+    hentGeografiskTilknytning(ident: $ident){
+        gtType
+        gtKommune
+        gtBydel
+        gtLand
+    }
+}
