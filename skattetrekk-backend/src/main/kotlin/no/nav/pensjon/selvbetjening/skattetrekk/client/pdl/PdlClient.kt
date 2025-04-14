@@ -30,7 +30,7 @@ class PdlClient(
                 .header("Authorization", "Bearer $it")
                 .header(NAV_CALL_ID_NAME, CallIdUtil.getCallIdFromMdc())
                 .header(PDL_TEMA_ATTRIBUTE_NAME, PDL_TEMA_VALUE)
-                .header(PDL_TEMA_ATTRIBUTE_NAME, PDL_TEMA_VALUE)
+                .header(PDL_BEHANDLINGSNUMMER_KEY, PDL_BEHANDLINGSNUMMER_VALUE)
                 .accept(MediaType.APPLICATION_JSON)
                 .body(Mono.just(hentBasertPaaQuery(pid)), PdlPersonQuery::class.java)
                 .retrieve()
@@ -41,6 +41,8 @@ class PdlClient(
     companion object {
         const val PDL_TEMA_VALUE = "PEN"
         const val PDL_TEMA_ATTRIBUTE_NAME = "Tema"
+        const val PDL_BEHANDLINGSNUMMER_VALUE = "B280"
+        const val PDL_BEHANDLINGSNUMMER_KEY = "Behandlingsnummer"
     }
 }
 
