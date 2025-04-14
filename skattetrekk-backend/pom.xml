@@ -31,7 +31,7 @@
         <mockwebserver.version>4.12.0</mockwebserver.version>
 
         <!-- Test -->
-        <mockk.version>1.13.11</mockk.version>
+        <mockk.version>1.14.0</mockk.version>
 
     </properties>
 
