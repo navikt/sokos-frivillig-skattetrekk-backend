@@ -1,15 +1,16 @@
 package no.nav.pensjon.selvbetjening.skattetrekk.client.trekk.api
 
 import com.fasterxml.jackson.annotation.JsonFormat
+import com.fasterxml.jackson.annotation.JsonProperty
 import java.math.BigDecimal
 import java.time.LocalDate
 
 data class Satsperiode(
     @JsonFormat(pattern = "yyyy-MM-dd", timezone = "Europe/Oslo")
-    val fom: LocalDate?,
+    @JsonProperty("fom") val fom: LocalDate?,
     @JsonFormat(pattern = "yyyy-MM-dd", timezone = "Europe/Oslo")
-    val tom: LocalDate?,
-    val sats: BigDecimal?,
-    val sporing: Sporing? = null,
-    val erFeilregistrert: Boolean? = null,
+    @JsonProperty("tom") val tom: LocalDate?,
+    @JsonProperty("sats") val sats: BigDecimal?,
+    @JsonProperty("sporing") val sporing: Sporing? = null,
+    @JsonProperty("erFeilregistrert") val erFeilregistrert: Boolean? = null,
 )
