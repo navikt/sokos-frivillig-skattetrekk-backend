@@ -2,7 +2,6 @@ package no.nav.pensjon.selvbetjening.skattetrekk.client.pdl
 
 import no.nav.pensjon.selvbetjening.skattetrekk.client.norg2.Norg2Client
 import no.nav.pensjon.selvbetjening.skattetrekk.client.pdl.api.AdressebeskyttelseGradering
-import no.nav.pensjon.selvbetjening.skattetrekk.client.pdl.dto.GeografiskLokasjon
 import org.springframework.stereotype.Service
 
 @Service
