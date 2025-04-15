@@ -1,6 +1,8 @@
 package no.nav.pensjon.selvbetjening.skattetrekk.client.trekk.api
 
+import com.fasterxml.jackson.annotation.JsonProperty
+
 data class DebitorSok(
-    val debitorOffnr: String?,
-    val filter: DebitorFilter,
+    @JsonProperty("debitorOffnr") val debitorOffnr: String?,
+    @JsonProperty("filter") val filter: DebitorFilter,
 )
