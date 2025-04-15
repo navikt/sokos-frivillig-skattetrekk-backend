@@ -88,7 +88,6 @@ class SetPidFilter(
 
     private fun haandterFullmakt(fullmaktsgiverPid: String, requestingPid: String): RepresentasjonsforholdValidity {
         try {
-            log.info("Fullmakts case")
             val harGyldigFullmakt = fullmaktClient.hasValidRepresentasjonsforhold(fullmaktsgiverPid, requestingPid)
             if (!harGyldigFullmakt?.hasValidRepresentasjonsforhold!!) {
                 log.info("Fullmaktsforhold er ikke funnet. Nekter adgang")
@@ -106,14 +105,8 @@ class SetPidFilter(
 
             return harGyldigFullmakt
         } catch (e: FullmaktException) {
-            log.error("Noe gikk galt ved kall til fullmakt. Nekter adgang")
-            log.warn("FullmaktException: ${e.message}")
+            log.error("Noe gikk galt ved kall til fullmakt. Nekter adgang. FullmaktException: ${e.message}")
             throw NoFullmaktPresentException()
         }
-    }
-
-
-    companion object {
-        val PID = "pid"
     }
 }
