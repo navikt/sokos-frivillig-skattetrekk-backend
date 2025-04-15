@@ -2,9 +2,9 @@ package no.nav.pensjon.selvbetjening.skattetrekk.service
 
 import no.nav.pensjon.selvbetjening.skattetrekk.client.trekk.TrekkClient
 import no.nav.pensjon.selvbetjening.skattetrekk.client.trekk.api.*
-import no.nav.pensjon.selvbetjening.skattetrekk.skattetrekk.api.ForenkletSkattetrekk
-import no.nav.pensjon.selvbetjening.skattetrekk.skattetrekk.api.FrivilligSkattetrekkInitResponse
-import no.nav.pensjon.selvbetjening.skattetrekk.skattetrekk.api.TrekkDTO
+import no.nav.pensjon.selvbetjening.skattetrekk.endpoint.api.ForenkletSkattetrekk
+import no.nav.pensjon.selvbetjening.skattetrekk.endpoint.api.FrivilligSkattetrekkInitResponse
+import no.nav.pensjon.selvbetjening.skattetrekk.endpoint.api.TrekkDTO
 import no.nav.pensjon.selvbetjening.skattetrekk.util.isDateInPeriod
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
