@@ -19,7 +19,7 @@ class Norg2Client(
     fun hentEnhetForSpesifisertGeografiskOmraade(pid: String, geografiskOmraade: String, diskresjonskode: String): String {
         try {
             return webClient
-                .post()
+                .get()
                 .uri("$norg2Url/enhet/navkontor/$geografiskOmraade?disk=$diskresjonskode")
                 .header("Authorization", "Bearer ${tokenService.getEgressToken(norg2Scope, norg2Audience, pid, AppId.NORG2)}")
                 .retrieve()

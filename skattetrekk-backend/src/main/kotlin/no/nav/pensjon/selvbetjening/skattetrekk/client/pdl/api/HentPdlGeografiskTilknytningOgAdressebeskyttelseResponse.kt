@@ -12,7 +12,7 @@ data class GeografiskTilknytningOgAdressebeskyttelse(
 )
 
 data class PersonMedAdressebeskyttelse(
-    val adressebeskyttelse: Adressebeskyttelse? = null
+    val adressebeskyttelse: List<Adressebeskyttelse>? = null
 )
 
 data class Adressebeskyttelse(

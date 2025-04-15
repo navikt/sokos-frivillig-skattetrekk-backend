@@ -1,24 +1,25 @@
 package no.nav.pensjon.selvbetjening.skattetrekk.client.trekk.api
 
 import com.fasterxml.jackson.annotation.JsonFormat
+import com.fasterxml.jackson.annotation.JsonProperty
 import java.math.BigDecimal
 import java.time.LocalDate
 
 data class AndreTrekkRequest(
-    val ansvarligEnhetId: String,
-    val belopSaldotrekk: BigDecimal? = null,
+    @JsonProperty("ansvarligEnhetId") val ansvarligEnhetId: String,
+    @JsonProperty("belopSaldotrekk") val belopSaldotrekk: BigDecimal? = null,
     @JsonFormat(pattern = "yyyy-MM-dd", timezone = "Europe/Oslo")
-    val datoOppfolging: LocalDate? = null,
+    @JsonProperty("datoOppfolging") val datoOppfolging: LocalDate? = null,
     @JsonFormat(pattern = "yyyy-MM-dd", timezone = "Europe/Oslo")
-    val gyldigTom: LocalDate? = null,
-    val debitorOffnr: String,
-    val trekkalternativKode: String,
-    val trekktypeKode: String,
-    val tssEksternId: String? = null,
-    val kreditorKid: String? = null,
-    val kreditorRef: String? = null,
+    @JsonProperty("gyldigTom") val gyldigTom: LocalDate? = null,
+    @JsonProperty("debitorOffnr") val debitorOffnr: String,
+    @JsonProperty("trekkalternativKode") val trekkalternativKode: String,
+    @JsonProperty("trekktypeKode") val trekktypeKode: String,
+    @JsonProperty("tssEksternId") val tssEksternId: String? = null,
+    @JsonProperty("kreditorKid") val kreditorKid: String? = null,
+    @JsonProperty("kreditorRef") val kreditorRef: String? = null,
     @JsonFormat(pattern = "yyyy-MM-dd", timezone = "Europe/Oslo")
-    val prioritetFom: LocalDate? = null,
-    val satsperiodeListe: List<Satsperiode>,
-    val fagomradeListe: List<Fagomrade>,
+    @JsonProperty("prioritetFom") val prioritetFom: LocalDate? = null,
+    @JsonProperty("satsperiodeListe") val satsperiodeListe: List<Satsperiode>,
+    @JsonProperty("fagomradeListe") val fagomradeListe: List<Fagomrade>,
 )

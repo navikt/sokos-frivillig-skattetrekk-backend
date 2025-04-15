@@ -1,24 +1,21 @@
 package no.nav.pensjon.selvbetjening.skattetrekk.service
 
 import no.nav.pensjon.pselv.consumer.behandletrekk.oppdragrestproxy.Kilde
-import no.nav.pensjon.pselv.consumer.behandletrekk.oppdragrestproxy.OppdaterAndreTrekkRequest
 import no.nav.pensjon.pselv.consumer.behandletrekk.oppdragrestproxy.OpphorAndreTrekkRequest
 import no.nav.pensjon.pselv.consumer.behandletrekk.oppdragrestproxy.OpprettAndreTrekkRequest
 import no.nav.pensjon.selvbetjening.skattetrekk.client.norg2.Norg2Client
-import no.nav.pensjon.selvbetjening.skattetrekk.client.pdl.PdlService
+import no.nav.pensjon.selvbetjening.skattetrekk.client.pdl.GeografiskLokasjonService
 import no.nav.pensjon.selvbetjening.skattetrekk.client.trekk.TrekkClient
 import no.nav.pensjon.selvbetjening.skattetrekk.client.trekk.api.*
 import no.nav.pensjon.selvbetjening.skattetrekk.security.SecurityContextUtil
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
-import java.math.BigDecimal
 import java.time.LocalDate
 
 @Service
 class BehandleTrekkService(
     private val trekkClient: TrekkClient,
-    private val pdlService: PdlService,
-    private val norg2Client: Norg2Client
+    private val geografiskLokasjonService: GeografiskLokasjonService
 ) {
 
     private val log = LoggerFactory.getLogger(BehandleTrekkService::class.java)
@@ -47,8 +44,7 @@ class BehandleTrekkService(
         // sjekk har nytt fremtidig trekk, dvs tilleggstrekket er > 0
         if (tilleggstrekk > 0) {
             val trekkalternativKode = if( satsType == SatsType.KRONER) TrekkalternativKode.LOPM else TrekkalternativKode.LOPP
-            val geografiskLokasjon = pdlService.hentGeografiskTilknytningOgAdressebeskyttelse(pid)
-            val brukersNavEnhet: String = norg2Client.hentEnhetForSpesifisertGeografiskOmraade(pid, geografiskLokasjon.geografiskTilknytning!!, geografiskLokasjon.diskresjonskoder!!)
+            val brukersNavEnhet = geografiskLokasjonService.hentNavEnhet(pid)
 
             trekkClient.opprettAndreTrekk(
                 pid,
