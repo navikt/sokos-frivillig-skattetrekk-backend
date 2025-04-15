@@ -15,8 +15,7 @@ import java.time.LocalDate
 @Service
 class BehandleTrekkService(
     private val trekkClient: TrekkClient,
-    private val pdlService: GeografiskLokasjonService,
-    private val norg2Client: Norg2Client
+    private val geografiskLokasjonService: GeografiskLokasjonService
 ) {
 
     private val log = LoggerFactory.getLogger(BehandleTrekkService::class.java)
@@ -45,8 +44,7 @@ class BehandleTrekkService(
         // sjekk har nytt fremtidig trekk, dvs tilleggstrekket er > 0
         if (tilleggstrekk > 0) {
             val trekkalternativKode = if( satsType == SatsType.KRONER) TrekkalternativKode.LOPM else TrekkalternativKode.LOPP
-            val geografiskLokasjon = pdlService.hentNavEnhet(pid)
-            val brukersNavEnhet: String = norg2Client.hentEnhetForSpesifisertGeografiskOmraade(pid, geografiskLokasjon.geografiskTilknytning!!, geografiskLokasjon.diskresjonskoder!!)
+            val brukersNavEnhet = geografiskLokasjonService.hentNavEnhet(pid)
 
             trekkClient.opprettAndreTrekk(
                 pid,
