@@ -1,6 +1,6 @@
 package no.nav.frivillig.skattetrekk.client.pdl
 
-import no.nav.pensjon.selvbetjening.skattetrekk.client.pdl.api.AdressebeskyttelseGradering
+import no.nav.frivillig.skattetrekk.client.pdl.api.AdressebeskyttelseGradering
 
 class DiskresjonMapper {
     companion object {

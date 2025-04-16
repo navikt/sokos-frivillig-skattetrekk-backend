@@ -21,7 +21,7 @@ class TrekkClient(
     private val webClient: WebClient,
 ) {
 
-    fun finnTrekkListe(pid: String, trekkType: TrekkTypeCode): List<TrekkInfo> {
+    fun     finnTrekkListe(pid: String, trekkType: TrekkTypeCode): List<TrekkInfo> {
 
         val request = FinnTrekkListeRequest(
             debitorSok = DebitorSok(
