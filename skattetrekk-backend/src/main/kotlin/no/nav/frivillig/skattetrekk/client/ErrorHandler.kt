@@ -1,6 +1,6 @@
-package no.nav.frivillig.skattetrekk.client.util
+package no.nav.frivillig.skattetrekk.client
 
-import no.nav.pensjon.selvbetjening.skattetrekk.security.Masker
+import no.nav.frivillig.skattetrekk.security.Masker
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus

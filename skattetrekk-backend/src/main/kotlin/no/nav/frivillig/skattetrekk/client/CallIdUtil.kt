@@ -1,4 +1,4 @@
-package no.nav.frivillig.skattetrekk.client.util
+package no.nav.frivillig.skattetrekk.client
 
 import org.slf4j.MDC
 
