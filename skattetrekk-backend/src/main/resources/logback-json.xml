@@ -12,5 +12,5 @@
     <root level="INFO">
         <appender-ref ref="JSON_CONSOLE"/>
     </root>
-    <logger name="no.nav.pensjon.selvbetjening.skattetrekk" level="INFO"/>
+    <logger name="no.nav.frivillig.skattetrekk" level="INFO"/>
 </configuration>

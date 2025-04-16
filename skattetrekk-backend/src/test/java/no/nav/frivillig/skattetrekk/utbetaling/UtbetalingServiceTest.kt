@@ -1,6 +1,6 @@
 package no.nav.frivillig.skattetrekk.utbetaling
 
-import no.nav.pensjon.selvbetjening.skattetrekk.utbetaling.model.*
+import no.nav.frivillig.skattetrekk.utbetaling.model.*
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith

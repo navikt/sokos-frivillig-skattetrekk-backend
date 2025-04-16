@@ -3,7 +3,7 @@ package no.nav.frivillig.skattetrekk.security
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
-import no.nav.pensjon.selvbetjening.skattetrekk.configuration.CallIdUtil.Companion.NAV_CALL_ID_NAME
+import no.nav.frivillig.skattetrekk.client.CallIdUtil.Companion.NAV_CALL_ID_NAME
 import org.slf4j.MDC
 import org.springframework.stereotype.Component
 import org.springframework.web.filter.OncePerRequestFilter

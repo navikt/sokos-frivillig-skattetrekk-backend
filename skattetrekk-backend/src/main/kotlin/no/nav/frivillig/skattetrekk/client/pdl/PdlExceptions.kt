@@ -1,8 +1,8 @@
 package no.nav.frivillig.skattetrekk.client.pdl
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import no.nav.pensjon.selvbetjening.skattetrekk.client.pdl.api.PdlError
-import no.nav.pensjon.selvbetjening.skattetrekk.client.util.Errorhandler.Companion.handleResponseStatusException
+import no.nav.frivillig.skattetrekk.client.Errorhandler.Companion.handleResponseStatusException
+import no.nav.frivillig.skattetrekk.client.pdl.api.PdlError
 import org.springframework.http.HttpStatus
 
 class PersonNotFoundInPdlException(message: String) : RuntimeException(message)

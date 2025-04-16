@@ -1,8 +1,8 @@
 package no.nav.frivillig.skattetrekk.security
 
 import jakarta.servlet.DispatcherType
-import no.nav.pensjon.selvbetjening.skattetrekk.security.authenticationManagers.AzureAdAuthenticationManager
-import no.nav.pensjon.selvbetjening.skattetrekk.security.authenticationManagers.TokenXAuthenticationManager
+import no.nav.frivillig.skattetrekk.security.authenticationManagers.AzureAdAuthenticationManager
+import no.nav.frivillig.skattetrekk.security.authenticationManagers.TokenXAuthenticationManager
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
@@ -35,7 +35,7 @@ class SecurityConfiguration(
             oauth2ResourceServer {
                 authenticationManagerResolver = jwtIssuerAuthenticationManagerResolver
             }
-            authorizeRequests {
+            authorizeHttpRequests {
                 authorize("/actuator/**", permitAll)
                 authorize(DispatcherTypeRequestMatcher(DispatcherType.ERROR), authenticated)
                 authorize("/api/**", authenticated)

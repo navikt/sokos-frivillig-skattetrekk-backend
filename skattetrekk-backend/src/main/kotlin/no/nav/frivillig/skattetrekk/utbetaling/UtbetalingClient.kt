@@ -1,11 +1,11 @@
 package no.nav.frivillig.skattetrekk.utbetaling
 
-import no.nav.pensjon.selvbetjening.skattetrekk.configuration.AppId
-import no.nav.pensjon.selvbetjening.skattetrekk.security.TokenService
-import no.nav.pensjon.selvbetjening.skattetrekk.utbetaling.model.UtbetalDataApiFeil
-import no.nav.pensjon.selvbetjening.skattetrekk.utbetaling.model.UtbetalDataIkkeFunnet
-import no.nav.pensjon.selvbetjening.skattetrekk.utbetaling.model.UtbetalDataServerFeil
-import no.nav.pensjon.selvbetjening.skattetrekk.utbetaling.model.Utbetaling
+import no.nav.frivillig.skattetrekk.configuration.AppId
+import no.nav.frivillig.skattetrekk.security.TokenService
+import no.nav.frivillig.skattetrekk.utbetaling.model.UtbetalDataApiFeil
+import no.nav.frivillig.skattetrekk.utbetaling.model.UtbetalDataIkkeFunnet
+import no.nav.frivillig.skattetrekk.utbetaling.model.UtbetalDataServerFeil
+import no.nav.frivillig.skattetrekk.utbetaling.model.Utbetaling
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.core.ParameterizedTypeReference
 import org.springframework.http.HttpEntity

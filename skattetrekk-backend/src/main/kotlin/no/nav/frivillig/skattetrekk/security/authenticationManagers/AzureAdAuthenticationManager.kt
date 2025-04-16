@@ -1,7 +1,7 @@
 package no.nav.frivillig.skattetrekk.security.authenticationManagers
 
-import no.nav.pensjon.selvbetjening.skattetrekk.security.ClaimTypes
-import no.nav.pensjon.selvbetjening.skattetrekk.security.azureAdClaimTypes
+import no.nav.frivillig.skattetrekk.security.ClaimTypes
+import no.nav.frivillig.skattetrekk.security.azureAdClaimTypes
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Primary
 import org.springframework.core.convert.converter.Converter

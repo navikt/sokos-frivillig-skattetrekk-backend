@@ -1,6 +1,6 @@
 package no.nav.frivillig.skattetrekk.security
 
-import no.nav.pensjon.selvbetjening.skattetrekk.configuration.AppId
+import no.nav.frivillig.skattetrekk.configuration.AppId
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.oauth2.jwt.Jwt
