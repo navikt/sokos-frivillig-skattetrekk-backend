@@ -5,6 +5,7 @@ import io.mockk.mockk
 import io.mockk.verify
 import no.nav.frivillig.skattetrekk.client.trekk.TrekkClient
 import no.nav.frivillig.skattetrekk.client.trekk.api.*
+import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Test
 import kotlin.test.assertNotNull
 
@@ -20,12 +21,14 @@ class HentSkattOgTrekkServiceTest {
         every { trekkClientMock.finnTrekkListe(fnr, TrekkTypeCode.FRIS) } returns emptyList()
         every { trekkClientMock.finnTrekkListe(fnr, TrekkTypeCode.FSKT) } returns emptyList()
 
+        val result = hentSkattOgTrekkService.getSkattetrekk(fnr)
         verify(exactly = 1) { trekkClientMock.finnTrekkListe(fnr, TrekkTypeCode.FRIS) }
         verify(exactly = 1) { trekkClientMock.finnTrekkListe(fnr, TrekkTypeCode.FSKT) }
         verify(exactly = 0) { trekkClientMock.hentSkattOgTrekk(any(), any()) }
-
-        val result = hentSkattOgTrekkService.getSkattetrekk(fnr)
         assertNotNull(result)
+        assertNotNull(result.skattetrekk)
+        assertNull(result.framtidigTilleggstrekk)
+        assertNull(result.tilleggstrekk)
     }
 
     private fun byggHentSkattOgTrekkResponse(
