@@ -1,6 +1,6 @@
 package no.nav.frivillig.skattetrekk.utbetaling.model
 
-import no.nav.pensjon.selvbetjening.skattetrekk.utbetaling.Periode
+import no.nav.frivillig.skattetrekk.utbetaling.Periode
 import java.math.BigDecimal
 import java.time.LocalDate
 
