@@ -1,5 +1,7 @@
 package no.nav.frivillig.skattetrekk.service
 
+import com.fasterxml.jackson.annotation.JsonFormat
+import com.fasterxml.jackson.annotation.JsonProperty
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -7,6 +9,8 @@ import no.nav.frivillig.skattetrekk.client.trekk.TrekkClient
 import no.nav.frivillig.skattetrekk.client.trekk.api.*
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Test
+import java.math.BigDecimal
+import java.time.LocalDate
 import kotlin.test.assertNotNull
 
 class HentSkattOgTrekkServiceTest {
@@ -30,6 +34,38 @@ class HentSkattOgTrekkServiceTest {
         assertNull(result.framtidigTilleggstrekk)
         assertNull(result.tilleggstrekk)
     }
+
+    private fun byggTrekkInfo(
+        fnr: String,
+        trekkVedtakId: Long?,
+        trekkTypeCode: TrekkTypeCode,
+        fom: LocalDate,
+        tom: LocalDate,
+        trekkstatus: Trekkstatus,
+        trekkalternativ: Trekkalternativ?,
+        sats: BigDecimal?
+    ) = TrekkInfo(
+        trekkvedtakId = trekkVedtakId,
+        debitor = Bruker(
+            kreditorOffnr = fnr,
+            kreditorNavn = "Test Testesen",
+        ),
+        kreditor = null,
+        kreditorRef = null,
+        tssEksternId = null,
+        belopSaldotrekk = null,
+        belopTrukket = null,
+        ansvarligEnhetId = null,
+        trekktype = Trekktype(
+            kode = trekkTypeCode.name,
+            dekode = null,
+        ),
+        trekkperiodeFom = fom,
+        trekkperiodeTom = tom,
+        trekkstatus = trekkstatus,
+        trekkalternativ = trekkalternativ,
+        sats = sats,
+    )
 
     private fun byggHentSkattOgTrekkResponse(
         skattetrekkTrekkVedtakId: Long?,
