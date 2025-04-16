@@ -1,7 +1,5 @@
 package no.nav.frivillig.skattetrekk.service
 
-import com.fasterxml.jackson.annotation.JsonFormat
-import com.fasterxml.jackson.annotation.JsonProperty
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -29,6 +27,42 @@ class HentSkattOgTrekkServiceTest {
         verify(exactly = 1) { trekkClientMock.finnTrekkListe(fnr, TrekkTypeCode.FRIS) }
         verify(exactly = 1) { trekkClientMock.finnTrekkListe(fnr, TrekkTypeCode.FSKT) }
         verify(exactly = 0) { trekkClientMock.hentSkattOgTrekk(any(), any()) }
+        assertNotNull(result)
+        assertNotNull(result.skattetrekk)
+        assertNull(result.framtidigTilleggstrekk)
+        assertNull(result.tilleggstrekk)
+    }
+
+    @Test
+    fun `returnere skattetrekk dersom det er trekk fra skatteetaten og skal ikke hente skatt og trekk for denne`() {
+        val fnr = "12345678901"
+        val trekkVedtakId = 1L
+
+        every { trekkClientMock.finnTrekkListe(fnr, TrekkTypeCode.FRIS) } returns listOf(
+            byggTrekkInfo(
+                fnr,
+                trekkVedtakId,
+                TrekkTypeCode.FRIS,
+                LocalDate.parse("2025-03-01"),
+                LocalDate.parse("2025-12-31"),
+                Trekkstatus("AKTIV", null),
+                null,
+                BigDecimal(1000)
+            )
+        )
+        every { trekkClientMock.finnTrekkListe(fnr, TrekkTypeCode.FSKT) } returns emptyList()
+
+        every { trekkClientMock.hentSkattOgTrekk(fnr, trekkVedtakId) } returns byggHentSkattOgTrekkResponse(
+            skattetrekkTrekkVedtakId = trekkVedtakId,
+            frivilligSkattetrekkTrekkVedtakId = null
+        )
+
+        val result = hentSkattOgTrekkService.getSkattetrekk(fnr)
+
+        verify(exactly = 1) { trekkClientMock.finnTrekkListe(fnr, TrekkTypeCode.FRIS) }
+        verify(exactly = 1) { trekkClientMock.finnTrekkListe(fnr, TrekkTypeCode.FSKT) }
+        verify(exactly = 1) { trekkClientMock.hentSkattOgTrekk(fnr, trekkVedtakId) }
+
         assertNotNull(result)
         assertNotNull(result.skattetrekk)
         assertNull(result.framtidigTilleggstrekk)

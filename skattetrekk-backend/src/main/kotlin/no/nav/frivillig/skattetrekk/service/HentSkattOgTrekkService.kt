@@ -104,6 +104,7 @@ class HentSkattOgTrekkService(
     }
 
     private fun createTilleggstrekkVedtakListe(pid: String, tilleggsTrekkInfoListe: List<TrekkInfo>?) = tilleggsTrekkInfoListe
-        ?.map { it.trekkvedtakId?.let { it1 -> trekkClient.hentSkattOgTrekk(pid, it1).andreTrekk } }
-        ?: emptyList()
+        ?.map {
+            if (it.trekkvedtakId != null) trekkClient.hentSkattOgTrekk(pid, it.trekkvedtakId).andreTrekk else null
+        } ?: emptyList()
 }
