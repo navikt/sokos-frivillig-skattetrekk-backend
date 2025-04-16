@@ -1,9 +1,9 @@
 package no.nav.frivillig.skattetrekk.service
 
+import no.nav.frivillig.skattetrekk.client.norg2.Norg2Client
 import no.nav.frivillig.skattetrekk.client.pdl.DiskresjonMapper
 import no.nav.frivillig.skattetrekk.client.pdl.PdlClient
-import no.nav.pensjon.selvbetjening.skattetrekk.client.norg2.Norg2Client
-import no.nav.pensjon.selvbetjening.skattetrekk.client.pdl.api.AdressebeskyttelseGradering
+import no.nav.frivillig.skattetrekk.client.pdl.api.AdressebeskyttelseGradering
 import org.springframework.stereotype.Service
 
 @Service
