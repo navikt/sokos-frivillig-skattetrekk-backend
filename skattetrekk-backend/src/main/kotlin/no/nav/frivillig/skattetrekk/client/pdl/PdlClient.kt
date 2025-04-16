@@ -1,13 +1,11 @@
 package no.nav.frivillig.skattetrekk.client.pdl
 
-import com.fasterxml.jackson.annotation.JsonInclude
-import com.fasterxml.jackson.annotation.JsonProperty
-import no.nav.pensjon.selvbetjening.skattetrekk.client.pdl.api.*
-import no.nav.pensjon.selvbetjening.skattetrekk.client.util.CallIdUtil
-import no.nav.pensjon.selvbetjening.skattetrekk.client.util.getCallIdFromMdc
-import no.nav.pensjon.selvbetjening.skattetrekk.configuration.AppId
-import no.nav.pensjon.selvbetjening.skattetrekk.configuration.CallIdUtil.Companion.NAV_CALL_ID_NAME
-import no.nav.pensjon.selvbetjening.skattetrekk.security.TokenService
+import no.nav.frivillig.skattetrekk.client.CallIdUtil
+import no.nav.frivillig.skattetrekk.client.CallIdUtil.Companion.NAV_CALL_ID_NAME
+import no.nav.frivillig.skattetrekk.client.getCallIdFromMdc
+import no.nav.frivillig.skattetrekk.client.pdl.api.*
+import no.nav.frivillig.skattetrekk.configuration.AppId
+import no.nav.frivillig.skattetrekk.security.TokenService
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.MediaType
 import org.springframework.stereotype.Component
