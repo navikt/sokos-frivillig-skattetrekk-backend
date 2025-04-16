@@ -111,7 +111,7 @@ class BehandleTrekkService(
         return Satsperiode(
             fom = forsteDatoNesteMaaned,
             tom = sisteDagDetteAret,
-            tilleggstrekk.toBigDecimal()
+            sats = tilleggstrekk.toBigDecimal()
         )
     }
 }
