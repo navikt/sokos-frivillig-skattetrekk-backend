@@ -11,6 +11,6 @@
         <appender-ref ref="CONSOLE_PLAIN"/>
     </root>
 
-    <logger name="no.nav.pensjon.selvbetjening.skattetrekk" level="INFO"/>
+    <logger name="no.nav.frivillig.skattetrekk" level="INFO"/>
 
 </configuration>
