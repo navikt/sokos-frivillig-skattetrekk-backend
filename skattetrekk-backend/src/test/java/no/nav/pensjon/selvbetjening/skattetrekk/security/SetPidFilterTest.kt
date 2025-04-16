@@ -35,7 +35,7 @@ class SetPidFilterTest {
                 RepresentasjonsforholdValidity(true, "", "fullmaktsgiverFnr", "")
 
         mockMvc.perform(
-            get("/some-endpoint")
+            get("/api/skattetrekk")
                 .header(HttpHeaders.AUTHORIZATION, "Bearer some-token")
                 .cookie(Cookie("nav-obo", "fullmaktsgiverPid"))
                 .with(jwt())
@@ -51,7 +51,7 @@ class SetPidFilterTest {
                 RepresentasjonsforholdValidity(true, "", "fullmaktsgiverFnr", "")
 
         mockMvc.perform(
-            get("/some-endpoint")
+            get("/api/skattetrekk")
                 .header(HttpHeaders.AUTHORIZATION, "Bearer some-token")
                 .cookie(Cookie("nav-obo", "fullmaktsgiverPid"))
                 .with(jwt())
@@ -66,7 +66,7 @@ class SetPidFilterTest {
         every { tokenService.determineTokenType() } returns TokenService.TokenType.TOKEN_X
 
         mockMvc.perform(
-            get("/some-endpoint")
+            get("/api/skattetrekk")
                 .header(HttpHeaders.AUTHORIZATION, "Bearer some-token")
                 .with(jwt())
         )
