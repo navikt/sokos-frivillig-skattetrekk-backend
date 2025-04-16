@@ -1,11 +1,11 @@
 package no.nav.frivillig.skattetrekk.service
 
-import no.nav.pensjon.selvbetjening.skattetrekk.client.trekk.TrekkClient
-import no.nav.pensjon.selvbetjening.skattetrekk.client.trekk.api.*
-import no.nav.pensjon.selvbetjening.skattetrekk.endpoint.api.ForenkletSkattetrekk
-import no.nav.pensjon.selvbetjening.skattetrekk.endpoint.api.FrivilligSkattetrekkInitResponse
-import no.nav.pensjon.selvbetjening.skattetrekk.endpoint.api.TrekkDTO
-import no.nav.pensjon.selvbetjening.skattetrekk.util.isDateInPeriod
+import no.nav.frivillig.skattetrekk.client.trekk.TrekkClient
+import no.nav.frivillig.skattetrekk.client.trekk.api.*
+import no.nav.frivillig.skattetrekk.endpoint.api.ForenkletSkattetrekk
+import no.nav.frivillig.skattetrekk.endpoint.api.FrivilligSkattetrekkInitResponse
+import no.nav.frivillig.skattetrekk.endpoint.api.TrekkDTO
+import no.nav.frivillig.skattetrekk.util.isDateInPeriod
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import java.text.SimpleDateFormat

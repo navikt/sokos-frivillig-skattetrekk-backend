@@ -1,10 +1,10 @@
 package no.nav.frivillig.skattetrekk.endpoint
 
-import no.nav.pensjon.selvbetjening.skattetrekk.service.BehandleTrekkService
-import no.nav.pensjon.selvbetjening.skattetrekk.service.HentSkattOgTrekkService
-import no.nav.pensjon.selvbetjening.skattetrekk.endpoint.api.FrivilligSkattetrekkInitResponse
-import no.nav.pensjon.selvbetjening.skattetrekk.security.SecurityContextUtil
-import no.nav.pensjon.selvbetjening.skattetrekk.endpoint.api.SaveFrivilligSkattetrekkRequest
+import no.nav.frivillig.skattetrekk.endpoint.api.FrivilligSkattetrekkInitResponse
+import no.nav.frivillig.skattetrekk.endpoint.api.SaveFrivilligSkattetrekkRequest
+import no.nav.frivillig.skattetrekk.security.SecurityContextUtil
+import no.nav.frivillig.skattetrekk.service.BehandleTrekkService
+import no.nav.frivillig.skattetrekk.service.HentSkattOgTrekkService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*

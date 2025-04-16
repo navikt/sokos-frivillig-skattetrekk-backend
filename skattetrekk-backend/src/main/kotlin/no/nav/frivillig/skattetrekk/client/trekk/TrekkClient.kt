@@ -1,12 +1,12 @@
 package no.nav.frivillig.skattetrekk.client.trekk
 
+import no.nav.frivillig.skattetrekk.client.trekk.api.*
+import no.nav.frivillig.skattetrekk.configuration.AppId
+import no.nav.frivillig.skattetrekk.security.TokenService
+import no.nav.frivillig.skattetrekk.service.TrekkTypeCode
 import no.nav.pensjon.pselv.consumer.behandletrekk.oppdragrestproxy.OppdaterAndreTrekkRequest
 import no.nav.pensjon.pselv.consumer.behandletrekk.oppdragrestproxy.OpphorAndreTrekkRequest
 import no.nav.pensjon.pselv.consumer.behandletrekk.oppdragrestproxy.OpprettAndreTrekkRequest
-import no.nav.pensjon.selvbetjening.skattetrekk.client.trekk.api.*
-import no.nav.pensjon.selvbetjening.skattetrekk.configuration.AppId
-import no.nav.pensjon.selvbetjening.skattetrekk.security.TokenService
-import no.nav.pensjon.selvbetjening.skattetrekk.service.TrekkTypeCode
 
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component

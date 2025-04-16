@@ -1,8 +1,8 @@
 package no.nav.frivillig.skattetrekk.client.norg2
 
-import no.nav.pensjon.selvbetjening.skattetrekk.client.norg2.api.NavEnhetResponse
-import no.nav.pensjon.selvbetjening.skattetrekk.configuration.AppId
-import no.nav.pensjon.selvbetjening.skattetrekk.security.TokenService
+import no.nav.frivillig.skattetrekk.client.norg2.api.NavEnhetResponse
+import no.nav.frivillig.skattetrekk.configuration.AppId
+import no.nav.frivillig.skattetrekk.security.TokenService
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.WebClient

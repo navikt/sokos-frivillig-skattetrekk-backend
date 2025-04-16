@@ -1,13 +1,14 @@
 package no.nav.frivillig.skattetrekk.service
 
+import no.nav.frivillig.skattetrekk.client.trekk.TrekkClient
+import no.nav.frivillig.skattetrekk.client.trekk.api.AndreTrekkRequest
+import no.nav.frivillig.skattetrekk.client.trekk.api.Fagomrade
+import no.nav.frivillig.skattetrekk.client.trekk.api.SatsType
+import no.nav.frivillig.skattetrekk.client.trekk.api.Satsperiode
+import no.nav.frivillig.skattetrekk.security.SecurityContextUtil
 import no.nav.pensjon.pselv.consumer.behandletrekk.oppdragrestproxy.Kilde
 import no.nav.pensjon.pselv.consumer.behandletrekk.oppdragrestproxy.OpphorAndreTrekkRequest
 import no.nav.pensjon.pselv.consumer.behandletrekk.oppdragrestproxy.OpprettAndreTrekkRequest
-import no.nav.pensjon.selvbetjening.skattetrekk.client.norg2.Norg2Client
-import no.nav.frivillig.skattetrekk.client.pdl.GeografiskLokasjonService
-import no.nav.pensjon.selvbetjening.skattetrekk.client.trekk.TrekkClient
-import no.nav.pensjon.selvbetjening.skattetrekk.client.trekk.api.*
-import no.nav.pensjon.selvbetjening.skattetrekk.security.SecurityContextUtil
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import java.time.LocalDate
@@ -15,7 +16,7 @@ import java.time.LocalDate
 @Service
 class BehandleTrekkService(
     private val trekkClient: TrekkClient,
-    private val geografiskLokasjonService: no.nav.frivillig.skattetrekk.client.pdl.GeografiskLokasjonService
+    private val geografiskLokasjonService: GeografiskLokasjonService
 ) {
 
     private val log = LoggerFactory.getLogger(BehandleTrekkService::class.java)

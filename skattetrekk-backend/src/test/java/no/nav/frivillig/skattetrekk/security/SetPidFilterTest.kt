@@ -1,15 +1,13 @@
 package no.nav.frivillig.skattetrekk.security
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import io.mockk.every
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.Cookie
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import no.nav.frivillig.skattetrekk.client.fullmakt.FullmaktClient
 import no.nav.frivillig.skattetrekk.client.fullmakt.RepresentasjonsforholdValidity
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 
 import org.junit.jupiter.api.Test
@@ -66,7 +64,7 @@ class SetPidFilterTest {
         `when`(tokenService.determineTokenType()).thenReturn(TokenService.TokenType.TOKEN_X)
         `when`(tokenService.determineRequestingPid()).thenReturn(pidFullmektig)
         `when`(request.cookies).thenReturn(arrayOf(Cookie("nav-obo", pidFullmaktsgiver)))
-        `when`(fullmaktClient.hasValidRepresentasjonsforhold("GET", pidFullmaktsgiver, pidFullmektig)).thenReturn(
+        `when`(fullmaktClient.hasValidRepresentasjonsforhold(pidFullmaktsgiver, pidFullmektig)).thenReturn(
             RepresentasjonsforholdValidity(true,null, "fnr_kryptert", "00000000002")
         )
 
@@ -90,7 +88,7 @@ class SetPidFilterTest {
         `when`(tokenService.determineTokenType()).thenReturn(TokenService.TokenType.TOKEN_X)
         `when`(tokenService.determineRequestingPid()).thenReturn(pidFullmaktsgiver)
         `when`(request.cookies).thenReturn(arrayOf(Cookie("nav-obo", "fnr_kryptert")))
-        `when`(fullmaktClient.hasValidRepresentasjonsforhold("GET", "fnr_kryptert", pidFullmaktsgiver)).thenReturn(
+        `when`(fullmaktClient.hasValidRepresentasjonsforhold("fnr_kryptert", pidFullmaktsgiver)).thenReturn(
             RepresentasjonsforholdValidity(false, null, "fnr_kryptert", pidFullmaktsgiver)
         )
 
@@ -131,7 +129,7 @@ class SetPidFilterTest {
         `when`(request.requestURI).thenReturn(path)
         `when`(tokenService.determineTokenType()).thenReturn(TokenService.TokenType.TOKEN_X)
         `when`(tokenService.determineRequestingPid()).thenReturn(pidFullmektig)
-        `when`(fullmaktClient.hasValidRepresentasjonsforhold("GET", pidFullmaktsgiver, pidFullmektig)).thenReturn(
+        `when`(fullmaktClient.hasValidRepresentasjonsforhold(pidFullmaktsgiver, pidFullmektig)).thenReturn(
             RepresentasjonsforholdValidity(false, null, "fnr_kryptert", "12345678910")
         )
 
@@ -145,100 +143,6 @@ class SetPidFilterTest {
         assertEquals(path, errorResponse.path)
     }
 
-    @Test
-    fun `should set AuthenticationDetails when user is logged in as saksbehandler and saksbehandler has access to user`(){
-        val pid = "00000000001"
-
-        val request = mock(HttpServletRequest::class.java)
-        val response = mock(HttpServletResponse::class.java)
-        val filterChain = mock(FilterChain::class.java)
-
-        `when`(request.getHeader("Authorization")).thenReturn("Test")
-        `when`(request.getHeader("pid")).thenReturn(pid)
-        `when`(tokenService.determineTokenType()).thenReturn(TokenService.TokenType.AZURE_AD_ON_BEHALF_OF)
-        `when`(tokenService.isUserInSkjermetGroup()).thenReturn(false)
-        `when`(personService.hasSaksbehandlerAccessToPid(pid)).thenReturn(true)
-
-        filter.doFilter(request, response, filterChain)
-
-        assertFalse(SecurityContextUtil.isFullmakt())
-        assertEquals(pid, SecurityContextUtil.getPidFromContext())
-    }
-
-    @Test
-    fun `should set AuthenticationDetails  when user is logged in as saksbehandler with skjerming access and person is skjermet`(){
-        val pid = "00000000001"
-
-        val request = mock(HttpServletRequest::class.java)
-        val response = mock(HttpServletResponse::class.java)
-        val filterChain = mock(FilterChain::class.java)
-
-        `when`(request.getHeader("Authorization")).thenReturn("Test")
-        `when`(request.getHeader("pid")).thenReturn(pid)
-        `when`(tokenService.determineTokenType()).thenReturn(TokenService.TokenType.AZURE_AD_ON_BEHALF_OF)
-        `when`(tokenService.isUserInSkjermetGroup()).thenReturn(true)
-        `when`(skjermingClient.isSkjermet(pid)).thenReturn(true)
-        `when`(personService.hasSaksbehandlerAccessToPid(pid)).thenReturn(true)
-
-        filter.doFilter(request, response, filterChain)
-
-        assertFalse(SecurityContextUtil.isFullmakt())
-        assertEquals(pid, SecurityContextUtil.getPidFromContext())
-    }
-
-    @Test
-    fun `should resolve to FORBIDDEN with VEILEDER_UNAUTHORIZED when user is logged in as saksbehandler and user lacks access to skjermet person`(){
-        val pid = "00000000001"
-        val path = "/random/endpoint"
-
-        val request = mock(HttpServletRequest::class.java)
-        val response = MockHttpServletResponse()
-        val filterChain = mock(FilterChain::class.java)
-
-        `when`(request.getHeader("Authorization")).thenReturn("Test")
-        `when`(request.getHeader("pid")).thenReturn(pid)
-        `when`(request.requestURI).thenReturn(path)
-        `when`(tokenService.determineTokenType()).thenReturn(TokenService.TokenType.AZURE_AD_ON_BEHALF_OF)
-        `when`(tokenService.isUserInSkjermetGroup()).thenReturn(false)
-        `when`(tokenService.isLoginLevelHigh()).thenReturn(false)
-        `when`(skjermingClient.isSkjermet(pid)).thenReturn(false)
-        `when`(personService.hasAdressebeskyttelse(pid)).thenReturn(true)
-
-        filter.doFilter(request, response, filterChain)
-
-        val errorResponse = objectMapper.readValue(response.contentAsString, SetPidFilterErrorResponse::class.java)
-
-        assertEquals(ErrorCode.VEILEDER_UNAUTHORIZED, errorResponse.message)
-        assertEquals(HttpStatus.FORBIDDEN.value(), response.status)
-        assertEquals(HttpStatus.FORBIDDEN.name, errorResponse.error)
-        assertEquals(path, errorResponse.path)
-    }
-
-    @Test
-    fun `should resolve to FORBIDDEN with VEILEDER_UNAUTHORIZED when user is logged in as saksbehandler and user lacks access to person`(){
-        val pid = "00000000001"
-        val path = "/random/endpoint"
-
-        val request = mock(HttpServletRequest::class.java)
-        val response = MockHttpServletResponse()
-        val filterChain = mock(FilterChain::class.java)
-
-        `when`(request.getHeader("Authorization")).thenReturn("Test")
-        `when`(request.getHeader("pid")).thenReturn(pid)
-        `when`(request.requestURI).thenReturn(path)
-        `when`(tokenService.determineTokenType()).thenReturn(TokenService.TokenType.AZURE_AD_ON_BEHALF_OF)
-        `when`(tokenService.isUserInSkjermetGroup()).thenReturn(true)
-        `when`(personService.hasSaksbehandlerAccessToPid(pid)).thenReturn(false)
-
-        filter.doFilter(request, response, filterChain)
-
-        val errorResponse = objectMapper.readValue(response.contentAsString, SetPidFilterErrorResponse::class.java)
-
-        assertEquals(ErrorCode.VEILEDER_UNAUTHORIZED, errorResponse.message)
-        assertEquals(HttpStatus.FORBIDDEN.value(), response.status)
-        assertEquals(HttpStatus.FORBIDDEN.name, errorResponse.error)
-        assertEquals(path, errorResponse.path)
-    }
 
     @Test
     fun `should resolve to FORBIDDEN with LOGIN_LEVEL_TOO_LOW when user has diskresjon and logged in with insufficient login level`(){
@@ -255,9 +159,7 @@ class SetPidFilterTest {
         `when`(request.requestURI).thenReturn(path)
         `when`(tokenService.determineTokenType()).thenReturn(TokenService.TokenType.TOKEN_X)
         `when`(tokenService.determineRequestingPid()).thenReturn(pid)
-        `when`(tokenService.isUserInSkjermetGroup()).thenReturn(false)
         `when`(tokenService.isLoginLevelHigh()).thenReturn(false)
-        `when`(personService.hasAdressebeskyttelse(pid)).thenReturn(true)
 
         filter.doFilter(request, response, filterChain)
 
@@ -281,9 +183,7 @@ class SetPidFilterTest {
         `when`(request.getHeader("pid")).thenReturn(pid)
         `when`(tokenService.determineTokenType()).thenReturn(TokenService.TokenType.TOKEN_X)
         `when`(tokenService.determineRequestingPid()).thenReturn(pid)
-        `when`(tokenService.isUserInSkjermetGroup()).thenReturn(false)
         `when`(tokenService.isLoginLevelHigh()).thenReturn(true)
-        `when`(personService.hasAdressebeskyttelse(pid)).thenReturn(true)
 
         filter.doFilter(request, response, filterChain)
 
@@ -303,9 +203,7 @@ class SetPidFilterTest {
         `when`(request.getHeader("pid")).thenReturn(pid)
         `when`(tokenService.determineTokenType()).thenReturn(TokenService.TokenType.TOKEN_X)
         `when`(tokenService.determineRequestingPid()).thenReturn(pid)
-        `when`(tokenService.isUserInSkjermetGroup()).thenReturn(false)
         `when`(tokenService.isLoginLevelHigh()).thenReturn(false)
-        `when`(personService.hasAdressebeskyttelse(pid)).thenReturn(false)
 
         filter.doFilter(request, response, filterChain)
 
@@ -327,8 +225,7 @@ class SetPidFilterTest {
         `when`(request.cookies).thenReturn(arrayOf(Cookie("nav-obo", pidFullmaktsgiver)))
         `when`(tokenService.determineTokenType()).thenReturn(TokenService.TokenType.TOKEN_X)
         `when`(tokenService.determineRequestingPid()).thenReturn(pidFullmektig)
-        `when`(personService.hasAdressebeskyttelse(pidFullmaktsgiver)).thenReturn(true)
-        `when`(fullmaktClient.hasValidRepresentasjonsforhold("POST", pidFullmaktsgiver, pidFullmektig)).thenReturn(
+        `when`(fullmaktClient.hasValidRepresentasjonsforhold(pidFullmaktsgiver, pidFullmektig)).thenReturn(
             RepresentasjonsforholdValidity(true, "En person", "fnr_kryptert", "00000000002")
         )
 

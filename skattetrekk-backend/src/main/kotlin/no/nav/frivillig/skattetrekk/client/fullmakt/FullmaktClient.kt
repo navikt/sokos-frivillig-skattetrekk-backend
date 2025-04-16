@@ -1,9 +1,7 @@
 package no.nav.frivillig.skattetrekk.client.fullmakt
 
-import no.nav.pensjon.selvbetjening.skattetrekk.configuration.AppId
-import no.nav.pensjon.selvbetjening.skattetrekk.security.Masker
-import no.nav.pensjon.selvbetjening.skattetrekk.security.AzureAdService
-import no.nav.pensjon.selvbetjening.skattetrekk.security.TokenService
+import no.nav.frivillig.skattetrekk.configuration.AppId
+import no.nav.frivillig.skattetrekk.security.TokenService
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.slf4j.MDC
