@@ -1,12 +1,10 @@
 package no.nav.frivillig.skattetrekk.service
 
 import no.nav.frivillig.skattetrekk.client.trekk.TrekkClient
-import no.nav.frivillig.skattetrekk.client.trekk.api.AndreTrekkRequest
-import no.nav.frivillig.skattetrekk.client.trekk.api.Fagomrade
-import no.nav.frivillig.skattetrekk.client.trekk.api.SatsType
-import no.nav.frivillig.skattetrekk.client.trekk.api.Satsperiode
+import no.nav.frivillig.skattetrekk.client.trekk.api.*
 import no.nav.frivillig.skattetrekk.security.SecurityContextUtil
 import no.nav.pensjon.pselv.consumer.behandletrekk.oppdragrestproxy.Kilde
+import no.nav.pensjon.pselv.consumer.behandletrekk.oppdragrestproxy.OppdaterAndreTrekkRequest
 import no.nav.pensjon.pselv.consumer.behandletrekk.oppdragrestproxy.OpphorAndreTrekkRequest
 import no.nav.pensjon.pselv.consumer.behandletrekk.oppdragrestproxy.OpprettAndreTrekkRequest
 import org.slf4j.LoggerFactory
@@ -54,6 +52,45 @@ class BehandleTrekkService(
                     opprettNyttTrekk(pid, tilleggstrekk, trekkalternativKode.name, brukersNavEnhet)
                 ))
         }
+
+        // Sjekk om trekk skal oppdateres
+        if(trekkvedtakId != null) {
+            trekkClient.oppdaterAndreTrekk(pid, OppdaterAndreTrekkRequest(
+                trekkvedtakId,
+                AndreTrekkRequest(
+                    ansvarligEnhetId = geografiskLokasjonService.hentNavEnhet(pid),
+                    debitorOffnr = pid,
+                    trekktypeKode = TrekkTypeCode.FRIS.name,
+                    trekkalternativKode = if (satsType == SatsType.KRONER) TrekkalternativKode.LOPM.name else TrekkalternativKode.LOPP.name,
+                    fagomradeListe = listOf(
+                        Fagomrade(
+                            trekkgruppeKode = "PENA",
+                            fagomradeKode = null,
+                            erFeilregistrert = null
+                        )
+                    ),
+                    satsperiodeListe = listOf(opprettStatsperiode(tilleggstrekk)),
+                ),
+                Kilde.PPO1.name,
+            ))
+        }
+
+        if (trekkvedtakId != null && skalOppdatereTrekk(hentSkattOgTrekkResponse?.andreTrekk)) {
+            trekkClient.oppdaterAndreTrekk(pid, OppdaterAndreTrekkRequest(
+                trekkvedtakId = trekkvedtakId,
+                andreTrekk = TODO(),
+                kilde = TODO()
+            ))
+        }
+
+    }
+
+    private fun skalOppdatereTrekk(andreTrekk: AndreTrekkResponse?): Boolean {
+        if (andreTrekk == null) {
+            return false
+        }
+
+        return true
     }
 
     private fun opphorLoependeTrekk(pid: String, trekkvedtakId: Long) {
