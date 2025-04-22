@@ -41,7 +41,7 @@ class BehandleTrekkService(
         }
 
         // sjekk har nytt fremtidig trekk, dvs tilleggstrekket er > 0
-        if (tilleggstrekk > 0) {
+        if (tilleggstrekk > 0 && skalOpprettNyttTrekk(hentSkattOgTrekkResponse?.andreTrekk)) {
             val trekkalternativKode = if( satsType == SatsType.KRONER) TrekkalternativKode.LOPM else TrekkalternativKode.LOPP
             val brukersNavEnhet = geografiskLokasjonService.hentNavEnhet(pid)
 
@@ -75,14 +75,14 @@ class BehandleTrekkService(
             ))
         }
 
-        if (trekkvedtakId != null && skalOppdatereTrekk(hentSkattOgTrekkResponse?.andreTrekk)) {
-            trekkClient.oppdaterAndreTrekk(pid, OppdaterAndreTrekkRequest(
-                trekkvedtakId = trekkvedtakId,
-                andreTrekk = TODO(),
-                kilde = TODO()
-            ))
+    }
+
+    private fun skalOpprettNyttTrekk(andreTrekk: AndreTrekkResponse?): Boolean {
+        if (andreTrekk == null) {
+            return false
         }
 
+        return true
     }
 
     private fun skalOppdatereTrekk(andreTrekk: AndreTrekkResponse?): Boolean {
