@@ -9,7 +9,8 @@ import {Selector} from "@/components/initial/Selector";
 export function InitialPage() {
     const {setTilleggstrekkType, setTilleggstrekkValue} = useContext(FormStateContext)
     //
-    // const [buttonIsLoading, setButtonIsLoading] = useState(false)
+    const [buttonIsLoading, setButtonIsLoading] = useState(false)
+    const [selectorError, setSelectorError] = useState(false)
 
     const skattetrekkLoader = useLoaderData() as FrivilligSkattetrekkInitResponse
     const pid = new URLSearchParams(document.location.search).get("pid")
@@ -17,21 +18,27 @@ export function InitialPage() {
     const navigate = useNavigate()
 
 
-    // async function submitTilleggstrekk() {
-    //     try {
-    //         setButtonIsLoading(true)
-    //         //TODO: send til backend
-    //         setButtonIsLoading(false)
-    //         navigate(import.meta.env.BASE_URL + "/kvittering", {
-    //             state: {
-    //                 pid: pid,
-    //                 //response: response
-    //             }
-    //         })
-    //     } catch (e) {
-    //         setButtonIsLoading(false)
-    //     }
-    // }
+    async function submitTilleggstrekk() {
+        console.log("submitTilleggstrekk");
+        try {
+            // if(setTilleggstrekkType == null) {
+                setSelectorError(true)
+            console.log(selectorError);
+            // }
+
+            setButtonIsLoading(true)
+            //TODO: send til backend
+            setButtonIsLoading(false)
+            navigate(import.meta.env.BASE_URL + "/kvittering", {
+                state: {
+                    pid: pid,
+                    //response: response
+                }
+            })
+        } catch (e) {
+            setButtonIsLoading(false)
+        }
+    }
 
     return (
         <VStack gap="8">
@@ -61,13 +68,9 @@ export function InitialPage() {
                 <RegistrerteSkattetrekk skatteTrekk={skattetrekkLoader.skattetrekk} tilleggstrekk={skattetrekkLoader.tilleggstrekk} />
             </VStack>
 
-            <Selector setType={setTilleggstrekkType} setValue={setTilleggstrekkValue}/>
+            <Selector setType={setTilleggstrekkType} setValue={setTilleggstrekkValue} submitTilleggstrekk={submitTilleggstrekk}/>
 
-            {/*<HStack gap="2">*/}
-            {/*    <Button variant="primary" size={"medium"} loading={buttonIsLoading}*/}
-            {/*            onClick={submitTilleggstrekk}> Registrer </Button>*/}
-            {/*    <Button variant="tertiary" size={"medium"}> Avbryt </Button>*/}
-            {/*</HStack>*/}
+
         </VStack>
 
 

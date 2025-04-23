@@ -1,0 +1,41 @@
+import {Alert, BodyLong, BodyShort, Heading, Link, List, VStack} from '@navikt/ds-react'
+import {useContext, useState} from 'react'
+import {numberFormatWithKr} from "@/common/Utils";
+import {FormStateContext} from "@/state/FormState";
+import ListItem from "@navikt/ds-react/esm/list/ListItem";
+
+export const KvitteringPage = (props: {
+}) => {
+  const {tilleggstrekkType, tilleggstrekkValue} = useContext(FormStateContext)
+  const [isWaiting, setIsWaiting] = useState(true)
+
+  return (
+    <VStack gap="6" className="form-container">
+      <Alert variant="success">
+        <VStack gap="3">
+          <Heading level="3" size="small">
+            {tilleggstrekkType === "prosent" ?
+                `Frivillig skattetrekk på ${tilleggstrekkValue}% registrert` :
+                `Frivillig skattetrekk på ${numberFormatWithKr(tilleggstrekkValue ?? 0)} per måned registrert`}
+          </Heading>
+          <BodyShort>
+            Skattetrekket gjelder fra og med neste måned og ut året.
+          </BodyShort>
+        </VStack>
+      </Alert>
+
+      <List>
+        <ListItem>Frivillig skattetrekk stoppes automatisk ved årsskiftet,  du må derfor legge inn et nytt trekk for hvert hvert år.</ListItem>
+        <ListItem>Hvis du har lagt inn frivillig skattetrekk i slutten av måneden, kan det gå én måned ekstra før det starter å løpe.</ListItem>
+      </List>
+
+      <VStack gap="4" spacing="4">
+        <Heading size={"medium"} level="2">Dine registrerte skattetrekk</Heading>
+        <BodyShort><strong>Trekk fra skattekortet:</strong></BodyShort>
+        <BodyShort><strong>Frivillig skattetrekk:</strong></BodyShort>
+      </VStack>
+
+      <Link href="https://www.nav.no/skattetrekk" target="_blank">Endre registrert frivillig skattetrekk</Link>
+    </VStack>
+  )
+}
