@@ -23,11 +23,13 @@ class BehandleTrekkService(
         log.info("Bruker har valgt trekk i $satsType")
 
         val pid = SecurityContextUtil.getPidFromContext()
-        val andreTrekk = if (trekkvedtakId != null) trekkClient.hentSkattOgTrekk(pid, trekkvedtakId)?.andreTrekk else null
 
+        val andreTrekk = if (trekkvedtakId != null) trekkClient.hentSkattOgTrekk(pid, trekkvedtakId)?.andreTrekk else null
         val sorterteSatsperioder = andreTrekk?.satsperiodeListe?.sortedBy { it.fom } ?: emptyList()
+
         val lopendeSatsperioder = sorterteSatsperioder.filter { isLopende(it) }
         val fremtidigeSatsperioder = sorterteSatsperioder.filter { isFremtidig(it) }
+
         val tilleggstrekk: Double = verdi.toDouble()
 
         // Opphør løpende trekk, om det finnes
@@ -75,13 +77,7 @@ class BehandleTrekkService(
         return finnesIkkeLopende || finnesIkkeFremtidigTrekk
     }
 
-    private fun skalOppdatereTrekk(andreTrekk: AndreTrekkResponse?): Boolean {
-        if (andreTrekk == null || andreTrekk.trekkvedtakId == null) {
-            return false
-        }
-
-        return true // || andreTrekk.
-    }
+    private fun skalOppdatereTrekk(andreTrekk: AndreTrekkResponse?): Boolean = andreTrekk == null || andreTrekk.trekkvedtakId == null
 
     private fun opprettNyttTrekkRequest(pid: String, tilleggstrekk: Double, trekkalternativKode: String, brukersNavEnhet: String): AndreTrekkRequest =
         AndreTrekkRequest(
@@ -106,19 +102,28 @@ class BehandleTrekkService(
         andreTrekk: AndreTrekkResponse
     ): AndreTrekkRequest {
         val satsperioder = (andreTrekk?.satsperiodeListe?.toMutableList() ?: mutableListOf()).plus(opprettStatsperiode(tilleggstrekk))
+        val fagomradeListe = andreTrekk?.fagomradeListe ?: listOf(
+            Fagomrade(
+                trekkgruppeKode = "PENA",
+                fagomradeKode = null,
+                erFeilregistrert = null
+            )
+        )
 
+        val ansvarligEnhetId = andreTrekk?.ansvarligEnhetId ?: geografiskLokasjonService.hentNavEnhet(pid)
         return AndreTrekkRequest(
-            ansvarligEnhetId = andreTrekk?.ansvarligEnhetId!!,
+            ansvarligEnhetId = ansvarligEnhetId,
+            belopSaldotrekk = andreTrekk.belopSaldotrekk,
             debitorOffnr = pid,
+            datoOppfolging = andreTrekk.datoOppfolging,
+            gyldigTom = andreTrekk.gyldigTom,
             trekktypeKode = TrekkTypeCode.FRIS.name,
             trekkalternativKode = if (satsType == SatsType.KRONER) TrekkalternativKode.LOPM.name else TrekkalternativKode.LOPP.name,
-            fagomradeListe = listOf(
-             Fagomrade(
-                 trekkgruppeKode = "PENA",
-                 fagomradeKode = null,
-                 erFeilregistrert = null
-             )
-            ),
+            tssEksternId = andreTrekk.tssEksternId,
+            kreditorKid = andreTrekk.kreditorKid,
+            kreditorRef = andreTrekk.kreditorRef,
+            prioritetFom = andreTrekk.prioritetFom,
+            fagomradeListe = fagomradeListe,
             satsperiodeListe = satsperioder?.toList()!!,
         )
     }
