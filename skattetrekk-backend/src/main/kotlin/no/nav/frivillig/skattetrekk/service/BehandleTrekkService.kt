@@ -41,8 +41,8 @@ class BehandleTrekkService(
         }
 
         // sjekk har nytt fremtidig trekk, dvs tilleggstrekket er > 0
-        if (tilleggstrekk > 0 && skalOpprettNyttTrekk(hentSkattOgTrekkResponse?.andreTrekk)) {
-            val trekkalternativKode = if( satsType == SatsType.KRONER) TrekkalternativKode.LOPM else TrekkalternativKode.LOPP
+        if (skalOppretteNyttTrekk(tilleggstrekk, hentSkattOgTrekkResponse?.andreTrekk)) {
+            val trekkalternativKode = if(satsType == SatsType.KRONER) TrekkalternativKode.LOPM else TrekkalternativKode.LOPP
             val brukersNavEnhet = geografiskLokasjonService.hentNavEnhet(pid)
 
             trekkClient.opprettAndreTrekk(
@@ -54,7 +54,7 @@ class BehandleTrekkService(
         }
 
         // Sjekk om trekk skal oppdateres
-        if(trekkvedtakId != null) {
+        if(skalOppdatereTrekk(hentSkattOgTrekkResponse?.andreTrekk)) {
             trekkClient.oppdaterAndreTrekk(pid, OppdaterAndreTrekkRequest(
                 trekkvedtakId,
                 AndreTrekkRequest(
@@ -77,12 +77,15 @@ class BehandleTrekkService(
 
     }
 
-    private fun skalOpprettNyttTrekk(andreTrekk: AndreTrekkResponse?): Boolean {
-        if (andreTrekk == null) {
-            return false
+    private fun skalOppretteNyttTrekk(tilleggstrekk: Double, andreTrekk: AndreTrekkResponse?): Boolean {
+        if (andreTrekk == null && tilleggstrekk > 0) {
+            return true
         }
 
-        return true
+        val finnesIkkeLopende = andreTrekk?.satsperiodeListe?.find { isLopende(it) } == null
+        val finnesIkkeFremtidigTrekk = andreTrekk?.satsperiodeListe?.find { isFremtidig(it) } == null
+
+        return finnesIkkeLopende || finnesIkkeFremtidigTrekk
     }
 
     private fun skalOppdatereTrekk(andreTrekk: AndreTrekkResponse?): Boolean {
@@ -90,7 +93,7 @@ class BehandleTrekkService(
             return false
         }
 
-        return true
+        return erTrekkOpprettet // || andreTrekk.
     }
 
     private fun opphorLoependeTrekk(pid: String, trekkvedtakId: Long) {
