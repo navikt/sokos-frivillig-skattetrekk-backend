@@ -23,9 +23,9 @@ class BehandleTrekkService(
         log.info("Bruker har valgt trekk i $satsType")
 
         val pid = SecurityContextUtil.getPidFromContext()
-        val hentSkattOgTrekkResponse = if (trekkvedtakId != null) trekkClient.hentSkattOgTrekk(pid, trekkvedtakId) else null
+        val andreTrekk = if (trekkvedtakId != null) trekkClient.hentSkattOgTrekk(pid, trekkvedtakId)?.andreTrekk else null
 
-        val sorterteSatsperioder = hentSkattOgTrekkResponse?.andreTrekk?.satsperiodeListe?.sortedBy { it.fom } ?: emptyList()
+        val sorterteSatsperioder = andreTrekk?.satsperiodeListe?.sortedBy { it.fom } ?: emptyList()
         val lopendeSatsperioder = sorterteSatsperioder.filter { isLopende(it) }
         val fremtidigeSatsperioder = sorterteSatsperioder.filter { isFremtidig(it) }
         val tilleggstrekk: Double = verdi.toDouble()
@@ -41,7 +41,7 @@ class BehandleTrekkService(
         }
 
         // sjekk har nytt fremtidig trekk, dvs tilleggstrekket er > 0
-        if (skalOppretteNyttTrekk(tilleggstrekk, hentSkattOgTrekkResponse?.andreTrekk)) {
+        if (skalOppretteNyttTrekk(tilleggstrekk, andreTrekk)) {
             val trekkalternativKode = if(satsType == SatsType.KRONER) TrekkalternativKode.LOPM else TrekkalternativKode.LOPP
             val brukersNavEnhet = geografiskLokasjonService.hentNavEnhet(pid)
 
@@ -54,11 +54,14 @@ class BehandleTrekkService(
         }
 
         // Sjekk om trekk skal oppdateres
-        if(skalOppdatereTrekk(hentSkattOgTrekkResponse?.andreTrekk)) {
+        if(skalOppdatereTrekk(andreTrekk)) {
+
+            val satsperioder = (andreTrekk?.satsperiodeListe?.toMutableList() ?: mutableListOf()).plus(opprettStatsperiode(tilleggstrekk))
+
             trekkClient.oppdaterAndreTrekk(pid, OppdaterAndreTrekkRequest(
-                trekkvedtakId,
+                andreTrekk?.trekkvedtakId!!,
                 AndreTrekkRequest(
-                    ansvarligEnhetId = geografiskLokasjonService.hentNavEnhet(pid),
+                    ansvarligEnhetId = andreTrekk?.ansvarligEnhetId!!,
                     debitorOffnr = pid,
                     trekktypeKode = TrekkTypeCode.FRIS.name,
                     trekkalternativKode = if (satsType == SatsType.KRONER) TrekkalternativKode.LOPM.name else TrekkalternativKode.LOPP.name,
@@ -69,7 +72,7 @@ class BehandleTrekkService(
                             erFeilregistrert = null
                         )
                     ),
-                    satsperiodeListe = listOf(opprettStatsperiode(tilleggstrekk)),
+                    satsperiodeListe = satsperioder?.toList()!!,
                 ),
                 Kilde.PPO1.name,
             ))
@@ -89,11 +92,11 @@ class BehandleTrekkService(
     }
 
     private fun skalOppdatereTrekk(andreTrekk: AndreTrekkResponse?): Boolean {
-        if (andreTrekk == null) {
+        if (andreTrekk == null || andreTrekk.trekkvedtakId == null) {
             return false
         }
 
-        return erTrekkOpprettet // || andreTrekk.
+        return true // || andreTrekk.
     }
 
     private fun opphorLoependeTrekk(pid: String, trekkvedtakId: Long) {
