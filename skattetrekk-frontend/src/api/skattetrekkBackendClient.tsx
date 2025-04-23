@@ -25,7 +25,7 @@ const PORT = process.env.MOCK_PORT || "8080"
 const BASE_URL = isMock ? "http://" + window.location.hostname + ":" + PORT + import.meta.env.BASE_URL + "/"
     : import.meta.env.BASE_URL + "/"
 
-export async function hentSkattetrekk(): Promise<FrivilligSkattetrekkInitResponse> {
+export async function fetchSkattetrekk(): Promise<FrivilligSkattetrekkInitResponse> {
     const searchParams = new URLSearchParams(document.location.search)
     const pid = searchParams.get("pid")
 
