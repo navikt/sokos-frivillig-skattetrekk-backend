@@ -1,5 +1,7 @@
-import {BodyShort, Heading} from "@navikt/ds-react";
+import {BodyShort, Heading, HGrid} from "@navikt/ds-react";
 import {ForenkletSkattetrekk, SatsType, TrekkDTO} from "@/api/skattetrekkBackendClient";
+import {numberFormatWithKr} from "@/common/Utils";
+import "./RegistrerteSkattetrekk.css";
 
 
 type RegistrerteSkattetrekkProps = {
@@ -9,21 +11,17 @@ type RegistrerteSkattetrekkProps = {
 
 export function RegistrerteSkattetrekk(props: RegistrerteSkattetrekkProps) {
     return (
-        <div>
-            <Heading size="medium" level="2" spacing>Registrerte skattetrekk</Heading>
+        <HGrid gap="4" columns="min-content 1fr">
+            <dt className="label"><strong>Trekk fra skattekortet:</strong></dt>
+            <dd className="data">{showPercentageOrTable(props.skatteTrekk)}</dd>
 
-            <BodyShort spacing>
-                Trekk fra skattekortet: &emsp; {visProsentEllerTabell(props.skatteTrekk)}
-            </BodyShort>
-
-            <BodyShort spacing>
-                Frivillig tilleggstrekk: &emsp; {visProsentEllerBelop(props.tilleggstrekk)}
-            </BodyShort>
-        </div>
+            <dt className="label"><strong>Frivillig tilleggstrekk:</strong></dt>
+            <dd className="data">{visProsentEllerBelop(props.tilleggstrekk)}</dd>
+        </HGrid>
     )
 }
 
-function visProsentEllerTabell(skattetrekk: ForenkletSkattetrekk) {
+function showPercentageOrTable(skattetrekk: ForenkletSkattetrekk) {
     if (skattetrekk.tabellNr != null) {
         return `Tabell ${skattetrekk.tabellNr}`
     } else if (skattetrekk.prosentsats != null) {
@@ -39,7 +37,7 @@ function visProsentEllerBelop(tilleggstrekk: TrekkDTO | null) {
     if (tilleggstrekk.satsType == SatsType.PROSENT && tilleggstrekk.sats != null) {
         return `${tilleggstrekk.sats} %`
     } else if (tilleggstrekk.satsType == SatsType.KRONER && tilleggstrekk.sats != null) {
-        return `${tilleggstrekk.sats} kr per måned`
+        return `${numberFormatWithKr(tilleggstrekk.sats)} per måned`
     }
 
     return "Ingen tilleggstrekk"

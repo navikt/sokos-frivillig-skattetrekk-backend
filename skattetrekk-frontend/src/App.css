@@ -1,18 +1,26 @@
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  background-color: #ffffff;
-}
+@import '@navikt/ds-tokens';
 
 .contentWrapper {
   display: flex;
   flex-direction: column;
   justify-content: space-evenly;
-  margin: 4rem 1rem 12rem;
+  margin: 4rem 1rem 8rem 1rem;
   z-index: 1;
+  hyphens: none;
 
+  @media (min-width: 576px) {
+    /* Media queries støtter enda ikke variabler */
+    margin: 4rem 0 8rem 0;
+  }
+}
+
+.main-header {
+  margin-bottom: var(--a-spacing-12) !important;
+}
+
+.hr-spacing {
+  margin-top: 1em;
+  margin-bottom: 2em;
 }
 
 .gap-2 {
@@ -21,13 +29,13 @@ body {
 
 .mainBody {
   margin: 0 auto;
-  max-width: 900px;
+  max-width: 576px;
   min-height: 500px;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   align-items: stretch;
-  overflow: hidden;
+  overflow: visible;
   position: relative;
 
   /* These are technically the same, but use both */
@@ -40,4 +48,12 @@ body {
 
   /* Adds a hyphen where the word breaks, if supported (No Blink) */
   hyphens: auto;
+}
+
+.header {
+  margin-bottom: var(--a-spacing-3);
+}
+
+.representasjon-banner {
+  margin-bottom: var(--a-spacing-9);
 }
