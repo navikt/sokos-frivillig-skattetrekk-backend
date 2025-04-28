@@ -5,8 +5,14 @@ export interface TrekkDTO {
 }
 
 export interface ForenkletSkattetrekk {
+    trekkvedtakId: string | null;
     tabellNr: string | null;
     prosentsats: number | null;
+}
+
+export enum SatsType {
+    PROSENT = "PROSENT",
+    KRONER = "KRONER"
 }
 
 export interface FrivilligSkattetrekkInitResponse {
@@ -15,9 +21,10 @@ export interface FrivilligSkattetrekkInitResponse {
     skattetrekk: ForenkletSkattetrekk;
 }
 
-export enum SatsType {
-    PROSENT = "PROSENT",
-    KRONER = "KRONER"
+export interface SaveRequest{
+    trekkVedtakId: string;
+    value: number;
+    satsType: SatsType
 }
 
 const isMock = process.env.isMock || false
@@ -41,8 +48,24 @@ export async function fetchSkattetrekk(): Promise<FrivilligSkattetrekkInitRespon
         }
     }
 
+    if(isMock) {
+        return {
+            tilleggstrekk:
+                {
+                    trekkvedtakId: "123",
+                    sats: 200,
+                    satsType: SatsType.KRONER
+                },
+            framtidigTilleggstrekk: null,
+            skattetrekk: {
+                trekkvedtakId: "123",
+                tabellNr: null, //"800",
+                prosentsats: 25
+            }
+        }
+    }
 
-    return await fetch(BASE_URL+ "api/initSkattetrekk", {
+    return await fetch(BASE_URL+ "api/skattetrekk", {
             method: "GET",
             credentials: "include",
             headers: headers
@@ -61,6 +84,42 @@ export async function fetchSkattetrekk(): Promise<FrivilligSkattetrekkInitRespon
                 )
             } else {
                 throw new Error("Fikk ikke 2xx respons fra server");
+            }
+        }
+    )
+}
+
+export async function saveSkattetrekk(request: SaveRequest): Promise<boolean> {
+    const searchParams = new URLSearchParams(document.location.search)
+    const pid = searchParams.get("pid")
+
+    let headers;
+    if (pid !== null) {
+        headers =  {
+            'Content-Type': 'application/json',
+            'pid': pid,
+        }
+    } else {
+        headers = {
+            'Content-Type': 'application/json',
+        }
+    }
+
+    if(isMock) {
+        return true
+    }
+
+    return await fetch(BASE_URL+ "api/skattetrekk", {
+            method: "POST",
+            credentials: "include",
+            headers: headers
+        }
+    ).then(
+        response => {
+            if (response.status >= 200 && response.status < 300) {
+                return true
+            } else {
+                return false
             }
         }
     )

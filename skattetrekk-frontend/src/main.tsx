@@ -5,8 +5,8 @@ import DataContextProvider from "@/state/DataContextProvider";
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-      {/*<DataContextProvider>*/}
+      <DataContextProvider>
           <App />
-      {/*</DataContextProvider>*/}
+      </DataContextProvider>
   </React.StrictMode>
 )

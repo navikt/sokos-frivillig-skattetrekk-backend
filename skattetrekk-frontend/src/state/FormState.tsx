@@ -1,8 +1,9 @@
 import React, {createContext, SetStateAction, useState} from 'react'
+import {SatsType} from "@/api/skattetrekkBackendClient";
 
 interface FormState {
-    tilleggstrekkType: "prosent" | "kroner" | null
-    setTilleggstrekkType: (value: SetStateAction<"prosent" | "kroner" | null>) => void
+    tilleggstrekkType: SatsType | null
+    setTilleggstrekkType: (value: SetStateAction<SatsType | null>) => void
 
     tilleggstrekkValue: number | null
     setTilleggstrekkValue: (value: SetStateAction<number | null>) => void
@@ -21,7 +22,7 @@ interface Props {
 }
 
 export const FormStateComponent = ({ children }: Props) => {
-    const [tilleggstrekkType, setTilleggstrekkType] = useState<"prosent" | "kroner" | null>(null)
+    const [tilleggstrekkType, setTilleggstrekkType] = useState<SatsType | null>(null)
     const [tilleggstrekkValue, setTilleggstrekkValue] = useState<number | null>(null)
 
     return (

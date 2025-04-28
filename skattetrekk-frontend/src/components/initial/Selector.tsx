@@ -1,24 +1,37 @@
 import {Button, Heading, HStack, Radio, RadioGroup, TextField, VStack} from "@navikt/ds-react";
 import {ChangeEvent, useCallback, useState} from "react";
+import {SatsType} from "@/api/skattetrekkBackendClient";
 
 export function Selector(props: {
-    setType: (value: "prosent" | "kroner" | null) => void
+    setType: (value: SatsType | null) => void
     setValue: (value: number | null) => void
-    submitTilleggstrekk: (type: "prosent" | "kroner", value: number | null) => void
+    submitTilleggstrekk: (type: SatsType, value: number | null) => void
 }) {
-    const [type, setType] = useState<"prosent" | "kroner" | null>(null)
+    const [type, setType] = useState<SatsType | null>(null)
     const [value, setValue] = useState<number | null>(null)
     const [buttonIsLoading, setButtonIsLoading] = useState(false)
     const [selectorError, setSelectorError] = useState(false)
+    const [amountError, setAmountError] = useState("")
 
-    const onChangeType = (val: string) => {
-            const value = val === "prosent" ? "prosent" : "kroner"
-            setType(value);
+    const onChangeType = (val: SatsType) => {
+            setType(val);
             setSelectorError(false)
     }
 
     const onChangeValue = (val: ChangeEvent<HTMLInputElement>) => {
             const value = Number.parseInt(val.target.value);
+            if(type === SatsType.PROSENT) {
+                if (value > 100) {
+                    setAmountError("Du kan maks oppgi 100%")
+                }
+            } else if(SatsType.KRONER) {
+                if (value < 0) {
+                    setAmountError("Beløp må være større enn 0")
+                } else if (value > 50000) {
+                    setAmountError("Du kan maks oppgi 50 000 kr")
+                }
+            }
+
             setValue(Number.isNaN(value) ? null : value);
     }
 

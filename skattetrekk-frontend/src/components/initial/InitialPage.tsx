@@ -1,13 +1,26 @@
-import {BodyLong, Button, Heading, HStack, Radio, RadioGroup, ReadMore, TextField, VStack} from "@navikt/ds-react";
+import {
+    Alert,
+    BodyLong,
+    Button,
+    Heading,
+    HStack, Link,
+    Radio,
+    RadioGroup,
+    ReadMore,
+    TextField,
+    VStack
+} from "@navikt/ds-react";
 import {useCallback, useContext, useState} from "react";
 import {RegistrerteSkattetrekk} from "@/components/initial/RegistrerteSkattetrekk";
 import {useLoaderData, useNavigate} from "react-router-dom";
-import {FrivilligSkattetrekkInitResponse} from "@/api/skattetrekkBackendClient";
+import {FrivilligSkattetrekkInitResponse, SatsType, saveSkattetrekk} from "@/api/skattetrekkBackendClient";
 import {FormStateContext} from "@/state/FormState";
 import {Selector} from "@/components/initial/Selector";
+import DataContextProvider, {DataContext} from "@/state/DataContextProvider";
 
 export function InitialPage() {
-    const {setTilleggstrekkType, setTilleggstrekkValue} = useContext(FormStateContext)
+    const {tilleggstrekkType, setTilleggstrekkType, tilleggstrekkValue, setTilleggstrekkValue} = useContext(FormStateContext)
+    const {initiateResponse} = useContext(DataContext)
     //
     const [buttonIsLoading, setButtonIsLoading] = useState(false)
     const [selectorError, setSelectorError] = useState(false)
@@ -19,15 +32,21 @@ export function InitialPage() {
 
 
     async function submitTilleggstrekk() {
-        console.log("submitTilleggstrekk");
         try {
-            // if(setTilleggstrekkType == null) {
+            if(setTilleggstrekkType == null) {
                 setSelectorError(true)
             console.log(selectorError);
-            // }
+            }
 
             setButtonIsLoading(true)
-            //TODO: send til backend
+            if (tilleggstrekkType != null && tilleggstrekkValue != null) {
+                saveSkattetrekk(
+                    {
+                        trekkVedtakId: initiateResponse?.tilleggstrekk?.trekkvedtakId || "",
+                        value: tilleggstrekkValue,
+                        satsType: tilleggstrekkType
+                    })
+            }
             setButtonIsLoading(false)
             navigate(import.meta.env.BASE_URL + "/kvittering", {
                 state: {
@@ -41,8 +60,12 @@ export function InitialPage() {
     }
 
     return (
-        <VStack gap="8">
-            <VStack gap="6" spacing="4" id="samboer-historikk-tittel">
+        <VStack gap="16">
+            <VStack gap="6" id="samboer-historikk-tittel">
+                {initiateResponse?.skattetrekk?.trekkvedtakId != null && <Alert variant={"warning"}>
+                    Du har ikke en skattepliktig ytelse fra Nav. Du kan derfor ikke legge inn et frivillig skattetrekk.
+                </Alert>}
+
                 <BodyLong>
                     Nav trekker skatt på bakgrunn av ditt skattekort som Nav har mottatt fra Skatteetaten.
                     Hvis du ønsker å trekke mer skatt av pengestøtten din fra Nav, kan du registrere et frivillig skattetrekk her.
@@ -56,11 +79,13 @@ export function InitialPage() {
                     </BodyLong>
                 </ReadMore>
 
-                <BodyLong spacing>
-                    Tilleggstrekket legges inn som et fast kronebeløp eller som et fast prosenttrekk pr.
-                    måned og vil gjelde fra og med måneden etter at du har lagt det inn. Det stoppes automatisk ved årsskiftet.
+                <BodyLong>
+                    Tilleggstrekket legges inn som et fast kronebeløp eller som et fast prosenttrekk per måned
+                    og vil gjelde fra og med måneden etter at du har lagt det inn. Det stoppes automatisk ved årsskiftet.
                     Du må legge inn nytt trekk for hvert nytt år. Tilleggstrekk lagt til i desember vil gjelde fra januar og ut neste år.
                 </BodyLong>
+
+                <Link href="nav.no">Les om frivillig skattetrekk</Link>
             </VStack>
 
             <VStack gap="4" spacing="4">
