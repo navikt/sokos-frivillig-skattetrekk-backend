@@ -69,6 +69,8 @@ class BehandleTrekkService(
     private fun skalOppretteNyttTrekk(tilleggstrekk: Double, andreTrekk: AndreTrekkResponse?): Boolean {
         if (andreTrekk == null && tilleggstrekk > 0) {
             return true
+        } else if (andreTrekk != null && tilleggstrekk == 0.0) {
+            return false
         }
 
         val finnesIkkeLopende = andreTrekk?.satsperiodeListe?.find { isLopende(it) } == null
