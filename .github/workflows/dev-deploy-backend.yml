@@ -35,7 +35,7 @@ jobs:
         run: mvn -B package --file pom.xml
       - name: Build Docker image
         run: |
-          docker build -f .docker/Dockerfile -t ${IMAGE_GCP} .
+          docker build -f ./Dockerfile -t ${IMAGE_GCP} .
       - name: Log in to the container registry
         uses: docker/login-action@v3
         with:
