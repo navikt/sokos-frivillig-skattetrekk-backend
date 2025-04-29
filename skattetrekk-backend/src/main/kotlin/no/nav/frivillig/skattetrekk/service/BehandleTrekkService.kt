@@ -66,6 +66,31 @@ class BehandleTrekkService(
 
     }
 
+    fun oppdaterTrekk(trekkvedtakId: Long?, verdi: Int, satsType: SatsType) {
+
+    }
+
+    fun opphoerTrekk(trekkvedtakId: Long) {
+
+        val pid = SecurityContextUtil.getPidFromContext()
+
+        val andreTrekk = if (trekkvedtakId != null) trekkClient.hentSkattOgTrekk(pid, trekkvedtakId)?.andreTrekk else null
+        val sorterteSatsperioder = andreTrekk?.satsperiodeListe?.sortedBy { it.fom } ?: emptyList()
+
+        val lopendeSatsperioder = sorterteSatsperioder.filter { isLopende(it) }
+        val fremtidigeSatsperioder = sorterteSatsperioder.filter { isFremtidig(it) }
+
+        // Opphør løpende trekk, om det finnes
+        if (trekkvedtakId != null && lopendeSatsperioder.isNotEmpty()) {
+            opphorLoependeTrekk(pid, trekkvedtakId)
+        }
+
+        // Opphør fremtidige trekk om det finnes
+        if (trekkvedtakId != null && fremtidigeSatsperioder.isNotEmpty()) {
+            opphorFremtidigeTrekk(pid, trekkvedtakId)
+        }
+    }
+
     private fun skalOppretteNyttTrekk(tilleggstrekk: Double, andreTrekk: AndreTrekkResponse?): Boolean {
         if (andreTrekk == null && tilleggstrekk > 0) {
             return true

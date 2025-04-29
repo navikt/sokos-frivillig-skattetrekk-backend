@@ -30,4 +30,17 @@ class SkattetrekkController(
             saveFrivilligSkattetrekkRequest.satsType)
     }
 
+    @PutMapping(consumes = ["application/json"])
+    fun updateFrivilligSkattetrekk(@RequestBody saveFrivilligSkattetrekkRequest: SaveFrivilligSkattetrekkRequest) {
+        behandleTrekkService.behandleTrekk(
+            saveFrivilligSkattetrekkRequest.trekkVedtakId,
+            saveFrivilligSkattetrekkRequest.value,
+            saveFrivilligSkattetrekkRequest.satsType)
+    }
+
+    @DeleteMapping(consumes = ["application/json"])
+    fun opphoerFrivilligSkattetrekk(@RequestBody saveFrivilligSkattetrekkRequest: SaveFrivilligSkattetrekkRequest) {
+        saveFrivilligSkattetrekkRequest.trekkVedtakId?.let { behandleTrekkService.opphoerTrekk(it) }
+    }
+
 }
