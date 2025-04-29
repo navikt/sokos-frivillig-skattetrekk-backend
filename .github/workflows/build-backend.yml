@@ -6,9 +6,6 @@ on:
     paths:
       - 'skattetrekk-backend/**'
 
-env:
-  BACKEND_IMAGE: ghcr.io/${{ github.repository }}/skattetrekk-backend
-
 jobs:
   build:
     name: Build
@@ -41,13 +38,3 @@ jobs:
         shell: bash
         run: |
           mvn package --no-transfer-progress --batch-mode
-
-      - name: docker-build-push
-        uses: nais/docker-build-push@v0
-        id: docker-build-push
-        with:
-          team: pensjon-person
-          dockerfile: ./skattetrekk-backend/Dockerfile
-          docker_context: ./skattetrekk-backend
-          project_id: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
-          identity_provider: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}

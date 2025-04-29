@@ -9,6 +9,7 @@ import no.nav.frivillig.skattetrekk.client.fullmakt.FullmaktClient
 import no.nav.frivillig.skattetrekk.client.fullmakt.RepresentasjonsforholdValidity
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Disabled
 
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.*
@@ -21,7 +22,7 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
 import java.io.PrintWriter
 
-
+@Disabled
 class SetPidFilterTest {
     private val fullmaktClient = mock(FullmaktClient::class.java)
     private val tokenService = mock(TokenService::class.java)

@@ -4,7 +4,7 @@ metadata:
   name: skattetrekk-backend-q2
   namespace: okonomi
   labels:
-    team: okonomi
+    team: pensjonselvbetjening
 spec:
   image: "{{{ image }}}"
   port: 8080

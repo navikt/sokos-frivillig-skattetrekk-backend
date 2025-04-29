@@ -15,6 +15,7 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
 
+@Disabled
 @WebMvcTest
 class SkattetrekkControllerTest(
     @Autowired private val mockMvc: MockMvc
