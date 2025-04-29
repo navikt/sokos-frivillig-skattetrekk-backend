@@ -19,13 +19,35 @@ class BehandleTrekkService(
 
     private val log = LoggerFactory.getLogger(BehandleTrekkService::class.java)
 
-    fun behandleTrekk(trekkvedtakId: Long?, verdi: Int, satsType: SatsType) {
-        log.info("Bruker har valgt trekk i $satsType")
+    fun opprettTrekk(pid: String, verdi: Int, satsType: SatsType) {
+        log.info("Oppretter nytt frivillig skattetrekk")
 
-        val pid = SecurityContextUtil.getPidFromContext()
+        val tilleggstrekk: Double = verdi.toDouble()
 
-        val andreTrekk = if (trekkvedtakId != null) trekkClient.hentSkattOgTrekk(pid, trekkvedtakId)?.andreTrekk else null
-        val sorterteSatsperioder = andreTrekk?.satsperiodeListe?.sortedBy { it.fom } ?: emptyList()
+        // sjekk har nytt fremtidig trekk, dvs tilleggstrekket er > 0
+        if (skalOppretteNyttTrekk(tilleggstrekk, null)) {
+            val trekkalternativKode = if(satsType == SatsType.KRONER) TrekkalternativKode.LOPM else TrekkalternativKode.LOPP
+            val brukersNavEnhet = geografiskLokasjonService.hentNavEnhet(pid)
+
+            trekkClient.opprettAndreTrekk(
+                pid,
+                OpprettAndreTrekkRequest(
+                    Kilde.PPO1.name,
+                    opprettNyttTrekkRequest(pid, tilleggstrekk, trekkalternativKode.name, brukersNavEnhet)
+                ))
+        }
+
+    }
+
+    fun oppdaterTrekk(pid: String, trekkvedtakId: Long, verdi: Int, satsType: SatsType) {
+        log.info("Oppdaterer eksisterende frivillig skattetrekk")
+
+        val andreTrekk = trekkClient.hentSkattOgTrekk(pid, trekkvedtakId)
+            ?.andreTrekk
+
+        val sorterteSatsperioder = andreTrekk
+            ?.satsperiodeListe
+            ?.sortedBy { it.fom } ?: emptyList()
 
         val lopendeSatsperioder = sorterteSatsperioder.filter { isLopende(it) }
         val fremtidigeSatsperioder = sorterteSatsperioder.filter { isFremtidig(it) }
@@ -54,16 +76,30 @@ class BehandleTrekkService(
                     opprettNyttTrekkRequest(pid, tilleggstrekk, trekkalternativKode.name, brukersNavEnhet)
                 ))
         }
+    }
 
-        // Sjekk om trekk skal oppdateres
-        if(skalOppdatereTrekk(andreTrekk)) {
-            trekkClient.oppdaterAndreTrekk(pid, OppdaterAndreTrekkRequest(
-                andreTrekk?.trekkvedtakId!!,
-                lagOppdaterTrekkRequest(pid, satsType, tilleggstrekk, andreTrekk),
-                Kilde.PPO1.name,
-            ))
+    fun opphoerTrekk(pid: String, trekkvedtakId: Long) {
+        log.info("Opphører eksisterende frivillig skattetrekk")
+
+        val pid = SecurityContextUtil.getPidFromContext()
+
+        val sorterteSatsperioder = trekkClient.hentSkattOgTrekk(pid, trekkvedtakId)
+            ?.andreTrekk
+            ?.satsperiodeListe
+            ?.sortedBy { it.fom } ?: emptyList()
+
+        val lopendeSatsperioder = sorterteSatsperioder.filter { isLopende(it) }
+        val fremtidigeSatsperioder = sorterteSatsperioder.filter { isFremtidig(it) }
+
+        // Opphør løpende trekk, om det finnes
+        if (lopendeSatsperioder.isNotEmpty()) {
+            opphorLoependeTrekk(pid, trekkvedtakId)
         }
 
+        // Opphør fremtidige trekk om det finnes
+        if (fremtidigeSatsperioder.isNotEmpty()) {
+            opphorFremtidigeTrekk(pid, trekkvedtakId)
+        }
     }
 
     private fun skalOppretteNyttTrekk(tilleggstrekk: Double, andreTrekk: AndreTrekkResponse?): Boolean {

@@ -1,7 +1,9 @@
 package no.nav.frivillig.skattetrekk.endpoint
 
 import no.nav.frivillig.skattetrekk.endpoint.api.FrivilligSkattetrekkInitResponse
-import no.nav.frivillig.skattetrekk.endpoint.api.SaveFrivilligSkattetrekkRequest
+import no.nav.frivillig.skattetrekk.endpoint.api.OppdaterFrivilligSkattettrekk
+import no.nav.frivillig.skattetrekk.endpoint.api.OpprettFrivilligSkattetrekkRequest
+import no.nav.frivillig.skattetrekk.endpoint.api.OpphoerFrivilligSkattetrekkRequest
 import no.nav.frivillig.skattetrekk.security.SecurityContextUtil
 import no.nav.frivillig.skattetrekk.service.BehandleTrekkService
 import no.nav.frivillig.skattetrekk.service.HentSkattOgTrekkService
@@ -23,11 +25,22 @@ class SkattetrekkController(
     }
 
     @PostMapping(consumes = ["application/json"])
-    fun saveFrivilligSkattetrekk(@RequestBody saveFrivilligSkattetrekkRequest: SaveFrivilligSkattetrekkRequest) {
-        behandleTrekkService.behandleTrekk(
-            saveFrivilligSkattetrekkRequest.trekkVedtakId,
-            saveFrivilligSkattetrekkRequest.value,
-            saveFrivilligSkattetrekkRequest.satsType)
+    fun saveFrivilligSkattetrekk(@RequestBody request: OpprettFrivilligSkattetrekkRequest) {
+        behandleTrekkService.opprettTrekk(SecurityContextUtil.getPidFromContext(), request.value, request.satsType)
+    }
+
+    @PutMapping(consumes = ["application/json"])
+    fun updateFrivilligSkattetrekk(@RequestBody request: OppdaterFrivilligSkattettrekk) {
+        behandleTrekkService.oppdaterTrekk(
+            SecurityContextUtil.getPidFromContext(),
+            request.trekkVedtakId,
+            request.value,
+            request.satsType)
+    }
+
+    @DeleteMapping(consumes = ["application/json"])
+    fun opphoerFrivilligSkattetrekk(@RequestBody request: OpphoerFrivilligSkattetrekkRequest) {
+        behandleTrekkService.opphoerTrekk(SecurityContextUtil.getPidFromContext(), request.trekkVedtakId)
     }
 
 }
