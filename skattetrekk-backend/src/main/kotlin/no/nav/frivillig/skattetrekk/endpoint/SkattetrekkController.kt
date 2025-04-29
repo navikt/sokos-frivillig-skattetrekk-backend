@@ -1,7 +1,8 @@
 package no.nav.frivillig.skattetrekk.endpoint
 
 import no.nav.frivillig.skattetrekk.endpoint.api.FrivilligSkattetrekkInitResponse
-import no.nav.frivillig.skattetrekk.endpoint.api.FrivilligSkattetrekkRequest
+import no.nav.frivillig.skattetrekk.endpoint.api.OppdaterFrivilligSkattettrekk
+import no.nav.frivillig.skattetrekk.endpoint.api.OpprettFrivilligSkattetrekkRequest
 import no.nav.frivillig.skattetrekk.endpoint.api.OpphoerFrivilligSkattetrekkRequest
 import no.nav.frivillig.skattetrekk.security.SecurityContextUtil
 import no.nav.frivillig.skattetrekk.service.BehandleTrekkService
@@ -24,24 +25,22 @@ class SkattetrekkController(
     }
 
     @PostMapping(consumes = ["application/json"])
-    fun saveFrivilligSkattetrekk(@RequestBody saveFrivilligSkattetrekkRequest: FrivilligSkattetrekkRequest) {
-        behandleTrekkService.behandleTrekk(
-            saveFrivilligSkattetrekkRequest.trekkVedtakId,
-            saveFrivilligSkattetrekkRequest.value,
-            saveFrivilligSkattetrekkRequest.satsType)
+    fun saveFrivilligSkattetrekk(@RequestBody request: OpprettFrivilligSkattetrekkRequest) {
+        behandleTrekkService.opprettTrekk(SecurityContextUtil.getPidFromContext(), request.value, request.satsType)
     }
 
     @PutMapping(consumes = ["application/json"])
-    fun updateFrivilligSkattetrekk(@RequestBody frivilligSkattetrekkRequest: FrivilligSkattetrekkRequest) {
-        behandleTrekkService.behandleTrekk(
-            frivilligSkattetrekkRequest.trekkVedtakId,
-            frivilligSkattetrekkRequest.value,
-            frivilligSkattetrekkRequest.satsType)
+    fun updateFrivilligSkattetrekk(@RequestBody request: OppdaterFrivilligSkattettrekk) {
+        behandleTrekkService.oppdaterTrekk(
+            SecurityContextUtil.getPidFromContext(),
+            request.trekkVedtakId,
+            request.value,
+            request.satsType)
     }
 
     @DeleteMapping(consumes = ["application/json"])
-    fun opphoerFrivilligSkattetrekk(@RequestBody opphoerFrivilligSkattetrekkRequest: OpphoerFrivilligSkattetrekkRequest) {
-        behandleTrekkService.opphoerTrekk(opphoerFrivilligSkattetrekkRequest.trekkVedtakId)
+    fun opphoerFrivilligSkattetrekk(@RequestBody request: OpphoerFrivilligSkattetrekkRequest) {
+        behandleTrekkService.opphoerTrekk(SecurityContextUtil.getPidFromContext(), request.trekkVedtakId)
     }
 
 }
