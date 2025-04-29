@@ -51,7 +51,7 @@ jobs:
           tags: ${{ env.IMAGE_GCP }}
       - name: Generate NAIS variables GCP
         run: |
-          cat > .nais/vars-gcp.yaml <<EOF
+          cat > ./skattetrekk-backend/.nais/vars-gcp.yaml <<EOF
           namespace: okonomi
           image_gcp: $IMAGE_GCP
           EOF
@@ -60,5 +60,5 @@ jobs:
         env:
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
           CLUSTER: dev-gcp
-          RESOURCE: .nais/nais-q2.yml
-          VARS: .nais/vars-gcp.yaml
+          RESOURCE: ./skattetrekk-backend/.nais/nais-q2.yml
+          VARS: ./skattetrekk-backend/.nais/vars-gcp.yaml
