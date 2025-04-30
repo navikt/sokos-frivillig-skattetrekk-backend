@@ -57,9 +57,6 @@ spec:
   accessPolicy:
     inbound:
       rules:
-        - application: skattetrekk-frontend-veileder-q2
-          namespace: okonomi
-          cluster: dev-gcp
         - application: skattetrekk-frontend-borger-q2
           namespace: okonomi
           cluster: dev-gcp
