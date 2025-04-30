@@ -41,7 +41,7 @@ jobs:
         id: docker-build-push
         with:
           team: okonomi
-          dockerfile: ../skattetrekk-backend/Dockerfile
+          dockerfile: ./skattetrekk-backend/Dockerfile
       - name: Deploy to dev-gcp
         uses: nais/deploy/actions/deploy@v2
         env:
