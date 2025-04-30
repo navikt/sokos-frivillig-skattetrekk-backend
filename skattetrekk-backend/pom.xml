@@ -137,19 +137,6 @@
         </dependency>
 
         <dependency>
-            <groupId>jakarta.xml.bind</groupId>
-            <artifactId>jakarta.xml.bind-api</artifactId>
-            <version>4.0.2</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.sun.xml.bind</groupId>
-            <artifactId>jaxb-impl</artifactId>
-            <version>4.0.5</version>
-            <scope>runtime</scope>
-        </dependency>
-
-        <dependency>
             <groupId>com.squareup.okhttp3</groupId>
             <artifactId>mockwebserver</artifactId>
             <version>${mockwebserver.version}</version>
