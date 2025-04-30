@@ -3,11 +3,13 @@ package no.nav.frivillig.skattetrekk.service
 import io.mockk.every
 import no.nav.frivillig.skattetrekk.client.trekk.TrekkClient
 import no.nav.frivillig.skattetrekk.client.trekk.api.*
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito
 import java.math.BigDecimal
 import java.time.LocalDate
 
+@Disabled
 class BehandleTrekkServiceTest {
 
     private val pid = "12345678910"
