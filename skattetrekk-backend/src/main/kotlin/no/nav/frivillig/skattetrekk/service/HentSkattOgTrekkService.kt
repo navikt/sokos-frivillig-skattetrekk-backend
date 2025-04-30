@@ -22,7 +22,7 @@ class HentSkattOgTrekkService(
     val TREKK_KODE_LOPP: String = "LOPP" // Prosenttrekk
     val IsoDateFormatter = SimpleDateFormat("yyyy-MM-dd")
 
-    fun getSkattetrekk(pid: String): FrivilligSkattetrekkInitResponse? {
+    fun hentSkattetrekk(pid: String): FrivilligSkattetrekkInitResponse? {
 
         var forskuddsTrekkListe: List<TrekkInfo>? = null
         var tilleggsTrekkInfoListe: List<TrekkInfo>? = null
@@ -34,12 +34,11 @@ class HentSkattOgTrekkService(
             log.error(e.message)
         }
 
-        val skattetrekk = findSkattetrekk(pid, forskuddsTrekkListe)
-        val tillegstrekkVedtakListe = createTilleggstrekkVedtakListe(pid, tilleggsTrekkInfoListe)
+        val skattetrekk = finnSkattetrekk(pid, forskuddsTrekkListe)
+        val tillegstrekkVedtakListe = opprettTilleggstrekkVedtakListe(pid, tilleggsTrekkInfoListe)
 
         return createSkattetrekkInitResponse(skattetrekk, tillegstrekkVedtakListe)
     }
-
 
     private fun createSkattetrekkInitResponse(skattetrekk: Skattetrekk?, tilleggstrekkListe: List<AndreTrekkResponse?>): FrivilligSkattetrekkInitResponse {
 
@@ -60,7 +59,6 @@ class HentSkattOgTrekkService(
         sats = this.satsperiodeListe?.first()?.sats?.toDouble(),
         satsType = this.trekkalternativ?.kode?.let { if (it == TREKK_KODE_LOPP) SatsType.PROSENT else SatsType.KRONER }
     )
-
 
     private fun determineForenkletSkattetrekk(skattetrekk: Skattetrekk?): ForenkletSkattetrekk {
 
@@ -91,7 +89,7 @@ class HentSkattOgTrekkService(
         fom == firstOfNextMonth
     } else false
 
-    private fun findSkattetrekk(pid: String, trekkInfoListe: List<TrekkInfo>?): Skattetrekk? {
+    private fun finnSkattetrekk(pid: String, trekkInfoListe: List<TrekkInfo>?): Skattetrekk? {
         val skattetrekk: Skattetrekk? = null
 
         if (trekkInfoListe != null) {
@@ -103,7 +101,7 @@ class HentSkattOgTrekkService(
         return skattetrekk
     }
 
-    private fun createTilleggstrekkVedtakListe(pid: String, tilleggsTrekkInfoListe: List<TrekkInfo>?) = tilleggsTrekkInfoListe
+    private fun opprettTilleggstrekkVedtakListe(pid: String, tilleggsTrekkInfoListe: List<TrekkInfo>?) = tilleggsTrekkInfoListe
         ?.map {
             if (it.trekkvedtakId != null) trekkClient.hentSkattOgTrekk(pid, it.trekkvedtakId).andreTrekk else null
         } ?: emptyList()

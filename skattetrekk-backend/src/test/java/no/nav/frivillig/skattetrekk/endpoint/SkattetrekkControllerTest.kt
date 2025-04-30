@@ -29,7 +29,7 @@ class SkattetrekkControllerTest(
     @Disabled
     @Test
     fun `happy case`() {
-        every { skattetrekkService.getSkattetrekk("") } returns byggskattetrekk()
+        every { skattetrekkService.hentSkattetrekk("") } returns byggskattetrekk()
 
         mockMvc.perform(get("/api/bankAccount?id=1"))
             .andExpect(status().isOk)

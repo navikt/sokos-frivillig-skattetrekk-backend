@@ -23,7 +23,7 @@ class HentSkattOgTrekkServiceTest {
         every { trekkClientMock.finnTrekkListe(fnr, TrekkTypeCode.FRIS) } returns emptyList()
         every { trekkClientMock.finnTrekkListe(fnr, TrekkTypeCode.FSKT) } returns emptyList()
 
-        val result = hentSkattOgTrekkService.getSkattetrekk(fnr)
+        val result = hentSkattOgTrekkService.hentSkattetrekk(fnr)
         verify(exactly = 1) { trekkClientMock.finnTrekkListe(fnr, TrekkTypeCode.FRIS) }
         verify(exactly = 1) { trekkClientMock.finnTrekkListe(fnr, TrekkTypeCode.FSKT) }
         verify(exactly = 0) { trekkClientMock.hentSkattOgTrekk(any(), any()) }
@@ -57,7 +57,7 @@ class HentSkattOgTrekkServiceTest {
             frivilligSkattetrekkTrekkVedtakId = null
         )
 
-        val result = hentSkattOgTrekkService.getSkattetrekk(fnr)
+        val result = hentSkattOgTrekkService.hentSkattetrekk(fnr)
 
         verify(exactly = 1) { trekkClientMock.finnTrekkListe(fnr, TrekkTypeCode.FRIS) }
         verify(exactly = 1) { trekkClientMock.finnTrekkListe(fnr, TrekkTypeCode.FSKT) }

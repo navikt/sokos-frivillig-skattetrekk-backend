@@ -20,7 +20,7 @@ class SkattetrekkController(
 
     @GetMapping(produces = ["application/json"])
     fun getSkattetrekk(): ResponseEntity<FrivilligSkattetrekkInitResponse?> {
-        val skatteTrekk =  skattetrekkService.getSkattetrekk(SecurityContextUtil.getPidFromContext())
+        val skatteTrekk =  skattetrekkService.hentSkattetrekk(SecurityContextUtil.getPidFromContext())
         return ResponseEntity<FrivilligSkattetrekkInitResponse?>(skatteTrekk, HttpStatus.OK)
     }
 
