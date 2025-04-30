@@ -45,19 +45,11 @@ jobs:
       - name: Push Docker image
         uses: docker/build-push-action@v6
         with:
-          context: .
+          team: okonomi
           file: ./skattetrekk-backend/Dockerfile
-          push: true
-          tags: ${{ env.IMAGE_GCP }}
-      - name: Generate NAIS variables GCP
-        run: |
-          cat > ./skattetrekk-backend/.nais/vars-gcp.yaml <<EOF
-          namespace: okonomi
-          image_gcp: $IMAGE_GCP
-          EOF
       - name: Deploy to dev-gcp
         uses: nais/deploy/actions/deploy@v2
         env:
           CLUSTER: dev-gcp
           RESOURCE: ./skattetrekk-backend/.nais/.nais-q2.yml
-          VARS: ./skattetrekk-backend/.nais/vars-gcp.yaml
+          IMAGE: ${{ steps.docker-build-push.outputs.image }}
