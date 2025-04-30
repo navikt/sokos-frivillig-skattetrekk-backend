@@ -10,6 +10,7 @@ spec:
   port: 8080
   ingresses:
     - https://skattetrekk-backend-q2.intern.dev.nav.no
+    - https://skattetrekk-backend-q2.dev-fss-pub.nais.io
   liveness:
     path: actuator/health/liveness
     initialDelay: 30
