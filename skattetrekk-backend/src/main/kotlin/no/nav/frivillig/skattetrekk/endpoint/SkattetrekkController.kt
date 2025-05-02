@@ -22,22 +22,24 @@ class SkattetrekkController(
     }
 
     @PostMapping(consumes = ["application/json"])
-    fun opprettFrivilligSkattetrekk(@RequestBody request: OpprettFrivilligSkattetrekkRequest): OpprettFrivilligSkattetrekkResponse {
+    fun opprettFrivilligSkattetrekk(@RequestBody request: OpprettRequest): OpprettResponse {
         val trekkvedtakId = behandleTrekkService.opprettTrekk(SecurityContextUtil.getPidFromContext(), request.value, request.satsType)
-        return OpprettFrivilligSkattetrekkResponse(trekkvedtakId = trekkvedtakId)
+        return OpprettResponse(trekkvedtakId = trekkvedtakId)
     }
 
     @PutMapping(consumes = ["application/json"])
-    fun updateFrivilligSkattetrekk(@RequestBody request: OppdaterFrivilligSkattettrekk) {
-        behandleTrekkService.oppdaterTrekk(
+    fun updateFrivilligSkattetrekk(@RequestBody request: OppdaterRequest): OppdaterResponse {
+        val trekkvedtakId = behandleTrekkService.oppdaterTrekk(
             SecurityContextUtil.getPidFromContext(),
             request.trekkVedtakId,
             request.value,
             request.satsType)
+
+        return OppdaterResponse(trekkvedtakId = trekkvedtakId)
     }
 
     @DeleteMapping(consumes = ["application/json"])
-    fun opphoerFrivilligSkattetrekk(@RequestBody request: OpphoerFrivilligSkattetrekkRequest) {
+    fun opphoerFrivilligSkattetrekk(@RequestBody request: OpphoerRequest) {
         behandleTrekkService.opphoerTrekk(SecurityContextUtil.getPidFromContext(), request.trekkVedtakId)
     }
 

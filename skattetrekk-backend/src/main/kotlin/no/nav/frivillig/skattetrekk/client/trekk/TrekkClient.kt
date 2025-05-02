@@ -84,7 +84,7 @@ class TrekkClient(
             throw RuntimeException("Failed to fetch skattetrekk", e)
         }
 
-    fun opphorAndreTrekk(pid: String, request: OpphorAndreTrekkRequest) =
+    fun opphorAndreTrekk(pid: String, request: OpphorAndreTrekkRequest) {
         try {
             webClient
                 .post()
@@ -98,4 +98,5 @@ class TrekkClient(
         } catch(e: Exception) {
             throw RuntimeException("Failed to fetch skattetrekk", e)
         }
+    }
 }
