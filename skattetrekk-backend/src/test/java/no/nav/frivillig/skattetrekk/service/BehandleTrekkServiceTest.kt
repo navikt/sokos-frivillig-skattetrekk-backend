@@ -161,7 +161,7 @@ class BehandleTrekkServiceTest {
 
         behandleTrekkService.opphoerTrekk(pid, trekkVedtakId)
 
-        verify(exactly = 2) {
+        verify(exactly = 1) {
             trekkClientMock.opphorAndreTrekk(
                 eq(pid),
                 any()
@@ -219,8 +219,42 @@ class BehandleTrekkServiceTest {
 
         behandleTrekkService.opphoerTrekk(pid, trekkVedtakId)
 
-        verify(exactly = 2) {
+        verify(exactly = 1) {
             trekkClientMock.opphorAndreTrekk(
+                eq(pid),
+                any()
+            )
+        }
+    }
+
+    @Test
+    fun `Oppdater skattetrekk`() {
+        val trekkVedtakId = 1L
+        val tilleggstrekk = 20
+
+        every { geografiskLokasjonServiceMock.hentNavEnhet(pid) } returns "NAV Enhet"
+        every { trekkClientMock.opphorAndreTrekk(eq(pid), any()) } returns Unit
+        every { trekkClientMock.opprettAndreTrekk(eq(pid), any()) } returns OpprettAndreTrekkResponse(1L)
+
+        every { trekkClientMock.hentSkattOgTrekk(pid, trekkVedtakId) } returns lagHentSkattOgTrekkRespons(trekkVedtakId,
+            listOf(lagSatsperiode(
+                fom = LocalDate.now().minusMonths(1L),
+                tom = LocalDate.now().plusMonths(3L),
+                sats = 100.0
+            ))
+        )
+
+        behandleTrekkService.oppdaterTrekk(pid, trekkVedtakId, tilleggstrekk, SatsType.KRONER)
+
+        verify(exactly = 1) {
+            trekkClientMock.opphorAndreTrekk(
+                eq(pid),
+                any()
+            )
+        }
+
+        verify(exactly = 1) {
+            trekkClientMock.opprettAndreTrekk(
                 eq(pid),
                 any()
             )

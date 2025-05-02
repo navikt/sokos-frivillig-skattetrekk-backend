@@ -1,5 +1,5 @@
 package no.nav.frivillig.skattetrekk.endpoint.api
 
-data class OpprettFrivilligSkattetrekkResponse(
+data class OppdaterResponse (
     val trekkvedtakId: Long?
 )
