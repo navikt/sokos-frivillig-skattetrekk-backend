@@ -1,28 +1,76 @@
 package no.nav.frivillig.skattetrekk.service
 
 import io.mockk.every
+import io.mockk.mockk
+import io.mockk.verify
 import no.nav.frivillig.skattetrekk.client.trekk.TrekkClient
 import no.nav.frivillig.skattetrekk.client.trekk.api.*
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
-import org.mockito.Mockito
 import java.math.BigDecimal
 import java.time.LocalDate
+import kotlin.test.assertEquals
+import kotlin.test.assertNull
 
-@Disabled
 class BehandleTrekkServiceTest {
 
     private val pid = "12345678910"
-    private val trekkClientMock = Mockito.mock(TrekkClient::class.java)
-    private val geografiskLokasjonServiceMock = Mockito.mock(GeografiskLokasjonService::class.java)
+    private val trekkClientMock = mockk<TrekkClient>()
+    private val geografiskLokasjonServiceMock = mockk<GeografiskLokasjonService>()
     private val behandleTrekkService = BehandleTrekkService(trekkClientMock, geografiskLokasjonServiceMock)
 
     @Test
-    fun `oppdatere frivillig skattetrekk for prosent`() {
-        
-        every { trekkClientMock.finnTrekkListe(pid, TrekkTypeCode.FRIS) } returns emptyList()
-        behandleTrekkService.opprettTrekk(pid, 20, SatsType.PROSENT)
+    fun `opprett nytt frivillig skattetrekk for prosent`() {
 
+        every { geografiskLokasjonServiceMock.hentNavEnhet(pid) } returns "NAV Enhet"
+        every { trekkClientMock.opprettAndreTrekk(eq(pid), any()) } returns OpprettAndreTrekkResponse(1L)
+
+        val trekkVedtakId = behandleTrekkService.opprettTrekk(pid, 20, SatsType.PROSENT)
+
+        verify(exactly = 1) {
+            trekkClientMock.opprettAndreTrekk(
+                eq(pid),
+                any()
+            )
+        }
+
+        assertEquals(1L,trekkVedtakId)
+    }
+
+    @Test
+    fun `opprett nytt frivillig skattetrekk for nok`() {
+
+        every { geografiskLokasjonServiceMock.hentNavEnhet(pid) } returns "NAV Enhet"
+        every { trekkClientMock.opprettAndreTrekk(eq(pid), any()) } returns OpprettAndreTrekkResponse(1L)
+
+        val trekkVedtakId = behandleTrekkService.opprettTrekk(pid, 20, SatsType.KRONER)
+
+        verify(exactly = 1) {
+            trekkClientMock.opprettAndreTrekk(
+                eq(pid),
+                any()
+            )
+        }
+
+        assertEquals(1L,trekkVedtakId)
+    }
+
+    @Test
+    fun `ikke opprett nytt frivillig skattetrekk dersom tilleggstrekk er 0`() {
+
+        val trekkvedtakId = behandleTrekkService.opprettTrekk(pid, 0, SatsType.KRONER)
+
+        verify(exactly = 0) {
+            trekkClientMock.opprettAndreTrekk(
+                eq(pid),
+                any()
+            )
+        }
+
+        verify(exactly = 0) {
+            geografiskLokasjonServiceMock.hentNavEnhet(pid)
+        }
+
+        assertNull(trekkvedtakId)
     }
 
     private fun lagFinnTrekkListe():List<TrekkInfo> = listOf(

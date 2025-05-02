@@ -19,9 +19,8 @@ class BehandleTrekkService(
 
     private val log = LoggerFactory.getLogger(BehandleTrekkService::class.java)
 
-    fun opprettTrekk(pid: String, verdi: Int, satsType: SatsType) {
+    fun opprettTrekk(pid: String, tilleggstrekk: Int, satsType: SatsType): Long? {
 
-        val tilleggstrekk: Double = verdi.toDouble()
         log.info("Henter skatt og trekk")
 
         if (skalOppretteNyttTrekk(tilleggstrekk, null)) {
@@ -31,16 +30,20 @@ class BehandleTrekkService(
             val brukersNavEnhet = geografiskLokasjonService.hentNavEnhet(pid)
 
             log.info("Oppretter nytt frivillig skattetrekk")
-            trekkClient.opprettAndreTrekk(
+            val trekkOpprettet = trekkClient.opprettAndreTrekk(
                 pid,
                 OpprettAndreTrekkRequest(
                     Kilde.PPO1.name,
                     opprettNyttTrekkRequest(pid, tilleggstrekk, trekkalternativKode.name, brukersNavEnhet)
                 ))
+
+            return trekkOpprettet?.trekkvedtakId
         }
+
+        return null
     }
 
-    fun oppdaterTrekk(pid: String, trekkvedtakId: Long, verdi: Int, satsType: SatsType) {
+    fun oppdaterTrekk(pid: String, trekkvedtakId: Long, tilleggstrekk: Int, satsType: SatsType) {
 
         log.info("Henter skatt og trekk for vedtakId=$trekkvedtakId")
         val andreTrekk = trekkClient.hentSkattOgTrekk(pid, trekkvedtakId)
@@ -52,8 +55,6 @@ class BehandleTrekkService(
 
         val lopendeSatsperioder = sorterteSatsperioder.filter { isLopende(it) }
         val fremtidigeSatsperioder = sorterteSatsperioder.filter { isFremtidig(it) }
-
-        val tilleggstrekk: Double = verdi.toDouble()
 
         // Opphør løpende trekk, om det finnes
         if (trekkvedtakId != null && lopendeSatsperioder.isNotEmpty()) {
@@ -106,10 +107,10 @@ class BehandleTrekkService(
         }
     }
 
-    private fun skalOppretteNyttTrekk(tilleggstrekk: Double, andreTrekk: AndreTrekkResponse?): Boolean {
-        if (andreTrekk == null && tilleggstrekk > 0) {
-            return true
-        } else if (andreTrekk != null && tilleggstrekk == 0.0) {
+    private fun skalOppretteNyttTrekk(tilleggstrekk: Int, andreTrekk: AndreTrekkResponse?): Boolean {
+        if (andreTrekk == null) {
+            return tilleggstrekk > 0
+        } else if (andreTrekk != null && tilleggstrekk == 0) {
             return false
         }
 
@@ -119,7 +120,7 @@ class BehandleTrekkService(
         return finnesIkkeLopende || finnesIkkeFremtidigTrekk
     }
 
-    private fun opprettNyttTrekkRequest(pid: String, tilleggstrekk: Double, trekkalternativKode: String, brukersNavEnhet: String): AndreTrekkRequest =
+    private fun opprettNyttTrekkRequest(pid: String, tilleggstrekk: Int, trekkalternativKode: String, brukersNavEnhet: String): AndreTrekkRequest =
         AndreTrekkRequest(
             ansvarligEnhetId = brukersNavEnhet,
             debitorOffnr = pid,
@@ -132,7 +133,7 @@ class BehandleTrekkService(
                     erFeilregistrert = null
                 )
             ),
-            satsperiodeListe = listOf(opprettStatsperiode(tilleggstrekk, LocalDate.now())),
+            satsperiodeListe = listOf(opprettStatsperiode(tilleggstrekk.toDouble(), LocalDate.now())),
         )
 
     private fun lagOppdaterTrekkRequest(

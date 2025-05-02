@@ -21,7 +21,7 @@ class TrekkClient(
     private val webClient: WebClient,
 ) {
 
-    fun     finnTrekkListe(pid: String, trekkType: TrekkTypeCode): List<TrekkInfo> {
+    fun finnTrekkListe(pid: String, trekkType: TrekkTypeCode): List<TrekkInfo> {
 
         val request = FinnTrekkListeRequest(
             debitorSok = DebitorSok(
@@ -78,21 +78,6 @@ class TrekkClient(
                 .bodyValue(request)
                 .retrieve()
                 .bodyToMono(OpprettAndreTrekkResponse::class.java)
-                .block()
-                ?: throw RuntimeException("Failed to fetch skattetrekk")
-        } catch(e: Exception) {
-            throw RuntimeException("Failed to fetch skattetrekk", e)
-        }
-
-    fun oppdaterAndreTrekk(pid: String, request: OppdaterAndreTrekkRequest) =
-        try {
-            webClient
-                .post()
-                .uri("$trekkUrl/api/nav-tjeneste-behandleTrekk/oppdaterAndreTrekk")
-                .header("Authorization", "Bearer ${tokenService.getEgressToken(trekkScope, audience, pid, AppId.OPPDRAG_REST_PROXY)}")
-                .bodyValue(request)
-                .retrieve()
-                .toBodilessEntity()
                 .block()
                 ?: throw RuntimeException("Failed to fetch skattetrekk")
         } catch(e: Exception) {
