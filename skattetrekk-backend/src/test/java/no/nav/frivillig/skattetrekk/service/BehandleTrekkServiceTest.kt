@@ -11,7 +11,6 @@ import java.time.LocalDate
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
 
-
 class BehandleTrekkServiceTest {
 
     private val pid = "12345678910"
@@ -58,9 +57,7 @@ class BehandleTrekkServiceTest {
     @Test
     fun `ikke opprett nytt frivillig skattetrekk dersom tilleggstrekk er 0`() {
 
-        every { trekkClientMock.opprettAndreTrekk(eq(pid), any()) } returns OpprettAndreTrekkResponse(1L)
-
-        behandleTrekkService.opprettTrekk(pid, 0, SatsType.KRONER)
+        val trekkvedtakId = behandleTrekkService.opprettTrekk(pid, 0, SatsType.KRONER)
 
         verify(exactly = 0) {
             trekkClientMock.opprettAndreTrekk(
@@ -73,7 +70,7 @@ class BehandleTrekkServiceTest {
             geografiskLokasjonServiceMock.hentNavEnhet(pid)
         }
 
-        assertNull(0)
+        assertNull(trekkvedtakId)
     }
 
     private fun lagFinnTrekkListe():List<TrekkInfo> = listOf(
