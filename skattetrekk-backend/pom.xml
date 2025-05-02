@@ -178,7 +178,7 @@
                             <goal>repackage</goal>
                         </goals>
                         <configuration>
-                            <finalName>pensjon-skattetrekk-backend</finalName>
+                            <finalName>skattetrekk-backend</finalName>
                         </configuration>
                     </execution>
                 </executions>
