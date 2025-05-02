@@ -35,7 +35,7 @@ class SkattetrekkController(
             request.value,
             request.satsType)
 
-        return OppdaterResponse(trekkVedtakId = trekkvedtakId)
+        return OppdaterResponse(trekkvedtakId = trekkvedtakId)
     }
 
     @DeleteMapping(consumes = ["application/json"])
