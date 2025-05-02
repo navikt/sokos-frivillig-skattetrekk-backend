@@ -22,8 +22,6 @@ import java.time.Duration
 @Configuration
 @EnableWebSecurity
 class SecurityConfiguration(
-    @Value("\${oauth2.azureAd.issuer}") private val azureAdIssuer: String,
-    @Value("\${oauth2.azureAd.jsonWebKeyUri}") private val azureAdJsonWebKeyUri: String,
     @Value("\${oauth2.tokenX.issuer}") private val tokenXIssuer: String,
     @Value("\${oauth2.tokenX.jsonWebKeyUri}") private val tokenXJsonWebKeyUri: String
 ) {
@@ -52,27 +50,10 @@ class SecurityConfiguration(
         ) =
         JwtIssuerAuthenticationManagerResolver { issuer: String ->
             when (issuer) {
-                azureAdIssuer -> azureAuthManager
                 tokenXIssuer -> tokenXAuthManager
                 else -> throw RuntimeException()
             }
         }
-
-    @Primary
-    @Bean("jwtDecoderAzureAd")
-    fun jwtDecoderAzureAd(@Qualifier("webClientProxy") webClient: WebClient): NimbusJwtDecoder {
-        val jwtDecoder = NimbusJwtDecoder
-            .withJwkSetUri(azureAdJsonWebKeyUri)
-            .build()
-
-        jwtDecoder.setJwtValidator(
-            DelegatingOAuth2TokenValidator(
-                JwtTimestampValidator(Duration.ofSeconds(60)),
-                JwtIssuerValidator(azureAdIssuer),
-            )
-        )
-        return jwtDecoder
-    }
 
     @Bean("jwtDecoderTokenX")
     fun jwtDecoderTokenX(): NimbusJwtDecoder {

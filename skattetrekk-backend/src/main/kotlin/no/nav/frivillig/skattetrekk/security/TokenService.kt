@@ -10,14 +10,12 @@ import java.lang.IllegalStateException
 
 @Service
 class TokenService(
-    @Value("\${oauth2.azureAd.issuer}") private val azureAdIssuer: String,
     @Value("\${oauth2.tokenX.issuer}") private val tokenXIssuer: String,
-    private val azureAdService: AzureAdService,
     private val tokenXService: TokenXService,
 ) {
 
     enum class TokenType {
-        AZURE_AD_CLIENT_CREDENTIALS, TOKEN_X
+        TOKEN_X
     }
 
     fun getEgressToken(scope: String, audience: String? = null, pid: String, appId: AppId): String? =
@@ -26,7 +24,6 @@ class TokenService(
             val scopes = listOf(scope)
 
             when (typeOf(token, pid, appId)) {
-                TokenType.AZURE_AD_CLIENT_CREDENTIALS -> azureAdService.retrieveClientCredentialsToken(scopes)
                 TokenType.TOKEN_X -> audience?.let { audience ->
                     tokenXService.exchangeIngressTokenToEgressToken(token.tokenValue, audience)
                 } ?: throw EgressAudienceMissingException()
@@ -40,11 +37,7 @@ class TokenService(
         SecurityContextHolder.getContext().authentication.let {
             val token = (it as JwtAuthenticationToken).token
             val issuer = token.getClaim<String>("iss")
-            if (issuer == azureAdIssuer) {
-                if (token.getClaim<String>("sub") == token.getClaim<String>("oid")) {
-                    return TokenType.AZURE_AD_CLIENT_CREDENTIALS
-                }
-            } else if (issuer == tokenXIssuer) {
+             if (issuer == tokenXIssuer) {
                 return TokenType.TOKEN_X
             }
             throw IllegalStateException("Unknown token type")
@@ -76,11 +69,7 @@ class TokenService(
 
     private fun typeOf(jwt: Jwt, pid: String, appId: AppId): TokenType {
         val issuer = jwt.getClaim<String>("iss")
-        if (issuer == azureAdIssuer) {
-            if (jwt.getClaim<String>("sub") == jwt.getClaim<String>("oid")) {
-                return TokenType.AZURE_AD_CLIENT_CREDENTIALS
-            }
-        } else if (issuer == tokenXIssuer) {
+         if (issuer == tokenXIssuer) {
 
             if (appId.supportsTokenX) {
 
@@ -88,12 +77,13 @@ class TokenService(
                 val isFullmaktToken = pid != pidFromToken
 
                 if (isFullmaktToken) {
-                    return if (appId.supportsFullmakt) TokenType.TOKEN_X else TokenType.AZURE_AD_CLIENT_CREDENTIALS
+                    return if (appId.supportsFullmakt)
+                        TokenType.TOKEN_X else
+                            throw IllegalStateException("Token type not supported for this appId")
+
                 }
                 return TokenType.TOKEN_X
             }
-
-            return TokenType.AZURE_AD_CLIENT_CREDENTIALS
         }
         throw CouldNotDetermineTokenTypeException()
     }
