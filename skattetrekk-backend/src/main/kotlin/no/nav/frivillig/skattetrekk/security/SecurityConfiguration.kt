@@ -1,13 +1,11 @@
 package no.nav.frivillig.skattetrekk.security
 
 import jakarta.servlet.DispatcherType
-import no.nav.frivillig.skattetrekk.security.authenticationManagers.AzureAdAuthenticationManager
 import no.nav.frivillig.skattetrekk.security.authenticationManagers.TokenXAuthenticationManager
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.context.annotation.Primary
 import org.springframework.security.config.annotation.web.invoke
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
@@ -16,7 +14,6 @@ import org.springframework.security.oauth2.jwt.*
 import org.springframework.security.oauth2.server.resource.authentication.JwtIssuerAuthenticationManagerResolver
 import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.util.matcher.DispatcherTypeRequestMatcher
-import org.springframework.web.reactive.function.client.WebClient
 import java.time.Duration
 
 @Configuration
@@ -45,7 +42,6 @@ class SecurityConfiguration(
 
     @Bean
     fun jwtIssuerAuthenticationManagerResolver(
-        @Qualifier("azureAdAuthManager") azureAuthManager: AzureAdAuthenticationManager,
         @Qualifier("tokenXAuthManager") tokenXAuthManager: TokenXAuthenticationManager
         ) =
         JwtIssuerAuthenticationManagerResolver { issuer: String ->
