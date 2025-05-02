@@ -10,6 +10,7 @@ spec:
   port: 8080
   ingresses:
     - https://skattetrekk-backend-q2.intern.dev.nav.no
+    - https://skattetrekk-backend-q2.dev-fss-pub.nais.io
   liveness:
     path: actuator/health/liveness
     initialDelay: 30
@@ -21,22 +22,6 @@ spec:
     initialDelay: 30
     failureThreshold: 30
     periodSeconds: 5
-  azure:
-    application:
-      enabled: true
-      claims:
-        extra:
-          - "NAVident"
-          - "azp_name"
-        groups:
-          - id: "9e122ddd-e542-4cc1-a7eb-92c99140fe0e" # 0000-GA-PENSJON_BRUKERHJELPA
-          - id: "05ae245b-7b47-428a-9074-4ff6b59eddbc" # 0000-GA-Pensjon_Okonomi
-          - id: "8bb9b8d1-f46a-4ade-8ee8-5895eccdf8cf" # 0000-GA-PENSJON_SAKSBEHANDLER
-          - id: "a3f91493-1ab8-4b64-a544-0a77cbba9240" # 0000-GA-Pensjon_VEILEDER
-          - id: "02505029-3f2e-48a9-b2a8-ff274dacca52" # 0000-GA-PENSJON_KLAGEBEH
-          - id: "dbe4ad45-320b-4e9a-aaa1-73cca4ee124d" # 0000-GA-Egne_ansatte
-          - id: "ea930b6b-9397-44d9-b9e6-f4cf527a632a" # 0000-GA-Fortrolig_Adresse
-          - id: "5ef775f2-61f8-4283-bf3d-8d03f428aa14" # 0000-GA-Strengt_Fortrolig_Adresse
   tokenx:
     enabled: true
   replicas:
@@ -72,32 +57,24 @@ spec:
           namespace: pensjonsamhandling
         - application: oppdrag-rest-proxy-q2
           namespace: teampensjon
-      external:
-        - host: pensjon-representasjon-q2.dev-fss-pub.nais.io
 
   env:
     - name: LOGGING_CONFIG
       value: classpath:logback-json.xml
     - name: PDL_URL
-      value: https://pdl-api.dev-fss-pub.nais.io/graphql
+      value: http://pdl-api.pdl.svc.nais.local/graphql
     - name: PDL_SCOPE
       value: api://dev-fss.pdl.pdl-api/.default
     - name: PDL_AUDIENCE
       value: dev-fss:pdl:pdl-api
-    - name: PEN_URL
-      value: https://pensjon-pen-q2.dev-fss-pub.nais.io
-    - name: PEN_SCOPE
-      value: api://dev-fss.pensjon-q2.pensjon-pen-q2/.default
-    - name: PEN_AUDIENCE
-      value: dev-fss:pensjon-q2:pensjon-pen-q2
     - name: FULLMAKT_URL
-      value: https://pensjon-representasjon-q2.dev-fss-pub.nais.io
+      value: http://pensjon-representasjon-q2.penson-person.svc.nais.local
     - name: FULLMAKT_SCOPE
       value: api://dev-fss.pensjon-person.pensjon-representasjon-q2/.default
     - name: FULLMAKT_AUDIENCE
       value: dev-fss:pensjon-person:pensjon-representasjon-q2
     - name: TREKK_URL
-      value: https://oppdrag-rest-proxy-q2.dev-fss-pub.nais.io
+      value: http://oppdrag-rest-proxy-q2.teampensjon.svc.nais.local
     - name: TREKK_SCOPE
       value: api://dev-fss.teampensjon.oppdrag-rest-proxy-q2/.default
     - name: TREKK_AUDIENCE
