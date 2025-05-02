@@ -169,6 +169,63 @@ class BehandleTrekkServiceTest {
         }
     }
 
+    @Test
+    fun `Skal ikke opphøre noe dersom gammel satsperiode`() {
+        val trekkVedtakId = 1L
+
+        every { geografiskLokasjonServiceMock.hentNavEnhet(pid) } returns "NAV Enhet"
+
+        every { trekkClientMock.hentSkattOgTrekk(pid, trekkVedtakId) } returns lagHentSkattOgTrekkRespons(trekkVedtakId,
+            listOf(
+                lagSatsperiode(
+                    fom = LocalDate.now().minusMonths(10L),
+                    tom = LocalDate.now().minusMonths(2L),
+                    sats = 100.0))
+        )
+
+        behandleTrekkService.opphoerTrekk(pid, trekkVedtakId)
+
+        verify(exactly = 0) {
+            trekkClientMock.opphorAndreTrekk(
+                eq(pid),
+                any()
+            )
+        }
+    }
+
+    @Test
+    fun `Skal opphøre dersom trekk inneholder satsperioder med mix av gamle, løpende og fremtidige`() {
+        val trekkVedtakId = 1L
+
+        every { geografiskLokasjonServiceMock.hentNavEnhet(pid) } returns "NAV Enhet"
+        every { trekkClientMock.opphorAndreTrekk(eq(pid), any()) } returns Unit
+
+        every { trekkClientMock.hentSkattOgTrekk(pid, trekkVedtakId) } returns lagHentSkattOgTrekkRespons(trekkVedtakId,
+            listOf(
+                lagSatsperiode(
+                    fom = LocalDate.now().minusMonths(10L),
+                    tom = LocalDate.now().minusMonths(2L),
+                    sats = 100.0),
+                lagSatsperiode(
+                    fom = LocalDate.now().minusMonths(1L),
+                    tom = LocalDate.now().plusMonths(3L),
+                    sats = 100.0),
+                lagSatsperiode(
+                    fom = LocalDate.now().plusMonths(4L),
+                    tom = LocalDate.now().minusMonths(10L),
+                    sats = 100.0)
+                )
+        )
+
+        behandleTrekkService.opphoerTrekk(pid, trekkVedtakId)
+
+        verify(exactly = 2) {
+            trekkClientMock.opphorAndreTrekk(
+                eq(pid),
+                any()
+            )
+        }
+    }
 
     private fun lagSatsperiode(fom: LocalDate, tom: LocalDate, sats: Double): Satsperiode {
         return Satsperiode(fom, tom, BigDecimal.valueOf(sats), erFeilregistrert = false)
