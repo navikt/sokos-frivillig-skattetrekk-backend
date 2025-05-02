@@ -3,8 +3,8 @@ name: "Deploy to dev-fss"
 on: workflow_dispatch
 
 jobs:
-  deploy-to-dev-gcp:
-    name: Deploy to dev-gcp
+  deploy-to-dev-fss:
+    name: Deploy to dev-fss
     runs-on: ubuntu-latest
     permissions:
       contents: "read"
@@ -42,9 +42,9 @@ jobs:
         with:
           team: okonomi
           dockerfile: ./skattetrekk-backend/Dockerfile
-      - name: Deploy to dev-gcp
+      - name: Deploy to dev-fss
         uses: nais/deploy/actions/deploy@v2
         env:
-          CLUSTER: dev-gcp
+          CLUSTER: dev-fss
           RESOURCE: ./skattetrekk-backend/.nais/.nais-q2.yml
           IMAGE: ${{ steps.docker-build-push.outputs.image }}
