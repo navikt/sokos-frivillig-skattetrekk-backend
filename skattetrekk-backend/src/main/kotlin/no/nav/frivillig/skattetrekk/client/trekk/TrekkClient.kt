@@ -51,16 +51,15 @@ class TrekkClient(
         } catch (e: Exception) {
             if (e is WebClientResponseException) {
                 when(e.statusCode) {
-                    HttpStatus.NOT_FOUND -> throw ClientException(AppId.OPPDRAG_REST_PROXY.name, TREKK_API, "Ingen trekkliste funnet for person: $pid", null)
-                    else -> throw ClientException(AppId.OPPDRAG_REST_PROXY.name, "trekk-api", e.message, null)
-
+                    HttpStatus.BAD_REQUEST -> throw ClientException(AppId.OPPDRAG_REST_PROXY.name, TREKK_API, e.message, null)
+                    else -> throw ClientException(AppId.OPPDRAG_REST_PROXY.name, TREKK_API, e.message, null)
                 }
             }
-            throw throw ClientException(AppId.OPPDRAG_REST_PROXY.name, "trekk-api", "Failed to fetch trekkliste: ${e.message}", null)
+            throw throw ClientException(AppId.OPPDRAG_REST_PROXY.name, TREKK_API, "Failed to fetch trekkliste: ${e.message}", null)
         }
     }
 
-    fun hentSkattOgTrekk(pid: String, trekkVedtakId: Long): HentSkattOgTrekkResponse {
+    fun hentSkattOgTrekk(pid: String, trekkVedtakId: Long): HentSkattOgTrekkResponse? {
 
         val request = HentSkattOgTrekkRequest(trekkvedtakId = trekkVedtakId)
 
@@ -73,9 +72,14 @@ class TrekkClient(
                 .retrieve()
                 .bodyToMono(HentSkattOgTrekkResponse::class.java)
                 .block()
-                ?: throw RuntimeException("Failed to fetch skattetrekk")
         } catch (e: Exception) {
-            throw RuntimeException("Failed to fetch skattetrekk", e)
+            if (e is WebClientResponseException) {
+                when(e.statusCode) {
+                    HttpStatus.BAD_REQUEST -> throw ClientException(AppId.OPPDRAG_REST_PROXY.name, TREKK_API, e.message, null)
+                    else -> throw ClientException(AppId.OPPDRAG_REST_PROXY.name, TREKK_API, e.message, null)
+                }
+            }
+            throw throw ClientException(AppId.OPPDRAG_REST_PROXY.name, TREKK_API, "Failed to fetch trekkliste: ${e.message}", null)
         }
     }
 
