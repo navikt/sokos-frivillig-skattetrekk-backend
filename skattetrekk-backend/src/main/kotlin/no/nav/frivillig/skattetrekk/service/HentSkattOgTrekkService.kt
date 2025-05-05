@@ -3,6 +3,7 @@ package no.nav.frivillig.skattetrekk.service
 import no.nav.frivillig.skattetrekk.client.trekk.TrekkClient
 import no.nav.frivillig.skattetrekk.client.trekk.api.*
 import no.nav.frivillig.skattetrekk.endpoint.api.ForenkletSkattetrekkDto
+import no.nav.frivillig.skattetrekk.endpoint.api.FrivilligSkattetrekkData
 import no.nav.frivillig.skattetrekk.endpoint.api.FrivilligSkattetrekkInitResponse
 import no.nav.frivillig.skattetrekk.endpoint.api.TrekkDto
 import no.nav.frivillig.skattetrekk.util.isDateInPeriod
@@ -48,9 +49,12 @@ class HentSkattOgTrekkService(
         val nextTilleggstrekk = tilleggstrekkListe.find { it?.satsperiodeListe?.toList()?.hasNextSatsperiode() == true }
 
         return FrivilligSkattetrekkInitResponse(
-            tilleggstrekk = currentTilleggstrekk?.mapToTrekkDTO(),
-            framtidigTilleggstrekk = nextTilleggstrekk?.mapToTrekkDTO(),
-            skattetrekk = forenkletSkattetrekk
+            messages = emptyList(),
+            data = FrivilligSkattetrekkData(
+                tilleggstrekk = currentTilleggstrekk?.mapToTrekkDTO(),
+                framtidigTilleggstrekk = nextTilleggstrekk?.mapToTrekkDTO(),
+                skattetrekk = forenkletSkattetrekk
+            )
         )
     }
 
