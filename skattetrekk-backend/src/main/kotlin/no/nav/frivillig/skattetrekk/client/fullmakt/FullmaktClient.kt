@@ -1,12 +1,17 @@
 package no.nav.frivillig.skattetrekk.client.fullmakt
 
+import no.nav.frivillig.skattetrekk.client.norg2.Norg2Client.Companion.NORG2_API
 import no.nav.frivillig.skattetrekk.configuration.AppId
+import no.nav.frivillig.skattetrekk.endpoint.ClientException
+import no.nav.frivillig.skattetrekk.endpoint.ForbiddenException
+import no.nav.frivillig.skattetrekk.endpoint.PersonNotFoundException
 import no.nav.frivillig.skattetrekk.security.TokenService
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.slf4j.MDC
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpHeaders
+import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.WebClient
@@ -42,19 +47,23 @@ class FullmaktClient(
             }
 
         } catch (e: WebClientResponseException) {
-            logger.error("Kall til fullmaktstjenesten feilet med melding: ${e.responseBodyAsString}")
-            throw FullmaktException(
-                SERVICE,
-                "hasValidRepresentasjonsforhold",
-                "Failed to call service: " + e.responseBodyAsString,
-                e
-            )
-        } catch (e: ResponseStatusException) {
-            logger.error("Kall til fullmaktstjenesten feilet med statuskode ${e.statusCode}: ${e.message}")
-            throw FullmaktException(SERVICE, "hasValidRepresentasjonsforhold", "Failed to call service", e)
-        } catch (e: RuntimeException) { // e.g. when connection broken
+            when(e.statusCode) {
+                HttpStatus.FORBIDDEN -> {
+                    logger.error("Kall til fullmaktstjenesten feilet med statuskode ${e.statusCode}: ${e.message}")
+                    throw ForbiddenException(AppId.PENSJON_FULLMAKT.name, FULLMAKT_API, "Intern feil fra fullmakt-api ved sjekk om fullmakt", null)
+                }
+                HttpStatus.NOT_FOUND -> {
+                    logger.error("Kall til fullmaktstjenesten feilet med statuskode ${e.statusCode}: ${e.message}")
+                    throw PersonNotFoundException(AppId.PENSJON_FULLMAKT.name, FULLMAKT_API, "Intern feil fra fullmakt-api ved sjekk om fullmakt", null)
+                }
+                else -> {
+                    logger.error("Kall til fullmaktstjenesten feilet med statuskode ${e.statusCode}: ${e.message}")
+                    throw ClientException(AppId.PENSJON_FULLMAKT.name, FULLMAKT_API, "Intern feil fra fullmakt-api ved sjekk om fullmakt", null)
+                }
+            }
+        } catch (e: Exception) {
             logger.error("Kall til fullmaktstjenesten feilet: ${e.message}")
-            throw FullmaktException(SERVICE, "hasValidRepresentasjonsforhold", "Failed to call service", e)
+            throw ClientException(AppId.PENSJON_FULLMAKT.name, FULLMAKT_API, "Intern feil fra fullmakt-api ved sjekk om fullmakt", null)
         }
     }
 
@@ -67,8 +76,7 @@ class FullmaktClient(
     }
 
     companion object {
-        private const val SERVICE = "Fullmakt"
-
+        private const val FULLMAKT_API = "fullmakt-api"
         const val NAV_CALL_ID = "Nav-Call-Id"
 
         const val VALID_REPRESENTASJONSTYPER_KEY = "validRepresentasjonstyper"

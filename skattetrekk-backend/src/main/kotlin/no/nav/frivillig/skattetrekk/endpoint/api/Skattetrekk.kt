@@ -2,7 +2,18 @@ package no.nav.frivillig.skattetrekk.endpoint.api
 
 import no.nav.frivillig.skattetrekk.client.trekk.api.SatsType
 
-data class TrekkDTO(
+data class FrivilligSkattetrekkInitResponse(
+    val data: FrivilligSkattetrekkData?,
+    val messages: List<FrivilligSkattetrekkMessage>?
+)
+
+data class FrivilligSkattetrekkData(
+    val tilleggstrekk: TrekkDto?,
+    val framtidigTilleggstrekk: TrekkDto?,
+    val skattetrekk: ForenkletSkattetrekkDto
+)
+
+data class TrekkDto(
     val trekkvedtakId:Long?,
     val sats: Double?,
     val satsType: SatsType?,
@@ -13,14 +24,8 @@ data class Skattetrekk(
     val satsType: SatsType?
 )
 
-data class ForenkletSkattetrekk(
+data class ForenkletSkattetrekkDto(
     val trekkvedtakId: Long?,
     val tabellNr: String?,
     val prosentsats: Int?
-)
-
-data class FrivilligSkattetrekkInitResponse(
-    val tilleggstrekk: TrekkDTO?,
-    val framtidigTilleggstrekk: TrekkDTO?,
-    val skattetrekk: ForenkletSkattetrekk
 )

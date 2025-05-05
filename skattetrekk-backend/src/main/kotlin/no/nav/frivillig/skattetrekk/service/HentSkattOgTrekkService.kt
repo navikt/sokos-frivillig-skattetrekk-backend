@@ -2,9 +2,10 @@ package no.nav.frivillig.skattetrekk.service
 
 import no.nav.frivillig.skattetrekk.client.trekk.TrekkClient
 import no.nav.frivillig.skattetrekk.client.trekk.api.*
-import no.nav.frivillig.skattetrekk.endpoint.api.ForenkletSkattetrekk
+import no.nav.frivillig.skattetrekk.endpoint.api.ForenkletSkattetrekkDto
+import no.nav.frivillig.skattetrekk.endpoint.api.FrivilligSkattetrekkData
 import no.nav.frivillig.skattetrekk.endpoint.api.FrivilligSkattetrekkInitResponse
-import no.nav.frivillig.skattetrekk.endpoint.api.TrekkDTO
+import no.nav.frivillig.skattetrekk.endpoint.api.TrekkDto
 import no.nav.frivillig.skattetrekk.util.isDateInPeriod
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
@@ -48,30 +49,33 @@ class HentSkattOgTrekkService(
         val nextTilleggstrekk = tilleggstrekkListe.find { it?.satsperiodeListe?.toList()?.hasNextSatsperiode() == true }
 
         return FrivilligSkattetrekkInitResponse(
-            tilleggstrekk = currentTilleggstrekk?.mapToTrekkDTO(),
-            framtidigTilleggstrekk = nextTilleggstrekk?.mapToTrekkDTO(),
-            skattetrekk = forenkletSkattetrekk
+            messages = emptyList(),
+            data = FrivilligSkattetrekkData(
+                tilleggstrekk = currentTilleggstrekk?.mapToTrekkDTO(),
+                framtidigTilleggstrekk = nextTilleggstrekk?.mapToTrekkDTO(),
+                skattetrekk = forenkletSkattetrekk
+            )
         )
     }
 
-    private fun AndreTrekkResponse.mapToTrekkDTO(): TrekkDTO = TrekkDTO(
+    private fun AndreTrekkResponse.mapToTrekkDTO(): TrekkDto = TrekkDto(
         trekkvedtakId = this.trekkvedtakId,
         sats = this.satsperiodeListe?.first()?.sats?.toDouble(),
         satsType = this.trekkalternativ?.kode?.let { if (it == TREKK_KODE_LOPP) SatsType.PROSENT else SatsType.KRONER }
     )
 
-    private fun determineForenkletSkattetrekk(skattetrekk: Skattetrekk?): ForenkletSkattetrekk {
+    private fun determineForenkletSkattetrekk(skattetrekk: Skattetrekk?): ForenkletSkattetrekkDto {
 
         val trekkVedtakId = skattetrekk?.trekkvedtakId
         val tabellNr = skattetrekk?.tabellnr?.trim()
         val prosentsats = skattetrekk?.prosentsats
 
-        if (!tabellNr.isNullOrEmpty() && "0000" != tabellNr) return ForenkletSkattetrekk(trekkVedtakId, tabellNr, null)
-        if (prosentsats != null) return ForenkletSkattetrekk(trekkVedtakId, null, prosentsats)
+        if (!tabellNr.isNullOrEmpty() && "0000" != tabellNr) return ForenkletSkattetrekkDto(trekkVedtakId, tabellNr, null)
+        if (prosentsats != null) return ForenkletSkattetrekkDto(trekkVedtakId, null, prosentsats)
 
         //TODO: Bedre expection handering i systemet
         //throw Exception("No valid skattetrekk found")
-        return ForenkletSkattetrekk(trekkVedtakId, null, null)
+        return ForenkletSkattetrekkDto(trekkVedtakId, null, null)
     }
 
     private fun isThisSatsperiodeCreatedAfterNext(satsperiode: Satsperiode, nextSatsperiode: Satsperiode?): Boolean {

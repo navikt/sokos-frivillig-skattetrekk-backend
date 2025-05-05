@@ -1,7 +1,8 @@
 package no.nav.frivillig.skattetrekk.endpoint
 
 import io.mockk.every
-import no.nav.frivillig.skattetrekk.endpoint.api.ForenkletSkattetrekk
+import no.nav.frivillig.skattetrekk.endpoint.api.ForenkletSkattetrekkDto
+import no.nav.frivillig.skattetrekk.endpoint.api.FrivilligSkattetrekkData
 import no.nav.frivillig.skattetrekk.endpoint.api.FrivilligSkattetrekkInitResponse
 import no.nav.frivillig.skattetrekk.service.BehandleTrekkService
 import no.nav.frivillig.skattetrekk.service.HentSkattOgTrekkService
@@ -38,12 +39,15 @@ class SkattetrekkControllerTest(
 
     private fun byggskattetrekk(): FrivilligSkattetrekkInitResponse {
         return FrivilligSkattetrekkInitResponse(
-            tilleggstrekk = null,
-            framtidigTilleggstrekk = null,
-            skattetrekk = ForenkletSkattetrekk(
-                trekkvedtakId = null,
-                tabellNr = null,
-                prosentsats = null
+            messages = emptyList(),
+            data = FrivilligSkattetrekkData(
+                tilleggstrekk = null,
+                framtidigTilleggstrekk = null,
+                skattetrekk = ForenkletSkattetrekkDto(
+                    trekkvedtakId = null,
+                    tabellNr = null,
+                    prosentsats = null
+                )
             )
         )
     }
