@@ -1,21 +1,26 @@
-import {Alert, BodyLong, BodyShort, Heading, Link, List, VStack} from '@navikt/ds-react'
-import {useContext, useState} from 'react'
+import {Alert, BodyShort, Heading, Link, List, VStack} from '@navikt/ds-react'
+import {useContext, useEffect, useState} from 'react'
 import {numberFormatWithKr} from "@/common/Utils";
-import {FormStateContext} from "@/state/FormState";
 import ListItem from "@navikt/ds-react/esm/list/ListItem";
+import {SatsType} from "@/api/skattetrekkBackendClient";
+import {FormStateContext} from "@/state/FormState";
 
 export const KvitteringPage = (props: {
 }) => {
   const {tilleggstrekkType, tilleggstrekkValue} = useContext(FormStateContext)
   const [isWaiting, setIsWaiting] = useState(true)
 
+    useEffect(() => {
+        console.log(tilleggstrekkType, tilleggstrekkValue)
+    }, []);
+
   return (
     <VStack gap="6" className="form-container">
       <Alert variant="success">
         <VStack gap="3">
           <Heading level="3" size="small">
-            {tilleggstrekkType === "prosent" ?
-                `Frivillig skattetrekk på ${tilleggstrekkValue}% registrert` :
+            {tilleggstrekkType === SatsType.PROSENT ?
+                `Frivillig skattetrekk på ${tilleggstrekkValue} % registrert` :
                 `Frivillig skattetrekk på ${numberFormatWithKr(tilleggstrekkValue ?? 0)} per måned registrert`}
           </Heading>
           <BodyShort>

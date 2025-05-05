@@ -10,7 +10,7 @@ import {
     TextField,
     VStack
 } from "@navikt/ds-react";
-import {useCallback, useContext, useState} from "react";
+import {useCallback, useContext, useEffect, useState} from "react";
 import {RegistrerteSkattetrekk} from "@/components/initial/RegistrerteSkattetrekk";
 import {useLoaderData, useNavigate} from "react-router-dom";
 import {FrivilligSkattetrekkInitResponse, SatsType, saveSkattetrekk} from "@/api/skattetrekkBackendClient";
@@ -19,8 +19,8 @@ import {Selector} from "@/components/initial/Selector";
 import DataContextProvider, {DataContext} from "@/state/DataContextProvider";
 
 export function InitialPage() {
-    const {tilleggstrekkType, setTilleggstrekkType, tilleggstrekkValue, setTilleggstrekkValue} = useContext(FormStateContext)
-    const {initiateResponse} = useContext(DataContext)
+    const {setTilleggstrekkType, setTilleggstrekkValue} = useContext(FormStateContext)
+    const {initiateResponse, sendResponse, setSendResponse} = useContext(DataContext)
     //
     const [buttonIsLoading, setButtonIsLoading] = useState(false)
     const [selectorError, setSelectorError] = useState(false)
@@ -31,40 +31,64 @@ export function InitialPage() {
     const navigate = useNavigate()
 
 
-    async function submitTilleggstrekk() {
+    async function submitTilleggstrekk(type: SatsType, value: number | null) {
         try {
-            if(setTilleggstrekkType == null) {
-                setSelectorError(true)
-            console.log(selectorError);
-            }
+            if (type !== null && value !== null) {
+                setButtonIsLoading(true)
+                setTilleggstrekkType(type)
+                setTilleggstrekkValue(value)
 
-            setButtonIsLoading(true)
-            if (tilleggstrekkType != null && tilleggstrekkValue != null) {
-                saveSkattetrekk(
+                console.log(type, value)
+
+                const isSuccess = await saveSkattetrekk(
                     {
                         trekkVedtakId: initiateResponse?.tilleggstrekk?.trekkvedtakId || "",
-                        value: tilleggstrekkValue,
-                        satsType: tilleggstrekkType
+                        value: value,
+                        satsType: type
+                    });
+
+                if (isSuccess) {
+                    setSendResponse(true)
+                    navigate(import.meta.env.BASE_URL + "/kvittering", {
+                        state: {
+                            pid: pid
+                        }
                     })
+                }
             }
             setButtonIsLoading(false)
-            navigate(import.meta.env.BASE_URL + "/kvittering", {
-                state: {
-                    pid: pid,
-                    //response: response
-                }
-            })
         } catch (e) {
             setButtonIsLoading(false)
         }
     }
 
+    function showDecemberMessage() {
+        const currentDate = new Date();
+        return currentDate.getMonth() === 11;
+    }
+
+    function getYear() {
+        const currentDate = new Date();
+        return currentDate.getFullYear();
+    }
+
     return (
         <VStack gap="16">
             <VStack gap="6" id="samboer-historikk-tittel">
-                {initiateResponse?.skattetrekk?.trekkvedtakId != null && <Alert variant={"warning"}>
-                    Du har ikke en skattepliktig ytelse fra Nav. Du kan derfor ikke legge inn et frivillig skattetrekk.
-                </Alert>}
+                {initiateResponse?.skattetrekk?.trekkvedtakId != null &&
+                    <Alert variant={"warning"}>
+                        Du har ikke en skattepliktig ytelse fra Nav. Du kan derfor ikke legge inn et frivillig skattetrekk.
+                    </Alert>}
+
+                {showDecemberMessage() &&
+                    <Alert variant={"info"}>
+                        <VStack gap="5">
+                            <BodyLong> Frivillig skattetrekk du legger inn nå, vil gjelde for {getYear()}. </BodyLong>
+                            <BodyLong> Når skattekortet for {getYear()} kommer i slutten av desember, blir det oppdatert her. Frem til da vises årets skattekort.</BodyLong>
+                        </VStack>
+                    </Alert>
+                }
+
 
                 <BodyLong>
                     Nav trekker skatt på bakgrunn av ditt skattekort som Nav har mottatt fra Skatteetaten.
@@ -93,9 +117,7 @@ export function InitialPage() {
                 <RegistrerteSkattetrekk skatteTrekk={skattetrekkLoader.skattetrekk} tilleggstrekk={skattetrekkLoader.tilleggstrekk} />
             </VStack>
 
-            <Selector setType={setTilleggstrekkType} setValue={setTilleggstrekkValue} submitTilleggstrekk={submitTilleggstrekk}/>
-
-
+            <Selector submitTilleggstrekk={submitTilleggstrekk} maxKroner={10000} buttonIsLoading={buttonIsLoading}/>
         </VStack>
 
 

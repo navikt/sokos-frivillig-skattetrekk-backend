@@ -5,6 +5,9 @@ interface DataContextValue {
     initiateResponse: FrivilligSkattetrekkInitResponse | null
     setInitiateResponse: (value: FrivilligSkattetrekkInitResponse) => void
 
+    sendResponse: boolean | null
+    setSendResponse: (value: boolean) => void
+
     refetch: boolean
     setRefetch: (value: boolean) => void
 }
@@ -12,6 +15,9 @@ interface DataContextValue {
 const DataContextDefaultValue: DataContextValue = {
     initiateResponse: null,
     setInitiateResponse: () => undefined,
+
+    sendResponse: null,
+    setSendResponse: () => undefined,
 
     refetch: true,
     setRefetch: () => undefined,
@@ -49,6 +55,9 @@ function DataContextProvider(props: DataContextProviderProps) {
             value={{
                 initiateResponse,
                 setInitiateResponse,
+
+                sendResponse: null,
+                setSendResponse: () => undefined,
 
                 refetch,
                 setRefetch,

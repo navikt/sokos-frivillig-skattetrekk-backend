@@ -105,6 +105,8 @@ export async function saveSkattetrekk(request: SaveRequest): Promise<boolean> {
         }
     }
 
+    console.log("saveSkattetrekk", request)
+
     if(isMock) {
         return true
     }
