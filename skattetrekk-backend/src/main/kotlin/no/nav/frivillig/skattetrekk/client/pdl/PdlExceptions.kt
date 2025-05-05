@@ -15,7 +15,6 @@ class PdlBadRequestException(message: String) : RuntimeException(message)
 
 class PdlServerErrorException(message: String) : RuntimeException(message)
 
-class PdlException(override val cause: Throwable) : RuntimeException("An error occurred when getting persondata from PDL", cause)
 
 class PdlErrorResponseException(val errors: List<PdlError>) : RuntimeException(convertErrorsToErrorMessage(errors)){
     companion object{

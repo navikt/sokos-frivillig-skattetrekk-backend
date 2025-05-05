@@ -8,7 +8,7 @@ data class FrivilligSkattetrekkMessage(
 )
 
 enum class FrivilligSkattettrekkMessageCode(val type: FrivilligSkattetrekkType, val details: String) {
-    TEST(FrivilligSkattetrekkType.ERROR, "Test message"),
+    USER_HAS_NO_TREKKVEDTAK(FrivilligSkattetrekkType.ERROR, "Test message"),
 }
 
 enum class FrivilligSkattetrekkType {
