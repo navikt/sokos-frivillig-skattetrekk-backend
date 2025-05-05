@@ -2,6 +2,7 @@ package no.nav.frivillig.skattetrekk.client.trekk
 
 import no.nav.frivillig.skattetrekk.client.trekk.api.*
 import no.nav.frivillig.skattetrekk.configuration.AppId
+import no.nav.frivillig.skattetrekk.endpoint.ClientException
 import no.nav.frivillig.skattetrekk.security.TokenService
 import no.nav.frivillig.skattetrekk.service.TrekkTypeCode
 import no.nav.pensjon.pselv.consumer.behandletrekk.oppdragrestproxy.OppdaterAndreTrekkRequest
@@ -9,8 +10,10 @@ import no.nav.pensjon.pselv.consumer.behandletrekk.oppdragrestproxy.OpphorAndreT
 import no.nav.pensjon.pselv.consumer.behandletrekk.oppdragrestproxy.OpprettAndreTrekkRequest
 
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.WebClient
+import org.springframework.web.reactive.function.client.WebClientResponseException
 
 @Component
 class TrekkClient(
@@ -46,7 +49,14 @@ class TrekkClient(
                 ?.toList()
                 ?: emptyList()
         } catch (e: Exception) {
-            throw RuntimeException("Failed to fetch trekkliste", e)
+            if (e is WebClientResponseException) {
+                when(e.statusCode) {
+                    HttpStatus.NOT_FOUND -> throw ClientException(AppId.OPPDRAG_REST_PROXY.name, TREKK_API, "Ingen trekkliste funnet for person: $pid", null)
+                    else -> throw ClientException(AppId.OPPDRAG_REST_PROXY.name, "trekk-api", e.message, null)
+
+                }
+            }
+            throw throw ClientException(AppId.OPPDRAG_REST_PROXY.name, "trekk-api", "Failed to fetch trekkliste: ${e.message}", null)
         }
     }
 
@@ -98,5 +108,9 @@ class TrekkClient(
         } catch(e: Exception) {
             throw RuntimeException("Failed to fetch skattetrekk", e)
         }
+    }
+
+    companion object {
+        const val TREKK_API = "trekk-api"
     }
 }
