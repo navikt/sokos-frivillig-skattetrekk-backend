@@ -73,7 +73,7 @@ class PdlClient(
     }
 
     companion object {
-        const val PDL_TEMA_VALUE = "PEN"
+        const val PDL_TEMA_VALUE = "PEN" // TODO sjekk om denne trengs
         const val PDL_TEMA_ATTRIBUTE_NAME = "Tema"
         const val PDL_BEHANDLINGSNUMMER_VALUE = "B154"
         const val PDL_BEHANDLINGSNUMMER_KEY = "Behandlingsnummer"
