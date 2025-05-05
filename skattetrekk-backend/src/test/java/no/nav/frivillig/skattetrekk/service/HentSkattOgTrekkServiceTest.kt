@@ -28,9 +28,9 @@ class HentSkattOgTrekkServiceTest {
         verify(exactly = 1) { trekkClientMock.finnTrekkListe(fnr, TrekkTypeCode.FSKT) }
         verify(exactly = 0) { trekkClientMock.hentSkattOgTrekk(any(), any()) }
         assertNotNull(result)
-        assertNotNull(result.skattetrekk)
-        assertNull(result.framtidigTilleggstrekk)
-        assertNull(result.tilleggstrekk)
+        assertNotNull(result.data?.skattetrekk)
+        assertNull(result.data?.framtidigTilleggstrekk)
+        assertNull(result.data?.tilleggstrekk)
     }
 
     @Test
@@ -64,9 +64,9 @@ class HentSkattOgTrekkServiceTest {
         verify(exactly = 1) { trekkClientMock.hentSkattOgTrekk(fnr, trekkVedtakId) }
 
         assertNotNull(result)
-        assertNotNull(result.skattetrekk)
-        assertNull(result.framtidigTilleggstrekk)
-        assertNull(result.tilleggstrekk)
+        assertNotNull(result.data?.skattetrekk)
+        assertNull(result.data?.framtidigTilleggstrekk)
+        assertNull(result.data?.tilleggstrekk)
     }
 
     private fun byggTrekkInfo(
