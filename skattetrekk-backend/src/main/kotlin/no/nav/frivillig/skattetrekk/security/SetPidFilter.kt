@@ -6,8 +6,12 @@ import jakarta.servlet.http.Cookie
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import no.nav.frivillig.skattetrekk.client.fullmakt.FullmaktClient
-import no.nav.frivillig.skattetrekk.client.fullmakt.FullmaktException
+import no.nav.frivillig.skattetrekk.client.fullmakt.FullmaktClient.Companion.FULLMAKT_API
 import no.nav.frivillig.skattetrekk.client.fullmakt.RepresentasjonsforholdValidity
+import no.nav.frivillig.skattetrekk.configuration.AppId
+import no.nav.frivillig.skattetrekk.endpoint.ClientException
+import no.nav.frivillig.skattetrekk.endpoint.ForbiddenException
+import no.nav.frivillig.skattetrekk.endpoint.NoFullmaktPresentException
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
@@ -87,26 +91,22 @@ class SetPidFilter(
     }
 
     private fun haandterFullmakt(fullmaktsgiverPid: String, requestingPid: String): RepresentasjonsforholdValidity {
-        try {
-            val harGyldigFullmakt = fullmaktClient.hasValidRepresentasjonsforhold(fullmaktsgiverPid, requestingPid)
-            if (!harGyldigFullmakt?.hasValidRepresentasjonsforhold!!) {
-                log.info("Fullmaktsforhold er ikke funnet. Nekter adgang")
-                throw NoFullmaktPresentException()
-            }
+        val harGyldigFullmakt = fullmaktClient.hasValidRepresentasjonsforhold(fullmaktsgiverPid, requestingPid)
+        if (!harGyldigFullmakt?.hasValidRepresentasjonsforhold!!) {
+            log.info("Fullmaktsforhold er ikke funnet. Nekter adgang")
+            throw NoFullmaktPresentException(AppId.PENSJON_FULLMAKT.name, "", "", null)
+        }
 
-            /*
-            TODO fix me
-            if(personService.hasAdressebeskyttelse(harGyldigFullmakt.fullmaktsgiverFnr)) {
-                log.info("Fullmaktsforhold for bruker med adressebeskyttelse. Nekter adgang")
-                throw NoFullmaktPresentException()
-            }
-
-             */
-
-            return harGyldigFullmakt
-        } catch (e: FullmaktException) {
-            log.error("Noe gikk galt ved kall til fullmakt. Nekter adgang. FullmaktException: ${e.message}")
+        /*
+        TODO fix me
+        if(personService.hasAdressebeskyttelse(harGyldigFullmakt.fullmaktsgiverFnr)) {
+            log.info("Fullmaktsforhold for bruker med adressebeskyttelse. Nekter adgang")
             throw NoFullmaktPresentException()
         }
+
+         */
+
+        return harGyldigFullmakt
     }
+
 }

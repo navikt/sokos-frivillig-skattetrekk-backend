@@ -22,3 +22,14 @@ open class ForbiddenException(
     override val cause: Throwable?
 ) :
     RuntimeException("Access denied when calling service $service in $system. DetailMessage:  $message", cause)
+
+open class NoFullmaktPresentException(
+    val system: String,
+    val service: String,
+    override val message: String?,
+    override val cause: Throwable?
+) :
+    RuntimeException("No fullmakt is present $system. DetailMessage:  $message", cause)
+
+class LoginLevelTooLowException : RuntimeException()
+class UnauthorizedException : RuntimeException()
