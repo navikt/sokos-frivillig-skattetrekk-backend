@@ -1,6 +1,6 @@
 package no.nav.frivillig.skattetrekk.client.fullmakt
 
-import no.nav.frivillig.skattetrekk.client.norg2.Norg2Client.Companion.NORG2_API
+import no.nav.frivillig.skattetrekk.client.fullmakt.api.RepresentasjonsforholdValidity
 import no.nav.frivillig.skattetrekk.configuration.AppId
 import no.nav.frivillig.skattetrekk.endpoint.ClientException
 import no.nav.frivillig.skattetrekk.endpoint.ForbiddenException
@@ -16,7 +16,6 @@ import org.springframework.http.MediaType
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.WebClientResponseException
-import org.springframework.web.server.ResponseStatusException
 import org.springframework.web.util.UriComponentsBuilder
 
 @Component

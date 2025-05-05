@@ -6,7 +6,7 @@ import jakarta.servlet.http.Cookie
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import no.nav.frivillig.skattetrekk.client.fullmakt.FullmaktClient
-import no.nav.frivillig.skattetrekk.client.fullmakt.RepresentasjonsforholdValidity
+import no.nav.frivillig.skattetrekk.client.fullmakt.api.RepresentasjonsforholdValidity
 import no.nav.frivillig.skattetrekk.configuration.AppId
 import no.nav.frivillig.skattetrekk.endpoint.LoginLevelTooLowException
 import no.nav.frivillig.skattetrekk.endpoint.NoFullmaktPresentException
