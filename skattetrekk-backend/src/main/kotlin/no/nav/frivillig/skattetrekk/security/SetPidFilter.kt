@@ -6,12 +6,11 @@ import jakarta.servlet.http.Cookie
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import no.nav.frivillig.skattetrekk.client.fullmakt.FullmaktClient
-import no.nav.frivillig.skattetrekk.client.fullmakt.FullmaktClient.Companion.FULLMAKT_API
 import no.nav.frivillig.skattetrekk.client.fullmakt.RepresentasjonsforholdValidity
 import no.nav.frivillig.skattetrekk.configuration.AppId
-import no.nav.frivillig.skattetrekk.endpoint.ClientException
-import no.nav.frivillig.skattetrekk.endpoint.ForbiddenException
+import no.nav.frivillig.skattetrekk.endpoint.LoginLevelTooLowException
 import no.nav.frivillig.skattetrekk.endpoint.NoFullmaktPresentException
+import no.nav.frivillig.skattetrekk.endpoint.UnauthorizedException
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
