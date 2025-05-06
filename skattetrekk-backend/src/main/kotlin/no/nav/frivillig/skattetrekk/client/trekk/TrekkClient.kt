@@ -93,7 +93,6 @@ class TrekkClient(
                 .retrieve()
                 .bodyToMono(OpprettAndreTrekkResponse::class.java)
                 .block()
-                ?: throw RuntimeException("Failed to fetch skattetrekk")
         } catch(e: Exception) {
             throw RuntimeException("Failed to fetch skattetrekk", e)
         }
@@ -108,7 +107,6 @@ class TrekkClient(
                 .retrieve()
                 .toBodilessEntity()
                 .block()
-                ?: throw RuntimeException("Failed to fetch skattetrekk")
         } catch(e: Exception) {
             throw RuntimeException("Failed to fetch skattetrekk", e)
         }
