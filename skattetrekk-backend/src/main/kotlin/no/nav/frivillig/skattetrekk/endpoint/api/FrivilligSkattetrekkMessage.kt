@@ -8,7 +8,7 @@ data class FrivilligSkattetrekkMessage(
 )
 
 enum class FrivilligSkattettrekkMessageCode(val type: FrivilligSkattetrekkType, val details: String) {
-    USER_HAS_NO_TREKKVEDTAK(FrivilligSkattetrekkType.ERROR, "Test message"),
+    OPPDRAG_SYSTEMET_ER_NEDE(FrivilligSkattetrekkType.ERROR, "Oppdragsystemet er nede eller utilgjengelig"),
 }
 
 enum class FrivilligSkattetrekkType {

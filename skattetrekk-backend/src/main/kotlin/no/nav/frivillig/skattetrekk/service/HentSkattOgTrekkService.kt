@@ -2,10 +2,9 @@ package no.nav.frivillig.skattetrekk.service
 
 import no.nav.frivillig.skattetrekk.client.trekk.TrekkClient
 import no.nav.frivillig.skattetrekk.client.trekk.api.*
-import no.nav.frivillig.skattetrekk.endpoint.api.ForenkletSkattetrekkDto
-import no.nav.frivillig.skattetrekk.endpoint.api.FrivilligSkattetrekkData
-import no.nav.frivillig.skattetrekk.endpoint.api.FrivilligSkattetrekkInitResponse
-import no.nav.frivillig.skattetrekk.endpoint.api.TrekkDto
+import no.nav.frivillig.skattetrekk.client.trekk.api.Skattetrekk
+import no.nav.frivillig.skattetrekk.endpoint.ClientException
+import no.nav.frivillig.skattetrekk.endpoint.api.*
 import no.nav.frivillig.skattetrekk.util.isDateInPeriod
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
@@ -25,23 +24,16 @@ class HentSkattOgTrekkService(
 
     fun hentSkattetrekk(pid: String): FrivilligSkattetrekkInitResponse? {
 
-        var forskuddsTrekkListe: List<TrekkInfo>? = null
-        var tilleggsTrekkInfoListe: List<TrekkInfo>? = null
-
-        try {
-            forskuddsTrekkListe = trekkClient.finnTrekkListe(pid, TrekkTypeCode.FSKT)
-            tilleggsTrekkInfoListe = trekkClient.finnTrekkListe(pid, TrekkTypeCode.FRIS)
-        } catch (e: Exception) {
-            log.error(e.message)
-        }
+        val forskuddsTrekkListe = trekkClient.finnTrekkListe(pid, TrekkTypeCode.FSKT)
+        val tilleggsTrekkInfoListe = trekkClient.finnTrekkListe(pid, TrekkTypeCode.FRIS)
 
         val skattetrekk = finnSkattetrekk(pid, forskuddsTrekkListe)
         val tillegstrekkVedtakListe = opprettTilleggstrekkVedtakListe(pid, tilleggsTrekkInfoListe)
 
-        return createSkattetrekkInitResponse(skattetrekk, tillegstrekkVedtakListe)
+        return createSkattetrekkInitResponse(skattetrekk, tillegstrekkVedtakListe, emptyList())
     }
 
-    private fun createSkattetrekkInitResponse(skattetrekk: Skattetrekk?, tilleggstrekkListe: List<AndreTrekkResponse?>): FrivilligSkattetrekkInitResponse {
+    private fun createSkattetrekkInitResponse(skattetrekk: Skattetrekk?, tilleggstrekkListe: List<AndreTrekkResponse?>, meldinger: List<FrivilligSkattetrekkMessage>): FrivilligSkattetrekkInitResponse {
 
         val forenkletSkattetrekk = determineForenkletSkattetrekk(skattetrekk)
         val currentTilleggstrekk = tilleggstrekkListe.find { it?.satsperiodeListe?.toList()?.findRunningSatsperiode() == true }
@@ -49,7 +41,7 @@ class HentSkattOgTrekkService(
         val nextTilleggstrekk = tilleggstrekkListe.find { it?.satsperiodeListe?.toList()?.hasNextSatsperiode() == true }
 
         return FrivilligSkattetrekkInitResponse(
-            messages = emptyList(),
+            messages = meldinger,
             data = FrivilligSkattetrekkData(
                 tilleggstrekk = currentTilleggstrekk?.mapToTrekkDTO(),
                 framtidigTilleggstrekk = nextTilleggstrekk?.mapToTrekkDTO(),
@@ -73,15 +65,7 @@ class HentSkattOgTrekkService(
         if (!tabellNr.isNullOrEmpty() && "0000" != tabellNr) return ForenkletSkattetrekkDto(trekkVedtakId, tabellNr, null)
         if (prosentsats != null) return ForenkletSkattetrekkDto(trekkVedtakId, null, prosentsats)
 
-        //TODO: Bedre expection handering i systemet
-        //throw Exception("No valid skattetrekk found")
         return ForenkletSkattetrekkDto(trekkVedtakId, null, null)
-    }
-
-    private fun isThisSatsperiodeCreatedAfterNext(satsperiode: Satsperiode, nextSatsperiode: Satsperiode?): Boolean {
-        val nextSatsperiodeDate = IsoDateFormatter.parse(nextSatsperiode?.sporing?.opprettetInfo?.opprettetDato!!.toString())
-        val satsperiodeDate = IsoDateFormatter.parse(satsperiode.sporing?.opprettetInfo?.opprettetDato.toString())
-        return nextSatsperiodeDate.before(satsperiodeDate)
     }
 
     private fun List<Satsperiode>.findRunningSatsperiode() = this.find { isDateInPeriod(Date(), IsoDateFormatter.parse(it.fom.toString()), IsoDateFormatter.parse(it.tom.toString())) } != null
@@ -99,7 +83,7 @@ class HentSkattOgTrekkService(
         if (trekkInfoListe != null) {
             val forskuddskatt = if (trekkInfoListe.isNotEmpty()) trekkInfoListe[0] else null
             if (forskuddskatt?.trekkvedtakId != null) {
-                return trekkClient.hentSkattOgTrekk(pid, forskuddskatt.trekkvedtakId).skattetrekk
+                return trekkClient.hentSkattOgTrekk(pid, forskuddskatt.trekkvedtakId)?.skattetrekk
             }
         }
         return skattetrekk
@@ -107,6 +91,6 @@ class HentSkattOgTrekkService(
 
     private fun opprettTilleggstrekkVedtakListe(pid: String, tilleggsTrekkInfoListe: List<TrekkInfo>?) = tilleggsTrekkInfoListe
         ?.map {
-            if (it.trekkvedtakId != null) trekkClient.hentSkattOgTrekk(pid, it.trekkvedtakId).andreTrekk else null
+            if (it.trekkvedtakId != null) trekkClient.hentSkattOgTrekk(pid, it.trekkvedtakId)?.andreTrekk else null
         } ?: emptyList()
 }
