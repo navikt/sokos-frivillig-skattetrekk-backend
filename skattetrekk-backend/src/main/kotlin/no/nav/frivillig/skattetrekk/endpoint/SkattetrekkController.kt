@@ -68,7 +68,7 @@ class SkattetrekkController(
     @ExceptionHandler(UnauthorizedException::class)
     fun uautorisertBruker() = Unit
 
-    @ResponseStatus(value = BAD_REQUEST, reason = "Person ikke funnet")
+    @ResponseStatus(value = BAD_REQUEST, reason = "Person finnes ikke i PDL")
     @ExceptionHandler(PersonNotFoundException::class)
     fun personFinnesIkke() = Unit
 

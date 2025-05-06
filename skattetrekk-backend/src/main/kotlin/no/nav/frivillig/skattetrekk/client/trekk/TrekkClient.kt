@@ -5,6 +5,7 @@ import no.nav.frivillig.skattetrekk.configuration.AppId
 import no.nav.frivillig.skattetrekk.endpoint.ClientException
 import no.nav.frivillig.skattetrekk.endpoint.OppdragUtilgjengeligException
 import no.nav.frivillig.skattetrekk.endpoint.TekniskFeilFraOppdrag
+import no.nav.frivillig.skattetrekk.endpoint.TekniskFeilFraOppdragException
 import no.nav.frivillig.skattetrekk.security.TokenService
 import no.nav.frivillig.skattetrekk.service.TrekkTypeCode
 import no.nav.pensjon.pselv.consumer.behandletrekk.oppdragrestproxy.OppdaterAndreTrekkRequest
@@ -54,7 +55,7 @@ class TrekkClient(
             if (e is WebClientResponseException) {
                 when(e.message) {
                     "Oppdragssystemet er nede eller utilgjengelig" -> throw OppdragUtilgjengeligException()
-                    "Teknisk feil fra Oppdragssystemet, prøv igjen senere" -> throw TekniskFeilFraOppdrag()
+                    "Teknisk feil fra Oppdragssystemet, prøv igjen senere" -> throw TekniskFeilFraOppdragException()
                     else -> throw ClientException(AppId.OPPDRAG_REST_PROXY.name, TREKK_API, e.message, null)
                 }
             }
@@ -79,7 +80,7 @@ class TrekkClient(
             if (e is WebClientResponseException) {
                 when(e.message) {
                     "Oppdragssystemet er nede eller utilgjengelig" -> throw OppdragUtilgjengeligException()
-                    "Teknisk feil fra Oppdragssystemet, prøv igjen senere" -> throw TekniskFeilFraOppdrag()
+                    "Teknisk feil fra Oppdragssystemet, prøv igjen senere" -> throw TekniskFeilFraOppdragException()
                     else -> throw ClientException(AppId.OPPDRAG_REST_PROXY.name, TREKK_API, e.message, null)
                 }
             }
@@ -101,7 +102,7 @@ class TrekkClient(
             if (e is WebClientResponseException) {
                 when(e.message) {
                     "Oppdragssystemet er nede eller utilgjengelig" -> throw OppdragUtilgjengeligException()
-                    "Teknisk feil fra Oppdragssystemet, prøv igjen senere" -> throw TekniskFeilFraOppdrag()
+                    "Teknisk feil fra Oppdragssystemet, prøv igjen senere" -> throw TekniskFeilFraOppdragException()
                     else -> throw ClientException(AppId.OPPDRAG_REST_PROXY.name, TREKK_API, e.message, null)
                 }
             }
@@ -122,7 +123,7 @@ class TrekkClient(
             if (e is WebClientResponseException) {
                 when(e.message) {
                     "Oppdragssystemet er nede eller utilgjengelig" -> throw OppdragUtilgjengeligException()
-                    "Teknisk feil fra Oppdragssystemet, prøv igjen senere" -> throw TekniskFeilFraOppdrag()
+                    "Teknisk feil fra Oppdragssystemet, prøv igjen senere" -> throw TekniskFeilFraOppdragException()
                     else -> throw ClientException(AppId.OPPDRAG_REST_PROXY.name, TREKK_API, e.message, null)
                 }
             }

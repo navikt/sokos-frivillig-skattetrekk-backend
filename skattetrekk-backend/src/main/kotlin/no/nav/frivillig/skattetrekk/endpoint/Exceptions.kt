@@ -32,5 +32,5 @@ open class NoFullmaktPresentException(
     RuntimeException("No fullmakt is present $system. DetailMessage:  $message", cause)
 
 class OppdragUtilgjengeligException : RuntimeException()
-class TekniskFeilFraOppdrag : RuntimeException()
+class TekniskFeilFraOppdragException : RuntimeException()
 class UnauthorizedException : RuntimeException()
