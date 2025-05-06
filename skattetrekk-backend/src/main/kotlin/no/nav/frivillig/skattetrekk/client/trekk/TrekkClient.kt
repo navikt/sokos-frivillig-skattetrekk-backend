@@ -3,6 +3,8 @@ package no.nav.frivillig.skattetrekk.client.trekk
 import no.nav.frivillig.skattetrekk.client.trekk.api.*
 import no.nav.frivillig.skattetrekk.configuration.AppId
 import no.nav.frivillig.skattetrekk.endpoint.ClientException
+import no.nav.frivillig.skattetrekk.endpoint.OppdragUtilgjengeligException
+import no.nav.frivillig.skattetrekk.endpoint.TekniskFeilFraOppdrag
 import no.nav.frivillig.skattetrekk.security.TokenService
 import no.nav.frivillig.skattetrekk.service.TrekkTypeCode
 import no.nav.pensjon.pselv.consumer.behandletrekk.oppdragrestproxy.OppdaterAndreTrekkRequest
@@ -50,12 +52,13 @@ class TrekkClient(
                 ?: emptyList()
         } catch (e: Exception) {
             if (e is WebClientResponseException) {
-                when(e.statusCode) {
-                    HttpStatus.BAD_REQUEST -> throw ClientException(AppId.OPPDRAG_REST_PROXY.name, TREKK_API, e.message, null)
+                when(e.message) {
+                    "Oppdragssystemet er nede eller utilgjengelig" -> throw OppdragUtilgjengeligException()
+                    "Teknisk feil fra Oppdragssystemet, prøv igjen senere" -> throw TekniskFeilFraOppdrag()
                     else -> throw ClientException(AppId.OPPDRAG_REST_PROXY.name, TREKK_API, e.message, null)
                 }
             }
-            throw throw ClientException(AppId.OPPDRAG_REST_PROXY.name, TREKK_API, "Failed to fetch trekkliste: ${e.message}", null)
+            throw ClientException(AppId.OPPDRAG_REST_PROXY.name, TREKK_API, "Failed to fetch trekkliste: ${e.message}", null)
         }
     }
 
@@ -74,12 +77,13 @@ class TrekkClient(
                 .block()
         } catch (e: Exception) {
             if (e is WebClientResponseException) {
-                when(e.statusCode) {
-                    HttpStatus.BAD_REQUEST -> throw ClientException(AppId.OPPDRAG_REST_PROXY.name, TREKK_API, e.message, null)
+                when(e.message) {
+                    "Oppdragssystemet er nede eller utilgjengelig" -> throw OppdragUtilgjengeligException()
+                    "Teknisk feil fra Oppdragssystemet, prøv igjen senere" -> throw TekniskFeilFraOppdrag()
                     else -> throw ClientException(AppId.OPPDRAG_REST_PROXY.name, TREKK_API, e.message, null)
                 }
             }
-            throw throw ClientException(AppId.OPPDRAG_REST_PROXY.name, TREKK_API, "Failed to fetch trekkliste: ${e.message}", null)
+            throw ClientException(AppId.OPPDRAG_REST_PROXY.name, TREKK_API, "Failed to fetch trekkliste: ${e.message}", null)
         }
     }
 
@@ -94,7 +98,14 @@ class TrekkClient(
                 .bodyToMono(OpprettAndreTrekkResponse::class.java)
                 .block()
         } catch(e: Exception) {
-            throw RuntimeException("Failed to fetch skattetrekk", e)
+            if (e is WebClientResponseException) {
+                when(e.message) {
+                    "Oppdragssystemet er nede eller utilgjengelig" -> throw OppdragUtilgjengeligException()
+                    "Teknisk feil fra Oppdragssystemet, prøv igjen senere" -> throw TekniskFeilFraOppdrag()
+                    else -> throw ClientException(AppId.OPPDRAG_REST_PROXY.name, TREKK_API, e.message, null)
+                }
+            }
+            throw ClientException(AppId.OPPDRAG_REST_PROXY.name, TREKK_API, "Failed to opprett andre trekk: ${e.message}", null)
         }
 
     fun opphorAndreTrekk(pid: String, request: OpphorAndreTrekkRequest) {
@@ -108,7 +119,14 @@ class TrekkClient(
                 .toBodilessEntity()
                 .block()
         } catch(e: Exception) {
-            throw RuntimeException("Failed to fetch skattetrekk", e)
+            if (e is WebClientResponseException) {
+                when(e.message) {
+                    "Oppdragssystemet er nede eller utilgjengelig" -> throw OppdragUtilgjengeligException()
+                    "Teknisk feil fra Oppdragssystemet, prøv igjen senere" -> throw TekniskFeilFraOppdrag()
+                    else -> throw ClientException(AppId.OPPDRAG_REST_PROXY.name, TREKK_API, e.message, null)
+                }
+            }
+            throw ClientException(AppId.OPPDRAG_REST_PROXY.name, TREKK_API, "Failed to opphor andre trekk: ${e.message}", null)
         }
     }
 

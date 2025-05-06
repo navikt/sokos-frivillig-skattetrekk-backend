@@ -31,5 +31,6 @@ open class NoFullmaktPresentException(
 ) :
     RuntimeException("No fullmakt is present $system. DetailMessage:  $message", cause)
 
-class LoginLevelTooLowException : RuntimeException()
+class OppdragUtilgjengeligException : RuntimeException()
+class TekniskFeilFraOppdrag : RuntimeException()
 class UnauthorizedException : RuntimeException()

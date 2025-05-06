@@ -24,13 +24,17 @@ class HentSkattOgTrekkService(
 
     fun hentSkattetrekk(pid: String): FrivilligSkattetrekkInitResponse? {
 
+        log.info("Finner trekkliste for forskuddsskatt og frivillig skattetrekk")
         val forskuddsTrekkListe = trekkClient.finnTrekkListe(pid, TrekkTypeCode.FSKT)
         val tilleggsTrekkInfoListe = trekkClient.finnTrekkListe(pid, TrekkTypeCode.FRIS)
 
+        log.info("Henter skatt og trekk for forskuddsskatt og frivillig skattetrekk")
         val skattetrekk = finnSkattetrekk(pid, forskuddsTrekkListe)
         val tillegstrekkVedtakListe = opprettTilleggstrekkVedtakListe(pid, tilleggsTrekkInfoListe)
 
+
         return createSkattetrekkInitResponse(skattetrekk, tillegstrekkVedtakListe, emptyList())
+
     }
 
     private fun createSkattetrekkInitResponse(skattetrekk: Skattetrekk?, tilleggstrekkListe: List<AndreTrekkResponse?>, meldinger: List<FrivilligSkattetrekkMessage>): FrivilligSkattetrekkInitResponse {

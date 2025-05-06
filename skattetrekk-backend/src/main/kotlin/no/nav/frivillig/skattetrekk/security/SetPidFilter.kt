@@ -50,7 +50,6 @@ class SetPidFilter(
                 val path = request.requestURI
                 when (e) {
                     is NoFullmaktPresentException -> forbiddenResponse(response, ErrorCode.NO_FULLMAKT_PRESENT, path)
-                    is LoginLevelTooLowException -> forbiddenResponse(response, ErrorCode.LOGIN_LEVEL_TOO_LOW, path)
                     is UnauthorizedException -> forbiddenResponse(response, ErrorCode.UNAUTHORIZED, path)
                     else -> throw e
                 }
