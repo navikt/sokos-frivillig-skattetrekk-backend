@@ -60,16 +60,16 @@ class SkattetrekkController(
     @ExceptionHandler(NoFullmaktPresentException::class)
     fun fullmaktFinnesIkke() = Unit
 
-    @ResponseStatus(value = UNAUTHORIZED, reason = "Autentisering mangler")
-    @ExceptionHandler(UnauthorizedException::class)
-    fun uautentisertBruker() = Unit
+    @ResponseStatus(value = BAD_REQUEST, reason = "Person finnes ikke i PDL")
+    @ExceptionHandler(PersonNotFoundException::class)
+    fun personFinnesIkke() = Unit
 
     @ResponseStatus(value = FORBIDDEN, reason = "Autorisasjon mangler")
     @ExceptionHandler(UnauthorizedException::class)
     fun uautorisertBruker() = Unit
 
-    @ResponseStatus(value = BAD_REQUEST, reason = "Person finnes ikke i PDL")
-    @ExceptionHandler(PersonNotFoundException::class)
-    fun personFinnesIkke() = Unit
+    @ResponseStatus(value = FORBIDDEN, reason = "Nekter tilgang")
+    @ExceptionHandler(ForbiddenException::class)
+    fun tilgangsnekt() = Unit
 
 }
