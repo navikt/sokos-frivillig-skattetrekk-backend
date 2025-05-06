@@ -1,4 +1,4 @@
-package no.nav.frivillig.skattetrekk.client.fullmakt
+package no.nav.frivillig.skattetrekk.client.fullmakt.api
 
 import com.fasterxml.jackson.annotation.JsonProperty
 

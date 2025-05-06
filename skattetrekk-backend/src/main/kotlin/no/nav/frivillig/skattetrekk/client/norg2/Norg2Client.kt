@@ -33,18 +33,10 @@ class Norg2Client(
         } catch (e: Exception) {
             if (e is WebClientResponseException) {
                 when(e.statusCode) {
-                    HttpStatus.NOT_FOUND -> {
-                        throw ForbiddenException(AppId.NORG2.name, NORG2_API, "Ingen enhet funnet for geografisk område: $geografiskOmraade", null)
-                    }
-                    HttpStatus.FORBIDDEN -> {
-                        throw ForbiddenException(AppId.NORG2.name, NORG2_API, "Ingen tilgang til Norg2 for geografisk område: $geografiskOmraade", null)
-                    }
-                    HttpStatus.INTERNAL_SERVER_ERROR -> {
-                        throw ClientException(AppId.NORG2.name, NORG2_API, "Intern feil fra Norg2-api ved henting av enhet: $geografiskOmraade", null)
-                    }
-                    else -> {
-                        throw ClientException(AppId.NORG2.name, NORG2_API, e.message, null)
-                    }
+                    HttpStatus.NOT_FOUND -> throw ForbiddenException(AppId.NORG2.name, NORG2_API, "Ingen enhet funnet for geografisk område: $geografiskOmraade", null)
+                    HttpStatus.FORBIDDEN -> throw ForbiddenException(AppId.NORG2.name, NORG2_API, "Ingen tilgang til Norg2 for geografisk område: $geografiskOmraade", null)
+                    HttpStatus.INTERNAL_SERVER_ERROR -> throw ClientException(AppId.NORG2.name, NORG2_API, "Intern feil fra Norg2-api ved henting av enhet: $geografiskOmraade", null)
+                    else -> throw ClientException(AppId.NORG2.name, NORG2_API, e.message, null)
                 }
             }
             throw ClientException(AppId.PDL.name, NORG2_API, e.message, null)

@@ -5,6 +5,7 @@ import no.nav.frivillig.skattetrekk.security.SecurityContextUtil
 import no.nav.frivillig.skattetrekk.service.BehandleTrekkService
 import no.nav.frivillig.skattetrekk.service.HentSkattOgTrekkService
 import org.springframework.http.HttpStatus
+import org.springframework.http.HttpStatus.*
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
@@ -42,5 +43,33 @@ class SkattetrekkController(
     fun opphoerFrivilligSkattetrekk(@RequestBody request: OpphoerRequest) {
         behandleTrekkService.opphoerTrekk(SecurityContextUtil.getPidFromContext(), request.trekkVedtakId)
     }
+
+    @ResponseStatus(value = SERVICE_UNAVAILABLE, reason = "Oppdragssystemet er nede eller utilgjengelig")
+    @ExceptionHandler(OppdragUtilgjengeligException::class)
+    fun oppdragErNede() = Unit
+
+    @ResponseStatus(value = SERVICE_UNAVAILABLE, reason = "Teknisk feil fra Oppdragssystemet, prøv igjen senere")
+    @ExceptionHandler(TekniskFeilFraOppdragException::class)
+    fun tekniskFeilFraOppdrag() = Unit
+
+    @ResponseStatus(value = SERVICE_UNAVAILABLE, reason = "Feil mot andre interne tjenester")
+    @ExceptionHandler(ClientException::class)
+    fun feilmotKlienter() = Unit
+
+    @ResponseStatus(value = BAD_REQUEST, reason = "Fullmaktsforhold finnes ikke")
+    @ExceptionHandler(NoFullmaktPresentException::class)
+    fun fullmaktFinnesIkke() = Unit
+
+    @ResponseStatus(value = BAD_REQUEST, reason = "Person finnes ikke i PDL")
+    @ExceptionHandler(PersonNotFoundException::class)
+    fun personFinnesIkke() = Unit
+
+    @ResponseStatus(value = FORBIDDEN, reason = "Autorisasjon mangler")
+    @ExceptionHandler(UnauthorizedException::class)
+    fun uautorisertBruker() = Unit
+
+    @ResponseStatus(value = FORBIDDEN, reason = "Nekter tilgang")
+    @ExceptionHandler(ForbiddenException::class)
+    fun tilgangsnekt() = Unit
 
 }

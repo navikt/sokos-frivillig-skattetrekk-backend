@@ -2,15 +2,18 @@ package no.nav.frivillig.skattetrekk.client.trekk
 
 import no.nav.frivillig.skattetrekk.client.trekk.api.*
 import no.nav.frivillig.skattetrekk.configuration.AppId
+import no.nav.frivillig.skattetrekk.endpoint.ClientException
+import no.nav.frivillig.skattetrekk.endpoint.OppdragUtilgjengeligException
+import no.nav.frivillig.skattetrekk.endpoint.TekniskFeilFraOppdragException
 import no.nav.frivillig.skattetrekk.security.TokenService
 import no.nav.frivillig.skattetrekk.service.TrekkTypeCode
-import no.nav.pensjon.pselv.consumer.behandletrekk.oppdragrestproxy.OppdaterAndreTrekkRequest
 import no.nav.pensjon.pselv.consumer.behandletrekk.oppdragrestproxy.OpphorAndreTrekkRequest
 import no.nav.pensjon.pselv.consumer.behandletrekk.oppdragrestproxy.OpprettAndreTrekkRequest
 
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.WebClient
+import org.springframework.web.reactive.function.client.WebClientResponseException
 
 @Component
 class TrekkClient(
@@ -46,11 +49,18 @@ class TrekkClient(
                 ?.toList()
                 ?: emptyList()
         } catch (e: Exception) {
-            throw RuntimeException("Failed to fetch trekkliste", e)
+            if (e is WebClientResponseException) {
+                when(e.message) {
+                    "Oppdragssystemet er nede eller utilgjengelig" -> throw OppdragUtilgjengeligException()
+                    "Teknisk feil fra Oppdragssystemet, prøv igjen senere" -> throw TekniskFeilFraOppdragException()
+                    else -> throw ClientException(AppId.OPPDRAG_REST_PROXY.name, TREKK_API, e.message, null)
+                }
+            }
+            throw ClientException(AppId.OPPDRAG_REST_PROXY.name, TREKK_API, "Failed to fetch trekkliste: ${e.message}", null)
         }
     }
 
-    fun hentSkattOgTrekk(pid: String, trekkVedtakId: Long): HentSkattOgTrekkResponse {
+    fun hentSkattOgTrekk(pid: String, trekkVedtakId: Long): HentSkattOgTrekkResponse? {
 
         val request = HentSkattOgTrekkRequest(trekkvedtakId = trekkVedtakId)
 
@@ -63,9 +73,15 @@ class TrekkClient(
                 .retrieve()
                 .bodyToMono(HentSkattOgTrekkResponse::class.java)
                 .block()
-                ?: throw RuntimeException("Failed to fetch skattetrekk")
         } catch (e: Exception) {
-            throw RuntimeException("Failed to fetch skattetrekk", e)
+            if (e is WebClientResponseException) {
+                when(e.message) {
+                    "Oppdragssystemet er nede eller utilgjengelig" -> throw OppdragUtilgjengeligException()
+                    "Teknisk feil fra Oppdragssystemet, prøv igjen senere" -> throw TekniskFeilFraOppdragException()
+                    else -> throw ClientException(AppId.OPPDRAG_REST_PROXY.name, TREKK_API, e.message, null)
+                }
+            }
+            throw ClientException(AppId.OPPDRAG_REST_PROXY.name, TREKK_API, "Failed to fetch trekkliste: ${e.message}", null)
         }
     }
 
@@ -79,9 +95,15 @@ class TrekkClient(
                 .retrieve()
                 .bodyToMono(OpprettAndreTrekkResponse::class.java)
                 .block()
-                ?: throw RuntimeException("Failed to fetch skattetrekk")
         } catch(e: Exception) {
-            throw RuntimeException("Failed to fetch skattetrekk", e)
+            if (e is WebClientResponseException) {
+                when(e.message) {
+                    "Oppdragssystemet er nede eller utilgjengelig" -> throw OppdragUtilgjengeligException()
+                    "Teknisk feil fra Oppdragssystemet, prøv igjen senere" -> throw TekniskFeilFraOppdragException()
+                    else -> throw ClientException(AppId.OPPDRAG_REST_PROXY.name, TREKK_API, e.message, null)
+                }
+            }
+            throw ClientException(AppId.OPPDRAG_REST_PROXY.name, TREKK_API, "Failed to opprett andre trekk: ${e.message}", null)
         }
 
     fun opphorAndreTrekk(pid: String, request: OpphorAndreTrekkRequest) {
@@ -94,9 +116,19 @@ class TrekkClient(
                 .retrieve()
                 .toBodilessEntity()
                 .block()
-                ?: throw RuntimeException("Failed to fetch skattetrekk")
         } catch(e: Exception) {
-            throw RuntimeException("Failed to fetch skattetrekk", e)
+            if (e is WebClientResponseException) {
+                when(e.message) {
+                    "Oppdragssystemet er nede eller utilgjengelig" -> throw OppdragUtilgjengeligException()
+                    "Teknisk feil fra Oppdragssystemet, prøv igjen senere" -> throw TekniskFeilFraOppdragException()
+                    else -> throw ClientException(AppId.OPPDRAG_REST_PROXY.name, TREKK_API, e.message, null)
+                }
+            }
+            throw ClientException(AppId.OPPDRAG_REST_PROXY.name, TREKK_API, "Failed to opphor andre trekk: ${e.message}", null)
         }
+    }
+
+    companion object {
+        const val TREKK_API = "trekk-api"
     }
 }

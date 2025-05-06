@@ -6,9 +6,8 @@ import jakarta.servlet.http.Cookie
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import no.nav.frivillig.skattetrekk.client.fullmakt.FullmaktClient
-import no.nav.frivillig.skattetrekk.client.fullmakt.RepresentasjonsforholdValidity
+import no.nav.frivillig.skattetrekk.client.fullmakt.api.RepresentasjonsforholdValidity
 import no.nav.frivillig.skattetrekk.configuration.AppId
-import no.nav.frivillig.skattetrekk.endpoint.LoginLevelTooLowException
 import no.nav.frivillig.skattetrekk.endpoint.NoFullmaktPresentException
 import no.nav.frivillig.skattetrekk.endpoint.UnauthorizedException
 import org.slf4j.Logger
@@ -50,7 +49,6 @@ class SetPidFilter(
                 val path = request.requestURI
                 when (e) {
                     is NoFullmaktPresentException -> forbiddenResponse(response, ErrorCode.NO_FULLMAKT_PRESENT, path)
-                    is LoginLevelTooLowException -> forbiddenResponse(response, ErrorCode.LOGIN_LEVEL_TOO_LOW, path)
                     is UnauthorizedException -> forbiddenResponse(response, ErrorCode.UNAUTHORIZED, path)
                     else -> throw e
                 }
