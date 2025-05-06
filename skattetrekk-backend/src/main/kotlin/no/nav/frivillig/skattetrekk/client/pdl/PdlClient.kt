@@ -33,7 +33,6 @@ class PdlClient(
                 .uri(url)
                 .header("Authorization", "Bearer $it")
                 .header(NAV_CALL_ID_NAME, CallIdUtil.getCallIdFromMdc())
-                .header(PDL_TEMA_ATTRIBUTE_NAME, PDL_TEMA_VALUE)
                 .header(PDL_BEHANDLINGSNUMMER_KEY, PDL_BEHANDLINGSNUMMER_VALUE)
                 .accept(MediaType.APPLICATION_JSON)
                 .body(Mono.just(hentBasertPaaQuery(pid)), PdlPersonQuery::class.java)
@@ -73,8 +72,6 @@ class PdlClient(
     }
 
     companion object {
-        const val PDL_TEMA_VALUE = "PEN" // TODO sjekk om denne trengs
-        const val PDL_TEMA_ATTRIBUTE_NAME = "Tema"
         const val PDL_BEHANDLINGSNUMMER_VALUE = "B154"
         const val PDL_BEHANDLINGSNUMMER_KEY = "Behandlingsnummer"
         const val PDL_API = "pdl-api"
