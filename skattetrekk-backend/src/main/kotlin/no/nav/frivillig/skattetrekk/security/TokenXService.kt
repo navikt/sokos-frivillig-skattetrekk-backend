@@ -20,9 +20,9 @@ import java.util.*
 
 @Service
 class TokenXService(
-    @Value("\${oauth2.tokenX.tokenEndpoint}") private val endpoint: String,
-    @Value("\${oauth2.tokenX.privateJwk}") private val privateJwk: String,
-    @Value("\${oauth2.tokenX.clientId}") private val clientId: String,
+    @Value("\${oauth2.idporten.tokenEndpoint}") private val endpoint: String,
+    @Value("\${oauth2.idporten.privateJwk}") private val privateJwk: String,
+    @Value("\${oauth2.idporten.clientId}") private val clientId: String,
     private val webClient: WebClient,
 ) {
 

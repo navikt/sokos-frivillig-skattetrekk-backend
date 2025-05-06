@@ -22,7 +22,7 @@ spec:
     initialDelay: 30
     failureThreshold: 30
     periodSeconds: 5
-  tokenx:
+  idporten:
     enabled: true
   replicas:
     min: 2
