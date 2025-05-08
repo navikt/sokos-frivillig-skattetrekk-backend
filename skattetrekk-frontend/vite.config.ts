@@ -1,5 +1,5 @@
 import react from '@vitejs/plugin-react'
-import eslint from 'vite-plugin-eslint'
+import eslint from 'vite-plugin-eslint2'
 import stylelint from 'vite-plugin-stylelint'
 import {fileURLToPath} from "url";
 import {UserConfig, defineConfig } from "vite";
