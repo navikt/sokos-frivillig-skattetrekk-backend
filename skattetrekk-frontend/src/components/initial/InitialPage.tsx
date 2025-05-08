@@ -1,29 +1,24 @@
 import {
     Alert,
     BodyLong,
-    Button,
     Heading,
-    HStack, Link,
-    Radio,
-    RadioGroup,
+    Link,
     ReadMore,
-    TextField,
     VStack
 } from "@navikt/ds-react";
-import {useCallback, useContext, useEffect, useState} from "react";
+import React, {useContext, useState} from "react";
 import {RegistrerteSkattetrekk} from "@/components/initial/RegistrerteSkattetrekk";
 import {useLoaderData, useNavigate} from "react-router-dom";
 import {FrivilligSkattetrekkInitResponse, SatsType, saveSkattetrekk} from "@/api/skattetrekkBackendClient";
 import {FormStateContext} from "@/state/FormState";
 import {Selector} from "@/components/initial/Selector";
-import DataContextProvider, {DataContext} from "@/state/DataContextProvider";
+import {DataContext} from "@/state/DataContextProvider";
 
 export function InitialPage() {
     const {setTilleggstrekkType, setTilleggstrekkValue} = useContext(FormStateContext)
-    const {initiateResponse, sendResponse, setSendResponse} = useContext(DataContext)
+    const {initiateResponse, setSendResponse} = useContext(DataContext)
     //
     const [buttonIsLoading, setButtonIsLoading] = useState(false)
-    const [selectorError, setSelectorError] = useState(false)
 
     const skattetrekkLoader = useLoaderData() as FrivilligSkattetrekkInitResponse
     const pid = new URLSearchParams(document.location.search).get("pid")
