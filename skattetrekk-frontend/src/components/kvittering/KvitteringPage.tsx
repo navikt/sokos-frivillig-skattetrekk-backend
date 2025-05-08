@@ -3,7 +3,6 @@ import React, {useContext, useEffect, useState} from 'react'
 import {numberFormatWithKr} from "@/common/Utils";
 import {SatsType} from "@/api/skattetrekkBackendClient";
 import {FormStateContext} from "@/state/FormState";
-import ListItem from "@navikt/ds-react/esm/dropdown/Menu/List/Item";
 
 export const KvitteringPage = (props: {
 }) => {
@@ -30,8 +29,8 @@ export const KvitteringPage = (props: {
       </Alert>
 
       <List>
-        <ListItem>Frivillig skattetrekk stoppes automatisk ved årsskiftet,  du må derfor legge inn et nytt trekk for hvert hvert år.</ListItem>
-        <ListItem>Hvis du har lagt inn frivillig skattetrekk i slutten av måneden, kan det gå én måned ekstra før det starter å løpe.</ListItem>
+        <List.Item>Frivillig skattetrekk stoppes automatisk ved årsskiftet,  du må derfor legge inn et nytt trekk for hvert hvert år.</List.Item>
+        <List.Item>Hvis du har lagt inn frivillig skattetrekk i slutten av måneden, kan det gå én måned ekstra før det starter å løpe.</List.Item>
       </List>
 
       <VStack gap={{xs: "2", md: "6"}}>
