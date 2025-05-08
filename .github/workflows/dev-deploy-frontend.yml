@@ -1,0 +1,24 @@
+name: "Deploy to dev-fss"
+
+on: workflow_dispatch
+
+jobs:
+  deploy-frontend-to-dev-gcp:
+    name: Deploy frontend til q2
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Build and Push Docker image
+        uses: nais/docker-build-push@v0
+        id: docker-build-push
+        with:
+          team: okonomi
+          dockerfile: ./skattetrekk-backend/Dockerfile
+      - name: Deploy to dev-gcp
+        uses: nais/deploy/actions/deploy@v2
+        env:
+          CLUSTER: dev-gcp
+          RESOURCE: ./skattetrekk-frontend/.nais/nais-q2.yaml
+          IMAGE: ${{ needs.docker-build-push.outputs.image }}
+          TEAM: okonomi

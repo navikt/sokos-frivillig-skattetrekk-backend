@@ -1,0 +1,49 @@
+name: Build frontend
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'skattetrekk-frontend/**'
+
+jobs:
+  build-frontend-and-publish-docker:
+    name: Build frontend application
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./skattetrekk-frontend/
+    permissions:
+      contents: read
+      id-token: write
+    outputs:
+      image: ${{ steps.docker-build-push.outputs.image }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          registry-url: 'https://npm.pkg.github.com'
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
+
+      - name: Build application
+        run: npm run build
+
+      - name: prune dev dependencies
+        run: npm prune --production
+
+      - name: docker-build-push
+        uses: nais/docker-build-push@v0
+        id: docker-build-push
+        with:
+          team: okonomi
+          dockerfile: ./skattetrekk-frontend/.docker/Dockerfile
+          image_suffix: skattetrekk-frontend

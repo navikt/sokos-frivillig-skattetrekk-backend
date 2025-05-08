@@ -6,14 +6,13 @@ import {UserConfig, defineConfig } from "vite";
 
 // https://vitejs.dev/config/
 const buildConfig: UserConfig = {
-  base: '/pensjon/selvbetjening/skattetrekk',
+  base: '/utbetaling/skattetrekk',
   build: {
     outDir: './dist',
     target: 'esnext',
     rollupOptions: {
       input: {
-        appBorger: "./index.html",
-        appVeileder: "./index-veileder.html",
+        appBorger: "./index.html"
       }
     },
   },
@@ -30,7 +29,7 @@ const buildConfig: UserConfig = {
 }
 
 const devConfig: UserConfig = {
-  base: '/pensjon/selvbetjening/skattetrekk',
+  base: '/utbetaling/skattetrekk',
   build: {
     manifest: true,
     rollupOptions: {

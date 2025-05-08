@@ -3,7 +3,7 @@ name: "Deploy to dev-fss"
 on: workflow_dispatch
 
 jobs:
-  deploy-to-dev-fss:
+  deploy-backend-to-dev-fss:
     name: Deploy to dev-fss
     runs-on: ubuntu-latest
     permissions:
