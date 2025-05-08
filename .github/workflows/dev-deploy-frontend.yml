@@ -37,11 +37,11 @@ jobs:
         id: docker-build-push
         with:
           team: okonomi
-          dockerfile: .docker/Dockerfile
+          dockerfile: ./skattetrekk-frontend/.docker/Dockerfile
       - name: Deploy to dev-gcp
         uses: nais/deploy/actions/deploy@v2
         env:
           CLUSTER: dev-gcp
-          RESOURCE: .nais/nais-q2.yaml
+          RESOURCE: ./skattetrekk-frontend/.nais/nais-q2.yaml
           IMAGE: ${{ needs.docker-build-push.outputs.image }}
           TEAM: okonomi
