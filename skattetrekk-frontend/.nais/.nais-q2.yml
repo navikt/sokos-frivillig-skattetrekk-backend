@@ -60,5 +60,3 @@ spec:
       value: "dev-gcp:okonomi:skattetrekk-backend-q2"
     - name: "REPRESENTASJON_BANNER_URL"
       value: "https://representasjon-banner-frontend-borger-q2.intern.dev.nav.no"
-    - name: "MODE"
-      value: "borger"
