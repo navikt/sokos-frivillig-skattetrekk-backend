@@ -5,7 +5,7 @@ import dotenv from "dotenv"
 import path from "path";
 import {fileURLToPath} from "url";
 
-const basePath = "/pensjon/selvbetjening/skattetrekk";
+const basePath = "/utbetaling/skattetrekk";
 
 const app = express();
 
@@ -13,7 +13,7 @@ const PORT = process.env.PORT || 8080;
 
 dotenv.config()
 
-let client = process.env.MODE === "borger" ? await tokenx.client() : await azure.client();
+let client = await tokenx.client();
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -42,24 +42,11 @@ app.get(
 );
 
 async function getTokenValue(idToken) {
-    if(process.env.MODE === "veileder") {
-
-        const tokenEndpoint = await azure.azureTokenEndpoint()
-
-        return await azure.getOnBehalfOfAccessToken(
-            client,
-            idToken,
-            process.env.SKATTETREKK_BACKEND_SCOPE,
-            tokenEndpoint
-        );
-
-    } else if (process.env.MODE === "borger") {
-        return await tokenx.getTokenExchangeAccessToken(
-            client,
-            idToken,
-            process.env.SKATTETREKK_BACKEND_AUDIENCE
-        );
-    }
+    return await tokenx.getTokenExchangeAccessToken(
+        client,
+        idToken,
+        process.env.SKATTETREKK_BACKEND_AUDIENCE
+    );
 }
 
 app.get('/internal/health/liveness', (req, res) => {

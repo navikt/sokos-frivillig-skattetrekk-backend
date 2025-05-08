@@ -1,4 +1,4 @@
-name: "Deploy to dev-fss"
+name: "Deploy frontend to dev-gcp"
 
 on: workflow_dispatch
 
@@ -14,7 +14,7 @@ jobs:
         id: docker-build-push
         with:
           team: okonomi
-          dockerfile: ./skattetrekk-backend/Dockerfile
+          dockerfile: ./skattetrekk-frontend/Dockerfile
       - name: Deploy to dev-gcp
         uses: nais/deploy/actions/deploy@v2
         env:

@@ -1,7 +1,7 @@
 apiVersion: "nais.io/v1alpha1"
 kind: "Application"
 metadata:
-  name: skattetrekk-frontend-borger-q2
+  name: skattetrekk-frontend-q2
   namespace: okonomi
   labels:
     team: okonomi
@@ -60,5 +60,3 @@ spec:
       value: "dev-gcp:okonomi:skattetrekk-backend-q2"
     - name: "REPRESENTASJON_BANNER_URL"
       value: "https://representasjon-banner-frontend-borger-q2.intern.dev.nav.no"
-    - name: "MODE"
-      value: "borger"
