@@ -1,4 +1,4 @@
-name: "Deploy to dev-fss"
+name: "Deploy frontend to dev-gcp"
 
 on: workflow_dispatch
 
