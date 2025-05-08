@@ -10,6 +10,9 @@ jobs:
   build-frontend-and-publish-docker:
     name: Build frontend application
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./skattetrekk-frontend
     permissions:
       contents: read
       id-token: write
