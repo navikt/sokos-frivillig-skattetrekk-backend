@@ -42,7 +42,7 @@ spec:
   accessPolicy:
     inbound:
       rules:
-        - application: skattetrekk-frontend-borger-q2
+        - application: skattetrekk-frontend-q2
           namespace: okonomi
           cluster: dev-gcp
         - application: tokenx-token-generator
