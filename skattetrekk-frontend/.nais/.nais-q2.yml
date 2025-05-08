@@ -53,7 +53,7 @@ spec:
     - name: "VITE_DECORATOR_URL"
       value: "https://dekoratoren.ekstern.dev.nav.no"
     - name: "SKATTETREKK_BACKEND_URL"
-      value: "https://skattetrekk-backend-q2.intern.dev.nav.no"
+      value: "https://skattetrekk-backend-q2.dev-fss-pub.nais.io"
     - name: "SKATTETREKK_BACKEND_SCOPE"
       value: "api://dev-gcp.skattetrekk-backend-q2/.default"
     - name: "SKATTETREKK_BACKEND_AUDIENCE"
