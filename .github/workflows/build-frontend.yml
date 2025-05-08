@@ -10,6 +10,9 @@ jobs:
   build-frontend-and-publish-docker:
     name: Build frontend application
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./skattetrekk-frontend
     permissions:
       contents: read
       id-token: write
@@ -24,7 +27,6 @@ jobs:
         with:
           node-version: 22
           registry-url: 'https://npm.pkg.github.com'
-          cache: npm
 
       - name: Cache node modules
         id: cache-node
@@ -36,7 +38,7 @@ jobs:
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
 
       - name: Install dependencies
-        run: cd ./skattetrekk-frontend && npm ci
+        run: npm ci
         env:
           NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
 

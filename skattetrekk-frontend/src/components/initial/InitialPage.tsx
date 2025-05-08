@@ -107,7 +107,7 @@ export function InitialPage() {
                 <Link href="nav.no">Les om frivillig skattetrekk</Link>
             </VStack>
 
-            <VStack gap="4" spacing="4">
+            <VStack gap={{xs: "2", md: "6"}}>
                 <Heading size={"medium"} level="2">Dine registrerte skattetrekk</Heading>
                 <RegistrerteSkattetrekk skatteTrekk={skattetrekkLoader.skattetrekk} tilleggstrekk={skattetrekkLoader.tilleggstrekk} />
             </VStack>

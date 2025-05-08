@@ -1,7 +1,6 @@
 import {Alert, BodyShort, Heading, Link, List, VStack} from '@navikt/ds-react'
-import {useContext, useEffect, useState} from 'react'
+import React, {useContext, useEffect, useState} from 'react'
 import {numberFormatWithKr} from "@/common/Utils";
-import ListItem from "@navikt/ds-react/esm/list/ListItem";
 import {SatsType} from "@/api/skattetrekkBackendClient";
 import {FormStateContext} from "@/state/FormState";
 
@@ -30,11 +29,11 @@ export const KvitteringPage = (props: {
       </Alert>
 
       <List>
-        <ListItem>Frivillig skattetrekk stoppes automatisk ved årsskiftet,  du må derfor legge inn et nytt trekk for hvert hvert år.</ListItem>
-        <ListItem>Hvis du har lagt inn frivillig skattetrekk i slutten av måneden, kan det gå én måned ekstra før det starter å løpe.</ListItem>
+        <List.Item>Frivillig skattetrekk stoppes automatisk ved årsskiftet,  du må derfor legge inn et nytt trekk for hvert hvert år.</List.Item>
+        <List.Item>Hvis du har lagt inn frivillig skattetrekk i slutten av måneden, kan det gå én måned ekstra før det starter å løpe.</List.Item>
       </List>
 
-      <VStack gap="4" spacing="4">
+      <VStack gap={{xs: "2", md: "6"}}>
         <Heading size={"medium"} level="2">Dine registrerte skattetrekk</Heading>
         <BodyShort><strong>Trekk fra skattekortet:</strong></BodyShort>
         <BodyShort><strong>Frivillig skattetrekk:</strong></BodyShort>
