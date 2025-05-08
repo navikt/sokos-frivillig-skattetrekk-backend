@@ -3,7 +3,7 @@ import React, {useContext, useEffect, useState} from 'react'
 import {numberFormatWithKr} from "@/common/Utils";
 import {SatsType} from "@/api/skattetrekkBackendClient";
 import {FormStateContext} from "@/state/FormState";
-import {ListItem} from "@navikt/ds-react/esm/list";
+import ListItem from "@navikt/ds-react/esm/dropdown/Menu/List/Item";
 
 export const KvitteringPage = (props: {
 }) => {
