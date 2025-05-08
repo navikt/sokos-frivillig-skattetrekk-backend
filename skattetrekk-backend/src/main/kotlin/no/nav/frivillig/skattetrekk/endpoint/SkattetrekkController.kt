@@ -17,31 +17,16 @@ class SkattetrekkController(
 ) {
 
     @GetMapping(produces = ["application/json"])
-    fun getSkattetrekk(): ResponseEntity<FrivilligSkattetrekkInitResponse?> {
-        val skatteTrekk =  skattetrekkService.hentSkattetrekk(SecurityContextUtil.getPidFromContext())
-        return ResponseEntity<FrivilligSkattetrekkInitResponse?>(skatteTrekk, HttpStatus.OK)
-    }
+    fun getSkattetrekk(): FrivilligSkattetrekkInitResponse? = skattetrekkService.hentSkattetrekk(SecurityContextUtil.getPidFromContext())
 
-    @PostMapping(consumes = ["application/json"])
-    fun opprettFrivilligSkattetrekk(@RequestBody request: OpprettRequest): OpprettResponse {
-        val trekkvedtakId = behandleTrekkService.opprettTrekk(SecurityContextUtil.getPidFromContext(), request.value, request.satsType)
-        return OpprettResponse(trekkvedtakId = trekkvedtakId)
-    }
-
-    @PutMapping(consumes = ["application/json"])
-    fun updateFrivilligSkattetrekk(@RequestBody request: OppdaterRequest): OppdaterResponse {
-        val trekkvedtakId = behandleTrekkService.oppdaterTrekk(
+    @PostMapping
+    fun behandleFrivilligSkattetrekk(@RequestBody request: BehandleRequest): FrivilligSkattetrekkInitResponse? {
+        behandleTrekkService.behandleTrekk(
             SecurityContextUtil.getPidFromContext(),
-            request.trekkVedtakId,
             request.value,
-            request.satsType)
-
-        return OppdaterResponse(trekkvedtakId = trekkvedtakId)
-    }
-
-    @DeleteMapping(consumes = ["application/json"])
-    fun opphoerFrivilligSkattetrekk(@RequestBody request: OpphoerRequest) {
-        behandleTrekkService.opphoerTrekk(SecurityContextUtil.getPidFromContext(), request.trekkVedtakId)
+            request.satsType
+        )
+        return skattetrekkService.hentSkattetrekk(SecurityContextUtil.getPidFromContext())
     }
 
     @ResponseStatus(value = SERVICE_UNAVAILABLE, reason = "Oppdragssystemet er nede eller utilgjengelig")

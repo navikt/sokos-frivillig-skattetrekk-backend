@@ -17,6 +17,22 @@ class BehandleTrekkService(
 
     private val log = LoggerFactory.getLogger(BehandleTrekkService::class.java)
 
+    fun behandleTrekk(pid: String, tilleggstrekk: Int, satsType: SatsType) {
+        val finnTrekkListe = trekkClient.finnTrekkListe(pid, TrekkTypeCode.FSKT)
+        val trekkvedtakId = finnTrekkListe?.firstOrNull()?.trekkvedtakId
+
+        if (trekkvedtakId != null && tilleggstrekk == 0) {
+            log.info("Opphører trekk = $trekkvedtakId")
+            opphoerTrekk(pid, trekkvedtakId)
+        } else if (trekkvedtakId != null && trekkvedtakId > 0) {
+            log.info("Oppdaterer trekk = $trekkvedtakId")
+            oppdaterTrekk(pid, trekkvedtakId, tilleggstrekk, satsType)
+        } else {
+            log.info("Oppretter nytt trekk")
+            opprettTrekk(pid, tilleggstrekk, satsType)
+        }
+    }
+
     fun opprettTrekk(pid: String, tilleggstrekk: Int, satsType: SatsType): Long? {
 
         log.info("Henter skatt og trekk")
