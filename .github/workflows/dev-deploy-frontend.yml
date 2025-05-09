@@ -43,5 +43,5 @@ jobs:
         env:
           CLUSTER: dev-gcp
           RESOURCE: skattetrekk-frontend/.nais/nais-q2.yml
-          IMAGE: ${{ needs.docker-build-push.outputs.image }}
+          IMAGE: ${{ steps.docker-build-push.outputs.image }}
           TEAM: okonomi
