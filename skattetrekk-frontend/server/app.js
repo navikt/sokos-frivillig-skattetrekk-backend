@@ -1,6 +1,5 @@
 import express from "express";
 import tokenx from "./tokenx.js";
-import azure from "./azureAd.js";
 import dotenv from "dotenv"
 import path from "path";
 import {fileURLToPath} from "url";
