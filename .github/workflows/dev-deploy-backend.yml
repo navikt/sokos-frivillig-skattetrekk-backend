@@ -46,5 +46,5 @@ jobs:
         uses: nais/deploy/actions/deploy@v2
         env:
           CLUSTER: dev-fss
-          RESOURCE: ./skattetrekk-backend/.nais/.nais-q2.yml
+          RESOURCE: ./skattetrekk-backend/.nais/nais-q2.yml
           IMAGE: ${{ steps.docker-build-push.outputs.image }}
