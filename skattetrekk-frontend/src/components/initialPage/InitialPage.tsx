@@ -1,59 +1,33 @@
-import {
-    Alert,
-    BodyLong,
-    Heading,
-    Link,
-    ReadMore,
-    VStack
-} from "@navikt/ds-react";
+import {Alert, BodyLong, Heading, Link, List, ReadMore, VStack} from "@navikt/ds-react";
 import React, {useContext, useState} from "react";
-import {RegistrerteSkattetrekk} from "@/components/initial/RegistrerteSkattetrekk";
-import {useLoaderData, useNavigate} from "react-router-dom";
-import {FrivilligSkattetrekkInitResponse, SatsType, saveSkattetrekk} from "@/api/skattetrekkBackendClient";
+import {RegistrerteSkattetrekk} from "@/components/initialPage/RegistrerteSkattetrekk";
+import {useNavigate} from "react-router-dom";
+import {SatsType} from "@/api/skattetrekkBackendClient";
 import {FormStateContext} from "@/state/FormState";
-import {Selector} from "@/components/initial/Selector";
+import {Selector} from "@/components/initialPage/Selector";
 import {DataContext} from "@/state/DataContextProvider";
 
 export function InitialPage() {
     const {setTilleggstrekkType, setTilleggstrekkValue} = useContext(FormStateContext)
     const {initiateResponse, setSendResponse} = useContext(DataContext)
-    //
     const [buttonIsLoading, setButtonIsLoading] = useState(false)
 
-    const skattetrekkLoader = useLoaderData() as FrivilligSkattetrekkInitResponse
     const pid = new URLSearchParams(document.location.search).get("pid")
 
     const navigate = useNavigate()
 
 
     async function submitTilleggstrekk(type: SatsType, value: number | null) {
-        try {
-            if (type !== null && value !== null) {
-                setButtonIsLoading(true)
-                setTilleggstrekkType(type)
-                setTilleggstrekkValue(value)
+        if (type !== null && value !== null) {
+            setButtonIsLoading(true)
+            setTilleggstrekkType(type)
+            setTilleggstrekkValue(value)
 
-                console.log(type, value)
-
-                const isSuccess = await saveSkattetrekk(
-                    {
-                        trekkVedtakId: initiateResponse?.tilleggstrekk?.trekkvedtakId || "",
-                        value: value,
-                        satsType: type
-                    });
-
-                if (isSuccess) {
-                    setSendResponse(true)
-                    navigate(import.meta.env.BASE_URL + "/kvittering", {
-                        state: {
-                            pid: pid
-                        }
-                    })
-                }
-            }
-            setButtonIsLoading(false)
-        } catch (e) {
-            setButtonIsLoading(false)
+            navigate(import.meta.env.BASE_URL + "/oppsummering", {
+                    state: {
+                        pid: pid
+                    }
+                })
         }
     }
 
@@ -70,7 +44,7 @@ export function InitialPage() {
     return (
         <VStack gap="16">
             <VStack gap="6" id="samboer-historikk-tittel">
-                {initiateResponse?.skattetrekk?.trekkvedtakId != null &&
+                {initiateResponse?.skattetrekk != null &&
                     <Alert variant={"warning"}>
                         Du har ikke en skattepliktig ytelse fra Nav. Du kan derfor ikke legge inn et frivillig skattetrekk.
                     </Alert>}
@@ -94,7 +68,21 @@ export function InitialPage() {
 
                 <ReadMore header="Disse pengestøttene kan du regstrere frivillig skattetrekk i">
                     <BodyLong spacing>
-                        tekst
+                        <List>
+                            <List.Item>Arbeidsavklaringspenger (AAP)</List.Item>
+                            <List.Item>Dagpenger</List.Item>
+                            <List.Item>Foreldre- og svangerskapspenger</List.Item>
+                            <List.Item>Omstillingsstønad</List.Item>
+                            <List.Item>Overgangsstønad til enslig mor eller far</List.Item>
+                            <List.Item>Pensjon fra Nav</List.Item>
+                            <List.Item>Pensjon fra Statens pensjonskasse (SPK)</List.Item>
+                            <List.Item>Pleie-, omsorg- og opplæringspenger</List.Item>
+                            <List.Item>Sykepenger</List.Item>
+                            <List.Item>Supplerende stønad alder</List.Item>
+                            <List.Item>Supplerende stønad uføre</List.Item>
+                            <List.Item>Uførepensjon fra Statens pensjonskasse (SPK)</List.Item>
+                            <List.Item>Uføretrygd</List.Item>
+                        </List>
                     </BodyLong>
                 </ReadMore>
 
@@ -107,10 +95,11 @@ export function InitialPage() {
                 <Link href="nav.no">Les om frivillig skattetrekk</Link>
             </VStack>
 
-            <VStack gap={{xs: "2", md: "6"}}>
-                <Heading size={"medium"} level="2">Dine registrerte skattetrekk</Heading>
-                <RegistrerteSkattetrekk skatteTrekk={skattetrekkLoader.skattetrekk} tilleggstrekk={skattetrekkLoader.tilleggstrekk} />
-            </VStack>
+            { initiateResponse != null &&
+                <VStack gap={{xs: "2", md: "6"}}>
+                    <Heading size={"medium"} level="2">Dine registrerte skattetrekk</Heading>
+                    <RegistrerteSkattetrekk skatteTrekk={initiateResponse!.skattetrekk} tilleggstrekk={initiateResponse!.tilleggstrekk} framtidigTilleggstrekk={initiateResponse!.framtidigTilleggstrekk} />
+                </VStack> }
 
             <Selector submitTilleggstrekk={submitTilleggstrekk} maxKroner={10000} buttonIsLoading={buttonIsLoading}/>
         </VStack>

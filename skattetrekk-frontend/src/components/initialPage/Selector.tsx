@@ -1,8 +1,7 @@
 import {Button, Heading, HStack, Radio, RadioGroup, TextField, VStack} from "@navikt/ds-react";
 import {useState} from "react";
 import {SatsType} from "@/api/skattetrekkBackendClient";
-import {parseInntekt} from "@/util/NumberUtil";
-import {numberFormatWithKr} from "@/common/Utils";
+import {numberFormatWithKr, parseInntekt} from "@/common/Utils";
 
 export function Selector(props: {
     maxKroner: number
