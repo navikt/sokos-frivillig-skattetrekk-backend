@@ -52,7 +52,7 @@ spec:
     - name: "SKATTETREKK_BACKEND_URL"
       value: "https://skattetrekk-backend-q2.dev-fss-pub.nais.io"
     - name: "SKATTETREKK_BACKEND_SCOPE"
-      value: "api://dev-fss.skattetrekk-backend-q2/.default"
+      value: "api://dev-fss.okonomi.skattetrekk-backend-q2/.default"
     - name: "SKATTETREKK_BACKEND_AUDIENCE"
       value: "dev-fss:okonomi:skattetrekk-backend-q2"
     - name: "REPRESENTASJON_BANNER_URL"
