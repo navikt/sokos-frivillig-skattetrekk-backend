@@ -13,12 +13,13 @@ import java.lang.IllegalStateException
 class TokenService(
     @Value("\${oauth2.tokenX.issuer}") private val tokenXIssuer: String,
     private val tokenXService: TokenXService,
+    private val azureAdService: AzureAdService,
 ) {
 
     private val log = LoggerFactory.getLogger(TokenService::class.java)
 
     enum class TokenType {
-        TOKEN_X
+        AZURE_AD_CLIENT_CREDENTIALS, TOKEN_X
     }
 
     fun getEgressToken(scope: String, audience: String? = null, pid: String, appId: AppId): String? =
@@ -30,6 +31,7 @@ class TokenService(
                 TokenType.TOKEN_X -> audience?.let { audience ->
                     tokenXService.exchangeIngressTokenToEgressToken(token.tokenValue, audience)
                 } ?: throw EgressAudienceMissingException()
+                TokenType.AZURE_AD_CLIENT_CREDENTIALS -> azureAdService.retrieveClientCredentialsToken(scopes)
             }
         }
 
@@ -87,6 +89,8 @@ class TokenService(
 
                 }
                 return TokenType.TOKEN_X
+            } else {
+                return TokenType.AZURE_AD_CLIENT_CREDENTIALS
             }
         }
         throw CouldNotDetermineTokenTypeException()
