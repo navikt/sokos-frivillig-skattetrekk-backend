@@ -20,7 +20,7 @@ const buildPath = path.resolve(__dirname, "../dist")
 app.use(basePath, express.static(buildPath));
 
 app.get(
-     basePath + '/api/initSkattetrekk',
+     basePath + '/api/skattetrekk',
      async (req, res) => {
 
         const idToken = req.headers['authorization'].replace('Bearer', '').trim();
