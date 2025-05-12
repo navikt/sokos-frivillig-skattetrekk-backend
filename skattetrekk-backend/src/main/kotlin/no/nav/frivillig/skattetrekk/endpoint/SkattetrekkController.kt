@@ -4,9 +4,7 @@ import no.nav.frivillig.skattetrekk.endpoint.api.*
 import no.nav.frivillig.skattetrekk.security.SecurityContextUtil
 import no.nav.frivillig.skattetrekk.service.BehandleTrekkService
 import no.nav.frivillig.skattetrekk.service.HentSkattOgTrekkService
-import org.springframework.http.HttpStatus
 import org.springframework.http.HttpStatus.*
-import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
 @RestController

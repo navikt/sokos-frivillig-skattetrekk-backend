@@ -23,11 +23,14 @@ app.get(
      basePath + '/api/skattetrekk',
      async (req, res) => {
 
+        console.log("Henter nytt token")
         const idToken = req.headers['authorization'].replace('Bearer', '').trim();
         let accessToken = await getTokenValue(idToken);
+         console.log("Token hentet")
         let newHeaders = req.headers;
         newHeaders['authorization'] = 'Bearer ' + accessToken; // Override authorization header with new token
 
+        console.log("Kaller  " + process.env.SKATTETREKK_BACKEND_URL + "/api/skattetrekk")
         const response = await fetch(process.env.SKATTETREKK_BACKEND_URL + "/api/skattetrekk", {
              method: req.method,
              headers: newHeaders
