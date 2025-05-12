@@ -1,6 +1,7 @@
 package no.nav.frivillig.skattetrekk.security
 
 import no.nav.frivillig.skattetrekk.configuration.AppId
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.oauth2.jwt.Jwt
@@ -13,6 +14,8 @@ class TokenService(
     @Value("\${oauth2.tokenX.issuer}") private val tokenXIssuer: String,
     private val tokenXService: TokenXService,
 ) {
+
+    private val log = LoggerFactory.getLogger(TokenService::class.java)
 
     enum class TokenType {
         TOKEN_X
@@ -69,6 +72,7 @@ class TokenService(
 
     private fun typeOf(jwt: Jwt, pid: String, appId: AppId): TokenType {
         val issuer = jwt.getClaim<String>("iss")
+        log.info("$issuer == $tokenXIssuer")
          if (issuer == tokenXIssuer) {
 
             if (appId.supportsTokenX) {
