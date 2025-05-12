@@ -23,18 +23,14 @@ app.get(
      basePath + '/api/skattetrekk',
      async (req, res) => {
 
-        console.log("Henter nytt token")
-        const idToken = req.headers['authorization'].replace('Bearer', '').trim();
-        let accessToken = await getTokenValue(idToken);
-         console.log("Token hentet")
-        let newHeaders = req.headers;
-        newHeaders['authorization'] = 'Bearer ' + accessToken; // Override authorization header with new token
+         const newHeaders = await updateHeaders(req.headers)
 
         console.log("Kaller  " + process.env.SKATTETREKK_BACKEND_URL + "/api/skattetrekk")
         const response = await fetch(process.env.SKATTETREKK_BACKEND_URL + "/api/skattetrekk", {
              method: req.method,
              headers: newHeaders
          }).catch(err => {
+            console.log(err);
             console.log(err.response.data);
         });
 
@@ -44,6 +40,17 @@ app.get(
         res.status(statuskode).send(body)
     }
 );
+
+
+async function updateHeaders(requestHeaders) {
+    const idToken = requestHeaders['authorization'].replace('Bearer', '').trim();
+    console.log("Exchange Idporten token to tokenx");
+    let accessToken = await getTokenValue(idToken);
+    console.log("TokenX received");
+    let newHeaders = requestHeaders;
+    newHeaders['authorization'] = 'Bearer ' + accessToken; // Override authorization header with new token
+    return newHeaders
+}
 
 async function getTokenValue(idToken) {
     return await tokenx.getTokenExchangeAccessToken(
