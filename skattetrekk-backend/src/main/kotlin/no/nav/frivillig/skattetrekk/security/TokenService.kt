@@ -74,7 +74,6 @@ class TokenService(
 
     private fun typeOf(jwt: Jwt, pid: String, appId: AppId): TokenType {
         val issuer = jwt.getClaim<String>("iss")
-        log.info("$issuer == $tokenXIssuer")
          if (issuer == tokenXIssuer) {
 
             if (appId.supportsTokenX) {
