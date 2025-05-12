@@ -9,6 +9,7 @@ import no.nav.frivillig.skattetrekk.security.TokenService
 import no.nav.frivillig.skattetrekk.service.TrekkTypeCode
 import no.nav.pensjon.pselv.consumer.behandletrekk.oppdragrestproxy.OpphorAndreTrekkRequest
 import no.nav.pensjon.pselv.consumer.behandletrekk.oppdragrestproxy.OpprettAndreTrekkRequest
+import org.slf4j.LoggerFactory
 
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
@@ -23,6 +24,8 @@ class TrekkClient(
     private val tokenService: TokenService,
     private val webClient: WebClient,
 ) {
+
+    private val log = LoggerFactory.getLogger(TrekkClient::class.java)
 
     fun finnTrekkListe(pid: String, trekkType: TrekkTypeCode): List<TrekkInfo> {
 
@@ -49,6 +52,7 @@ class TrekkClient(
                 ?.toList()
                 ?: emptyList()
         } catch (e: Exception) {
+            log.error("Failed to fetch trekkliste: ${e.message}", e)
             if (e is WebClientResponseException) {
                 when(e.message) {
                     "Oppdragssystemet er nede eller utilgjengelig" -> throw OppdragUtilgjengeligException()
@@ -74,6 +78,7 @@ class TrekkClient(
                 .bodyToMono(HentSkattOgTrekkResponse::class.java)
                 .block()
         } catch (e: Exception) {
+            log.error("Failed to hentSkattOgTrekk: ${e.message}", e)
             if (e is WebClientResponseException) {
                 when(e.message) {
                     "Oppdragssystemet er nede eller utilgjengelig" -> throw OppdragUtilgjengeligException()
@@ -96,6 +101,7 @@ class TrekkClient(
                 .bodyToMono(OpprettAndreTrekkResponse::class.java)
                 .block()
         } catch(e: Exception) {
+            log.error("Failed to opprettAndreTrekk: ${e.message}", e)
             if (e is WebClientResponseException) {
                 when(e.message) {
                     "Oppdragssystemet er nede eller utilgjengelig" -> throw OppdragUtilgjengeligException()
@@ -117,6 +123,7 @@ class TrekkClient(
                 .toBodilessEntity()
                 .block()
         } catch(e: Exception) {
+            log.error("Failed to opphorAndreTrekk: ${e.message}", e)
             if (e is WebClientResponseException) {
                 when(e.message) {
                     "Oppdragssystemet er nede eller utilgjengelig" -> throw OppdragUtilgjengeligException()

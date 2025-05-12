@@ -31,7 +31,10 @@ app.get(
              headers: newHeaders
          }).catch(err => {
             console.log(err);
-            console.log(err.response.data);
+            console.log(err.message);
+            res.status(500).send({
+                message: err.message
+            });
         });
 
         const body = await response.json();
