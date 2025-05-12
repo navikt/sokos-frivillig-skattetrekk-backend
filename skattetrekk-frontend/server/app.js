@@ -34,7 +34,9 @@ app.get(
         const response = await fetch(process.env.SKATTETREKK_BACKEND_URL + "/api/skattetrekk", {
              method: req.method,
              headers: newHeaders
-         });
+         }).catch(err => {
+            console.log(err.response.data);
+        });
 
         const body = await response.json();
 
