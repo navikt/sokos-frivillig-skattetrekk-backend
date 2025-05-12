@@ -1,12 +1,12 @@
 import {createContext, useCallback, useEffect, useState} from 'react'
-import {fetchSkattetrekk, FrivilligSkattetrekkInitResponse} from "@/api/skattetrekkBackendClient";
+import {fetchSkattetrekk, FrivilligSkattetrekkResponse} from "@/api/skattetrekkBackendClient";
 
 interface DataContextValue {
-    initiateResponse: FrivilligSkattetrekkInitResponse | null
-    setInitiateResponse: (value: FrivilligSkattetrekkInitResponse) => void
+    initiateResponse: FrivilligSkattetrekkResponse | null
+    setInitiateResponse: (value: FrivilligSkattetrekkResponse) => void
 
-    sendResponse: boolean | null
-    setSendResponse: (value: boolean) => void
+    sendResponse: FrivilligSkattetrekkResponse | null
+    setSendResponse: (value: FrivilligSkattetrekkResponse) => void
 
     refetch: boolean
     setRefetch: (value: boolean) => void
@@ -32,6 +32,7 @@ interface DataContextProviderProps {
 function DataContextProvider(props: DataContextProviderProps) {
     const [refetch, setRefetch] = useState(DataContextDefaultValue.refetch)
     const [initiateResponse, setInitiateResponse] = useState(DataContextDefaultValue.initiateResponse)
+    const [sendResponse, setSendResponse] = useState(DataContextDefaultValue.sendResponse)
 
     useCallback(
         function (res: boolean) {
@@ -56,8 +57,8 @@ function DataContextProvider(props: DataContextProviderProps) {
                 initiateResponse,
                 setInitiateResponse,
 
-                sendResponse: null,
-                setSendResponse: () => undefined,
+                sendResponse,
+                setSendResponse,
 
                 refetch,
                 setRefetch,

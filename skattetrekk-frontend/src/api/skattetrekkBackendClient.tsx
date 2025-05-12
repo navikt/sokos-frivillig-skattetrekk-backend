@@ -1,11 +1,9 @@
 export interface TrekkDTO {
-    trekkvedtakId: string | null;
     sats: number | null;
     satsType: SatsType | null;
 }
 
 export interface ForenkletSkattetrekk {
-    trekkvedtakId: string | null;
     tabellNr: string | null;
     prosentsats: number | null;
 }
@@ -15,24 +13,24 @@ export enum SatsType {
     KRONER = "KRONER"
 }
 
-export interface FrivilligSkattetrekkInitResponse {
+export interface FrivilligSkattetrekkResponse {
     tilleggstrekk: TrekkDTO | null;
     framtidigTilleggstrekk: TrekkDTO | null;
     skattetrekk: ForenkletSkattetrekk;
 }
 
-export interface SaveRequest{
-    trekkVedtakId: string;
+export interface UpdateTilleggstrekkRequest {
     value: number;
     satsType: SatsType
 }
+
 
 const isMock = process.env.isMock || false
 const PORT = process.env.MOCK_PORT || "8080"
 const BASE_URL = isMock ? "http://" + window.location.hostname + ":" + PORT + import.meta.env.BASE_URL + "/"
     : import.meta.env.BASE_URL + "/"
 
-export async function fetchSkattetrekk(): Promise<FrivilligSkattetrekkInitResponse> {
+export async function fetchSkattetrekk(): Promise<FrivilligSkattetrekkResponse> {
     const searchParams = new URLSearchParams(document.location.search)
     const pid = searchParams.get("pid")
 
@@ -50,17 +48,17 @@ export async function fetchSkattetrekk(): Promise<FrivilligSkattetrekkInitRespon
 
     if(isMock) {
         return {
-            tilleggstrekk:
-                {
-                    trekkvedtakId: "123",
-                    sats: 200,
-                    satsType: SatsType.KRONER
-                },
-            framtidigTilleggstrekk: null,
+            tilleggstrekk: {
+                sats: 45,
+                satsType: SatsType.PROSENT
+            },
+            framtidigTilleggstrekk: {
+                sats: 300,
+                satsType: SatsType.KRONER
+            },
             skattetrekk: {
-                trekkvedtakId: "123",
-                tabellNr: null, //"800",
-                prosentsats: 25
+                tabellNr: "800",
+                prosentsats: null
             }
         }
     }
@@ -74,7 +72,7 @@ export async function fetchSkattetrekk(): Promise<FrivilligSkattetrekkInitRespon
         response => {
             if (response.status >= 200 && response.status < 300) {
                 return response.json().then(data => {
-                    return data as FrivilligSkattetrekkInitResponse;
+                    return data as FrivilligSkattetrekkResponse;
                 })
             } else if (response.status == 400) {
                 return response.json().then(
@@ -89,7 +87,7 @@ export async function fetchSkattetrekk(): Promise<FrivilligSkattetrekkInitRespon
     )
 }
 
-export async function saveSkattetrekk(request: SaveRequest): Promise<boolean> {
+export async function saveSkattetrekk(request: UpdateTilleggstrekkRequest): Promise<FrivilligSkattetrekkResponse> {
     const searchParams = new URLSearchParams(document.location.search)
     const pid = searchParams.get("pid")
 
@@ -108,20 +106,42 @@ export async function saveSkattetrekk(request: SaveRequest): Promise<boolean> {
     console.log("saveSkattetrekk", request)
 
     if(isMock) {
-        return true
+        return {
+            tilleggstrekk: {
+                sats: 10,
+                satsType: SatsType.PROSENT
+            },
+            framtidigTilleggstrekk: {
+                sats: 4444,
+                satsType: SatsType.KRONER
+            },
+            skattetrekk: {
+                tabellNr: null, //"800",
+                prosentsats: 25
+            }
+        }
     }
 
     return await fetch(BASE_URL+ "api/skattetrekk", {
             method: "POST",
             credentials: "include",
-            headers: headers
+            headers: headers,
+            body: JSON.stringify(request)
         }
     ).then(
         response => {
             if (response.status >= 200 && response.status < 300) {
-                return true
+                return response.json().then(data => {
+                    return data as FrivilligSkattetrekkResponse;
+                })
+            } else if (response.status == 400) {
+                return response.json().then(
+                    data => {
+                        return data.feilkode
+                    }
+                )
             } else {
-                return false
+                throw new Error("Fikk ikke 2xx respons fra server");
             }
         }
     )
