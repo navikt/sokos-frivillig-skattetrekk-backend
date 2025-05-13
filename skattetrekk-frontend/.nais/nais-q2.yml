@@ -46,6 +46,13 @@ spec:
       rules:
         - application: wonderwalled-idporten
           namespace: aura
+    outbound:
+      rules:
+          - application: skattetrekk-backend-q2
+            namespace: okonomi
+      external:
+        - application: skattetrekk-backend-q2.dev-fss-pub.nais.io
+
   env:
     - name: "VITE_DECORATOR_URL"
       value: "https://dekoratoren.ekstern.dev.nav.no"
