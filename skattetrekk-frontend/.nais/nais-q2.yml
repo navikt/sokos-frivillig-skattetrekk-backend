@@ -47,9 +47,6 @@ spec:
         - application: wonderwalled-idporten
           namespace: aura
     outbound:
-      rules:
-          - application: skattetrekk-backend-q2
-            namespace: okonomi
       external:
         - host: skattetrekk-backend-q2.dev-fss-pub.nais.io
 
