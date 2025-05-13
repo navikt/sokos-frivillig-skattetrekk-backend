@@ -23,7 +23,7 @@ class TrekkClient(
     @Value("\${trekk.scope}") private val trekkScope: String,
     @Value("\${trekk.audience}") private val audience: String,
     private val tokenService: TokenService,
-    @Qualifier("webClientProxy") private val webClient: WebClient,
+    private val webClient: WebClient,
 ) {
 
     private val log = LoggerFactory.getLogger(TrekkClient::class.java)

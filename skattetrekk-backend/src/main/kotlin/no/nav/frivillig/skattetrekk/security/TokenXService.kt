@@ -10,6 +10,7 @@ import com.nimbusds.jose.crypto.RSASSASigner
 import com.nimbusds.jose.jwk.RSAKey
 import com.nimbusds.jwt.JWTClaimsSet
 import com.nimbusds.jwt.SignedJWT
+import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.MediaType
 import org.springframework.stereotype.Service
@@ -23,7 +24,7 @@ class TokenXService(
     @Value("\${oauth2.tokenX.tokenEndpoint}") private val endpoint: String,
     @Value("\${oauth2.tokenX.privateJwk}") private val privateJwk: String,
     @Value("\${oauth2.tokenX.clientId}") private val clientId: String,
-    private val webClient: WebClient,
+    @Qualifier("webClientProxy") private val webClient: WebClient,
 ) {
 
     companion object {
