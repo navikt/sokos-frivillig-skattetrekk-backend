@@ -10,6 +10,7 @@ import no.nav.frivillig.skattetrekk.service.TrekkTypeCode
 import no.nav.pensjon.pselv.consumer.behandletrekk.oppdragrestproxy.OpphorAndreTrekkRequest
 import no.nav.pensjon.pselv.consumer.behandletrekk.oppdragrestproxy.OpprettAndreTrekkRequest
 import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Qualifier
 
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
@@ -22,7 +23,7 @@ class TrekkClient(
     @Value("\${trekk.scope}") private val trekkScope: String,
     @Value("\${trekk.audience}") private val audience: String,
     private val tokenService: TokenService,
-    private val webClient: WebClient,
+    @Qualifier("webClientProxy") private val webClient: WebClient,
 ) {
 
     private val log = LoggerFactory.getLogger(TrekkClient::class.java)
