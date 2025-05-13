@@ -14,6 +14,12 @@ const ScrollToTop = () => {
     return <Outlet />
 }
 
+export enum PageLinks {
+    INDEX = '/',
+    KVITTERING = '/kvittering',
+    OPPSUMMERING = '/oppsummering',
+}
+
 export const routes: RouteObject[] = [
     {
         element: <ScrollToTop/>,
@@ -25,16 +31,29 @@ export const routes: RouteObject[] = [
                 errorElement: <Error/>
             },
             {
-                path: import.meta.env.BASE_URL + "/kvittering",
+                path: import.meta.env.BASE_URL + PageLinks.KVITTERING,
                 element: <KvitteringPage/>,
                 errorElement: <Error/>
             },
             {
-                path: import.meta.env.BASE_URL + "/oppsummering",
+                path: import.meta.env.BASE_URL + PageLinks.OPPSUMMERING,
                 element: <OppsummeringPage/>,
                 errorElement: <Error/>
             }
         ]
     }
-
 ]
+
+export const getFullPathForPage = (pageLink: PageLinks, href?: string) => {
+    return pageLink + (href ? `#${href}` : "")  + getPidQueryParamString()
+}
+
+export const getPidQueryParamString = () => {
+    const searchParams = new URLSearchParams(document.location.search)
+    const pid = searchParams.get('pid')
+    if (pid === null) {
+        return ''
+    }
+    return '?pid=' + pid
+}
+

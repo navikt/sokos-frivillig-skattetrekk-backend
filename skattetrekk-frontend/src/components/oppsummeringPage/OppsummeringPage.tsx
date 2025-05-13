@@ -1,4 +1,4 @@
-import {BodyShort, Box, FormSummary, Heading, VStack} from '@navikt/ds-react'
+import {BodyShort, Box, Button, FormSummary, Heading, HStack, VStack} from '@navikt/ds-react'
 import React, {useContext, useState} from 'react'
 import {SatsType, saveSkattetrekk} from "@/api/skattetrekkBackendClient";
 import {FormStateContext} from "@/state/FormState";
@@ -6,24 +6,27 @@ import {DataContext} from "@/state/DataContextProvider";
 import {useNavigate} from "react-router-dom";
 import {FormatKroner} from "@/common/FormatKroner";
 import {showPercentageOrTable, visProsentEllerBelop} from "@/common/Utils";
+import {ArrowLeftIcon} from "@navikt/aksel-icons";
 
 export const OppsummeringPage = () => {
     const {tilleggstrekkType, tilleggstrekkValue} = useContext(FormStateContext)
     const {initiateResponse, setSendResponse} = useContext(DataContext)
-    const [isWaiting, setIsWaiting] = useState(true)
+    const [buttonLoading, setButtonLoadinhg] = useState(false)
 
     const navigate = useNavigate()
     const pid = new URLSearchParams(document.location.search).get("pid")
 
-    async function submitTilleggstrekk(type: SatsType, value: number | null) {
-        if (type !== null && value !== null) {
+    async function submitTilleggstrekk() {
+        if (tilleggstrekkType !== null && tilleggstrekkValue !== null) {
+            setButtonLoadinhg(true)
                 const response = await saveSkattetrekk(
                     {
-                        value: value,
-                        satsType: type
+                        value: tilleggstrekkValue,
+                        satsType: tilleggstrekkType,
                     });
 
                 setSendResponse(response)
+            setButtonLoadinhg(false)
                 navigate(import.meta.env.BASE_URL + "/kvittering", {
                     state: {
                         pid: pid
@@ -54,6 +57,7 @@ export const OppsummeringPage = () => {
     }
 
   return (
+      <VStack gap="12">
       <FormSummary>
           <FormSummary.Header>
               <FormSummary.Heading level="2">Skattetrekk</FormSummary.Heading>
@@ -84,5 +88,12 @@ export const OppsummeringPage = () => {
                 </FormSummary.Answer>
           </FormSummary.Answers>
       </FormSummary>
+
+    <HStack gap="2">
+        <Button variant="primary" size={"medium"} loading={buttonLoading} type={"submit"}
+                onClick={submitTilleggstrekk}> Registrer </Button>
+        <Button variant="tertiary" size={"medium"}> Avbryt </Button>
+    </HStack>
+      </VStack>
   )
 }
