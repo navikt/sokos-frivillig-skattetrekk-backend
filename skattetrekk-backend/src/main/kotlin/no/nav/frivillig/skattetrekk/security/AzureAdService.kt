@@ -2,6 +2,7 @@ package no.nav.frivillig.skattetrekk.security
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonProperty
+import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.MediaType
 import org.springframework.stereotype.Service
@@ -13,7 +14,7 @@ class AzureAdService(
     @Value("\${oauth2.azureAd.clientId}") private val clientId: String,
     @Value("\${oauth2.azureAd.clientSecret}") private val clientSecret: String,
     @Value("\${oauth2.azureAd.tokenEndpoint}") private val endpoint: String,
-    private val webClient: WebClient
+    @Qualifier("webClientProxy") private val webClient: WebClient
 ) {
 
     @JsonIgnoreProperties(ignoreUnknown = true)
