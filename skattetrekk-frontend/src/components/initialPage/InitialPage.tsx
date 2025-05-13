@@ -6,6 +6,7 @@ import {SatsType} from "@/api/skattetrekkBackendClient";
 import {FormStateContext} from "@/state/FormState";
 import {Selector} from "@/components/initialPage/Selector";
 import {DataContext} from "@/state/DataContextProvider";
+import {getFullPathForPage, PageLinks} from "@/routes";
 
 export function InitialPage() {
     const {setTilleggstrekkType, setTilleggstrekkValue} = useContext(FormStateContext)
@@ -23,11 +24,7 @@ export function InitialPage() {
             setTilleggstrekkType(type)
             setTilleggstrekkValue(value)
 
-            navigate(import.meta.env.BASE_URL + "/oppsummering", {
-                    state: {
-                        pid: pid
-                    }
-                })
+            navigate(getFullPathForPage(PageLinks.OPPSUMMERING))
         }
     }
 
@@ -94,6 +91,10 @@ export function InitialPage() {
 
                 <Link href="nav.no">Les om frivillig skattetrekk</Link>
             </VStack>
+
+            {/*show a horizontal black line, to separate the sections in the page*/}
+            <hr style={{ border: "1px solid black", width: "100%" }} />
+
 
             { initiateResponse != null &&
                 <VStack gap={{xs: "2", md: "6"}}>
