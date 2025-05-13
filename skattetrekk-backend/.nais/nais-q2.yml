@@ -53,6 +53,7 @@ spec:
       destinations:
         - id: elastic
         - id: loki
+  webproxy: true
   accessPolicy:
     inbound:
       rules:
