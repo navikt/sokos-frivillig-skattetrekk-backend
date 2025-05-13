@@ -68,8 +68,6 @@ spec:
           cluster: dev-gcp
     outbound:
       rules:
-        - application: pensjon-fullmakt-q2
-          namespace: pensjonsamhandling
         - application: oppdrag-rest-proxy-q2
           namespace: teampensjon
 
