@@ -19,18 +19,18 @@ export const routes: RouteObject[] = [
         element: <ScrollToTop/>,
         children: [
             {
-                path: import.meta.env.BASE_URL,
+                path: import.meta.env.BASE_URL + "/okonomi/skattetrekk",
                 element: <InitialPage/>,
                 loader: initSkattetrekkLoader,
                 errorElement: <Error/>
             },
             {
-                path: import.meta.env.BASE_URL + "/kvittering",
+                path: import.meta.env.BASE_URL + "/okonomi/skattetrekk/kvittering",
                 element: <KvitteringPage/>,
                 errorElement: <Error/>
             },
             {
-                path: import.meta.env.BASE_URL + "/oppsummering",
+                path: import.meta.env.BASE_URL + "/okonomi/skattetrekk/oppsummering",
                 element: <OppsummeringPage/>,
                 errorElement: <Error/>
             }
