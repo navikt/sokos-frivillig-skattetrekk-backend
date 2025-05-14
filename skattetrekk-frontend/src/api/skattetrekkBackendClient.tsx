@@ -14,9 +14,13 @@ export enum SatsType {
 }
 
 export interface FrivilligSkattetrekkResponse {
+    data: FrivilligSkattetrekkData
+}
+
+export interface FrivilligSkattetrekkData {
     tilleggstrekk: TrekkDTO | null;
     framtidigTilleggstrekk: TrekkDTO | null;
-    skattetrekk: ForenkletSkattetrekk;
+    skattetrekk: ForenkletSkattetrekk | null;
 }
 
 export interface UpdateTilleggstrekkRequest {
@@ -48,17 +52,19 @@ export async function fetchSkattetrekk(): Promise<FrivilligSkattetrekkResponse> 
 
     if(isMock) {
         return {
-            tilleggstrekk: {
-                sats: 45,
-                satsType: SatsType.PROSENT
-            },
-            framtidigTilleggstrekk: {
-                sats: 300,
-                satsType: SatsType.KRONER
-            },
-            skattetrekk: {
-                tabellNr: "800",
-                prosentsats: null
+            data: {
+                tilleggstrekk: {
+                    sats: 45,
+                    satsType: SatsType.PROSENT
+                },
+                framtidigTilleggstrekk: {
+                    sats: 300,
+                    satsType: SatsType.KRONER
+                },
+                skattetrekk: {
+                    tabellNr: "800",
+                    prosentsats: null
+                }
             }
         }
     }
@@ -107,17 +113,19 @@ export async function saveSkattetrekk(request: UpdateTilleggstrekkRequest): Prom
 
     if(isMock) {
         return {
-            tilleggstrekk: {
-                sats: 10,
-                satsType: SatsType.PROSENT
-            },
-            framtidigTilleggstrekk: {
-                sats: 4444,
-                satsType: SatsType.KRONER
-            },
-            skattetrekk: {
-                tabellNr: null, //"800",
-                prosentsats: 25
+            data: {
+                tilleggstrekk: {
+                    sats: 10,
+                    satsType: SatsType.PROSENT
+                },
+                framtidigTilleggstrekk: {
+                    sats: 4444,
+                    satsType: SatsType.KRONER
+                },
+                skattetrekk: {
+                    tabellNr: null, //"800",
+                    prosentsats: 25
+                }
             }
         }
     }

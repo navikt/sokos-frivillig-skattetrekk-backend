@@ -37,8 +37,8 @@ export const OppsummeringPage = () => {
 
     function sumStrekkString(){
         var result: string
-        if (tilleggstrekkType === SatsType.PROSENT && initiateResponse?.skattetrekk.prosentsats != null) {
-            return (initiateResponse?.skattetrekk.prosentsats + tilleggstrekkValue!) + " %"
+        if (tilleggstrekkType === SatsType.PROSENT && initiateResponse?.data.skattetrekk?.prosentsats != null) {
+            return (initiateResponse?.data.skattetrekk?.prosentsats + tilleggstrekkValue!) + " %"
         }
         if (tilleggstrekkType === SatsType.PROSENT) {
             result = tilleggstrekkValue + " %"
@@ -47,8 +47,8 @@ export const OppsummeringPage = () => {
         }
 
         result += " i tillegg til"
-        if (initiateResponse?.skattetrekk.prosentsats != null) {
-            result += ` ${initiateResponse?.skattetrekk.prosentsats} % fra skattekortet`
+        if (initiateResponse?.data.skattetrekk?.prosentsats != null) {
+            result += ` ${initiateResponse?.data.skattetrekk?.prosentsats} % fra skattekortet`
         } else {
             result += " tabelltrekket"
         }
@@ -72,7 +72,7 @@ export const OppsummeringPage = () => {
               </FormSummary.Answer>
               <FormSummary.Answer>
                     <FormSummary.Label>Skattekort</FormSummary.Label>
-                    <FormSummary.Value>{showPercentageOrTable(initiateResponse?.skattetrekk!)}</FormSummary.Value>
+                    <FormSummary.Value>{showPercentageOrTable(initiateResponse?.data.skattetrekk!)}</FormSummary.Value>
               </FormSummary.Answer>
               <FormSummary.Answer>
                   <Box padding="4" background="surface-subtle" borderRadius="large">
