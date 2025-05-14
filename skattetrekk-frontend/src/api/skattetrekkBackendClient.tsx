@@ -24,8 +24,10 @@ export interface FrivilligSkattetrekkData {
 }
 
 export interface UpdateTilleggstrekkRequest {
-    value: number;
-    satsType: SatsType
+    data: {
+        value: number;
+        satsType: SatsType
+    }
 }
 
 
