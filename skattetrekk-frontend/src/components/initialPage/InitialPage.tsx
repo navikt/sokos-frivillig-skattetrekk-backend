@@ -6,11 +6,11 @@ import {SatsType} from "@/api/skattetrekkBackendClient";
 import {FormStateContext} from "@/state/FormState";
 import {Selector} from "@/components/initialPage/Selector";
 import {DataContext} from "@/state/DataContextProvider";
-import {getFullPathForPage, PageLinks} from "@/routes";
+import {getPathForPage, PageLinks} from "@/routes";
 
 export function InitialPage() {
     const {setTilleggstrekkType, setTilleggstrekkValue} = useContext(FormStateContext)
-    const {initiateResponse, setSendResponse} = useContext(DataContext)
+    const {initiateResponse} = useContext(DataContext)
     const [buttonIsLoading, setButtonIsLoading] = useState(false)
 
     const pid = new URLSearchParams(document.location.search).get("pid")
@@ -24,7 +24,7 @@ export function InitialPage() {
             setTilleggstrekkType(type)
             setTilleggstrekkValue(value)
 
-            navigate(getFullPathForPage(PageLinks.OPPSUMMERING))
+            navigate(getPathForPage(PageLinks.OPPSUMMERING))
         }
     }
 

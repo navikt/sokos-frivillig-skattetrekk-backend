@@ -31,21 +31,22 @@ export const routes: RouteObject[] = [
                 errorElement: <Error/>
             },
             {
+                path: import.meta.env.BASE_URL + PageLinks.OPPSUMMERING,
+                element: <OppsummeringPage/>,
+                errorElement: <Error/>
+            },
+            {
                 path: import.meta.env.BASE_URL + PageLinks.KVITTERING,
                 element: <KvitteringPage/>,
                 errorElement: <Error/>
             },
-            {
-                path: import.meta.env.BASE_URL + PageLinks.OPPSUMMERING,
-                element: <OppsummeringPage/>,
-                errorElement: <Error/>
-            }
+
         ]
     }
 ]
 
-export const getFullPathForPage = (pageLink: PageLinks, href?: string) => {
-    return pageLink + (href ? `#${href}` : "")  + getPidQueryParamString()
+export const getPathForPage = (pageLink: PageLinks) => {
+    return import.meta.env.BASE_URL + pageLink + getPidQueryParamString()
 }
 
 export const getPidQueryParamString = () => {
