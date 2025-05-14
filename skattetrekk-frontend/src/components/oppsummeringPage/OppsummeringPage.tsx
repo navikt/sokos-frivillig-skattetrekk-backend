@@ -47,7 +47,7 @@ export const OppsummeringPage = () => {
         }
 
         result += " i tillegg til"
-        if (initiateResponse?.skattetrekk.prosentsats != null) {
+        if (initiateResponse?.data.skattetrekk?.prosentsats != null) {
             result += ` ${initiateResponse?.data.skattetrekk?.prosentsats} % fra skattekortet`
         } else {
             result += " tabelltrekket"
