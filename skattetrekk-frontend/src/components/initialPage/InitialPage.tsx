@@ -41,7 +41,7 @@ export function InitialPage() {
     return (
         <VStack gap="16">
             <VStack gap="6" id="samboer-historikk-tittel">
-                {initiateResponse?.skattetrekk != null &&
+                {initiateResponse?.data.skattetrekk != null &&
                     <Alert variant={"warning"}>
                         Du har ikke en skattepliktig ytelse fra Nav. Du kan derfor ikke legge inn et frivillig skattetrekk.
                     </Alert>}
@@ -99,7 +99,7 @@ export function InitialPage() {
             { initiateResponse != null &&
                 <VStack gap={{xs: "2", md: "6"}}>
                     <Heading size={"medium"} level="2">Dine registrerte skattetrekk</Heading>
-                    <RegistrerteSkattetrekk skatteTrekk={initiateResponse!.skattetrekk} tilleggstrekk={initiateResponse!.tilleggstrekk} framtidigTilleggstrekk={initiateResponse!.framtidigTilleggstrekk} />
+                    <RegistrerteSkattetrekk skatteTrekk={initiateResponse!.data.skattetrekk!} tilleggstrekk={initiateResponse!.data.tilleggstrekk} framtidigTilleggstrekk={initiateResponse!.data.framtidigTilleggstrekk} />
                 </VStack> }
 
             <Selector submitTilleggstrekk={submitTilleggstrekk} maxKroner={10000} buttonIsLoading={buttonIsLoading}/>

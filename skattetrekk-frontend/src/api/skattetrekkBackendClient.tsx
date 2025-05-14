@@ -14,9 +14,13 @@ export enum SatsType {
 }
 
 export interface FrivilligSkattetrekkResponse {
+    data: FrivilligSkattetrekkData
+}
+
+export interface FrivilligSkattetrekkData {
     tilleggstrekk: TrekkDTO | null;
     framtidigTilleggstrekk: TrekkDTO | null;
-    skattetrekk: ForenkletSkattetrekk;
+    skattetrekk: ForenkletSkattetrekk | null;
 }
 
 export interface UpdateTilleggstrekkRequest {
