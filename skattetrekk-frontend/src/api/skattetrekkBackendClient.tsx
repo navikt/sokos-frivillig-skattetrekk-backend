@@ -46,23 +46,6 @@ export async function fetchSkattetrekk(): Promise<FrivilligSkattetrekkResponse> 
         }
     }
 
-    if(isMock) {
-        return {
-            tilleggstrekk: {
-                sats: 45,
-                satsType: SatsType.PROSENT
-            },
-            framtidigTilleggstrekk: {
-                sats: 300,
-                satsType: SatsType.KRONER
-            },
-            skattetrekk: {
-                tabellNr: "800",
-                prosentsats: null
-            }
-        }
-    }
-
     return await fetch(BASE_URL+ "api/skattetrekk", {
             method: "GET",
             credentials: "include",
@@ -104,23 +87,6 @@ export async function saveSkattetrekk(request: UpdateTilleggstrekkRequest): Prom
     }
 
     console.log("saveSkattetrekk", request)
-
-    if(isMock) {
-        return {
-            tilleggstrekk: {
-                sats: 10,
-                satsType: SatsType.PROSENT
-            },
-            framtidigTilleggstrekk: {
-                sats: 4444,
-                satsType: SatsType.KRONER
-            },
-            skattetrekk: {
-                tabellNr: null, //"800",
-                prosentsats: 25
-            }
-        }
-    }
 
     return await fetch(BASE_URL+ "api/skattetrekk", {
             method: "POST",
