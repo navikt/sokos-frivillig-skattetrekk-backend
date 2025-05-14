@@ -1,4 +1,5 @@
 {
+  "data": {
   "tilleggstrekk": {
     "sats": 10,
     "satsType": "PROSENT"
@@ -10,5 +11,6 @@
   "skattetrekk": {
     "tabellNr": null,
     "prosentsats": 25
+  }
   }
 }
