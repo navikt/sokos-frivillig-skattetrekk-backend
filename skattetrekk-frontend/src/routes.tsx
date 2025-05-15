@@ -45,7 +45,7 @@ export const routes: RouteObject[] = [
 ]
 
 export const getFullPathForPage = (pageLink: PageLinks, href?: string) => {
-    return pageLink + (href ? `#${href}` : "")  + getPidQueryParamString()
+    return import.meta.env.BASE_URL + pageLink + (href ? `#${href}` : "")  + getPidQueryParamString()
 }
 
 export const getPidQueryParamString = () => {

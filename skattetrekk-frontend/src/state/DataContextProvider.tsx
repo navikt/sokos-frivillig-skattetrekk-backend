@@ -1,5 +1,5 @@
 import {createContext, useCallback, useEffect, useState} from 'react'
-import {fetchSkattetrekk, FrivilligSkattetrekkResponse} from "@/api/skattetrekkBackendClient";
+import {fetchSkattetrekk, FrivilligSkattetrekkData, FrivilligSkattetrekkResponse} from "@/api/skattetrekkBackendClient";
 
 interface DataContextValue {
     initiateResponse: FrivilligSkattetrekkResponse | null
