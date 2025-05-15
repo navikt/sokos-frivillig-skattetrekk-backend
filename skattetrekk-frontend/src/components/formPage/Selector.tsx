@@ -46,8 +46,6 @@ export function Selector(props: {
     function onClickSubmit(event: React.FormEvent) {
         event.preventDefault()
 
-        console.log("onClickSubmit")
-
         if (type == null) {
             setSelectorError(true)
             return
