@@ -42,7 +42,7 @@ export function InitialPage() {
     return (
         <VStack gap="8">
             <VStack gap="6" id="samboer-historikk-tittel">
-                {initiateResponse?.data.skattetrekk != null &&
+                {initiateResponse?.data?.skattetrekk != null &&
                     <Alert variant={"warning"}>
                         Du har ikke en skattepliktig ytelse fra Nav. Du kan derfor ikke legge inn et frivillig
                         skattetrekk.
@@ -111,10 +111,12 @@ export function InitialPage() {
                 {initiateResponse != null &&
                     <VStack gap="5">
                         <Heading size={"medium"} level="2">Dine registrerte skattetrekk</Heading>
-                        <RegistrerteSkattetrekk skatteTrekk={initiateResponse!.skattetrekk}
-                                                tilleggstrekk={initiateResponse!.tilleggstrekk}
-                                                framtidigTilleggstrekk={initiateResponse!.framtidigTilleggstrekk}/>
-                        {initiateResponse!.tilleggstrekk != null &&
+                        {initiateResponse?.data?.skattetrekk != null &&
+                            <RegistrerteSkattetrekk skatteTrekk={initiateResponse.data.skattetrekk}
+                                                    tilleggstrekk={initiateResponse.data.tilleggstrekk}
+                                                    framtidigTilleggstrekk={initiateResponse.data.framtidigTilleggstrekk}/>
+                        }
+                        {initiateResponse?.data?.tilleggstrekk != null &&
                             <HStack>
                                 <Button variant="secondary" onClick={() => submitTilleggstrekk(SatsType.PROSENT, 0)}>Stopp
                                     frivillig skattetrekk</Button>
@@ -178,7 +180,7 @@ export function InitialPage() {
             <hr style={{ border: "1px solid black", width: "100%" }} />
 
 
-            { initiateResponse != null &&
+            { initiateResponse?.data !== null &&
                 <VStack gap={{xs: "2", md: "6"}}>
                     <Heading size={"medium"} level="2">Dine registrerte skattetrekk</Heading>
                     <RegistrerteSkattetrekk skatteTrekk={initiateResponse!.data.skattetrekk!} tilleggstrekk={initiateResponse!.data.tilleggstrekk} framtidigTilleggstrekk={initiateResponse!.data.framtidigTilleggstrekk} />

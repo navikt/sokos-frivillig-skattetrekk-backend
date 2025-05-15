@@ -1,12 +1,12 @@
 import {createContext, useCallback, useEffect, useState} from 'react'
-import {fetchSkattetrekk, FrivilligSkattetrekkData} from "@/api/skattetrekkBackendClient";
+import {fetchSkattetrekk, FrivilligSkattetrekkData, FrivilligSkattetrekkResponse} from "@/api/skattetrekkBackendClient";
 
 interface DataContextValue {
-    initiateResponse: FrivilligSkattetrekkData | null
-    setInitiateResponse: (value: FrivilligSkattetrekkData) => void
+    initiateResponse: FrivilligSkattetrekkResponse | null
+    setInitiateResponse: (value: FrivilligSkattetrekkResponse) => void
 
-    sendResponse: FrivilligSkattetrekkData | null
-    setSendResponse: (value: FrivilligSkattetrekkData) => void
+    sendResponse: FrivilligSkattetrekkResponse | null
+    setSendResponse: (value: FrivilligSkattetrekkResponse) => void
 
     refetch: boolean
     setRefetch: (value: boolean) => void
@@ -45,7 +45,7 @@ function DataContextProvider(props: DataContextProviderProps) {
         (async () => {
             if (refetch) {
                 const response = await fetchSkattetrekk()
-                setInitiateResponse(response.data)
+                setInitiateResponse(response)
                 setRefetch(false)
             }
         })()
