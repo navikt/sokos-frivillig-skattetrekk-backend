@@ -44,7 +44,6 @@ class SkattetrekkControllerTest(
                 tilleggstrekk = null,
                 framtidigTilleggstrekk = null,
                 skattetrekk = ForenkletSkattetrekkDto(
-                    trekkvedtakId = null,
                     tabellNr = null,
                     prosentsats = null
                 )
