@@ -6,7 +6,7 @@ import {SatsType} from "@/api/skattetrekkBackendClient";
 import {FormStateContext} from "@/state/FormState";
 import {Selector} from "@/components/initialPage/Selector";
 import {DataContext} from "@/state/DataContextProvider";
-import {getPathForPage, PageLinks} from "@/routes";
+import {getFullPathForPage, PageLinks} from "@/routes";
 
 export function InitialPage() {
     const {setTilleggstrekkType, setTilleggstrekkValue} = useContext(FormStateContext)
@@ -21,7 +21,7 @@ export function InitialPage() {
             setTilleggstrekkType(type)
             setTilleggstrekkValue(value)
 
-            navigate(getPathForPage(PageLinks.OPPSUMMERING))
+            navigate(getFullPathForPage(PageLinks.OPPSUMMERING))
         }
     }
 
