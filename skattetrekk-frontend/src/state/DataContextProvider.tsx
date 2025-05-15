@@ -7,9 +7,6 @@ interface DataContextValue {
 
     sendResponse: FrivilligSkattetrekkResponse | null
     setSendResponse: (value: FrivilligSkattetrekkResponse) => void
-
-    refetch: boolean
-    setRefetch: (value: boolean) => void
 }
 
 const DataContextDefaultValue: DataContextValue = {
@@ -18,9 +15,6 @@ const DataContextDefaultValue: DataContextValue = {
 
     sendResponse: null,
     setSendResponse: () => undefined,
-
-    refetch: true,
-    setRefetch: () => undefined,
 }
 
 export const DataContext = createContext(DataContextDefaultValue)
@@ -30,26 +24,29 @@ interface DataContextProviderProps {
 }
 
 function DataContextProvider(props: DataContextProviderProps) {
-    const [refetch, setRefetch] = useState(DataContextDefaultValue.refetch)
+    const [shouldRefetch, setShouldRefetch] = useState(true)
     const [initiateResponse, setInitiateResponse] = useState(DataContextDefaultValue.initiateResponse)
     const [sendResponse, setSendResponse] = useState(DataContextDefaultValue.sendResponse)
 
-    useCallback(
-        function (res: boolean) {
-            setRefetch(res)
+    const refetch = useCallback(
+        async ()  => {
+            setShouldRefetch(false)
+            try {
+                const response = await fetchSkattetrekk()
+                setInitiateResponse(response)
+            } catch (error) {
+                setShouldRefetch(true) // Reset shouldRefetch to true since the refetch failed
+            }
+
         },
-        [setRefetch]
+        [setShouldRefetch]
     )
 
     useEffect(() => {
-        (async () => {
-            if (refetch) {
-                const response = await fetchSkattetrekk()
-                setInitiateResponse(response)
-                setRefetch(false)
-            }
-        })()
-    }, [refetch])
+        if (shouldRefetch) {
+            refetch() // Call refetch every time shouldRefetch is set to true.
+        }
+    }, [refetch, shouldRefetch])
 
     return (
         <DataContext.Provider
@@ -58,10 +55,7 @@ function DataContextProvider(props: DataContextProviderProps) {
                 setInitiateResponse,
 
                 sendResponse,
-                setSendResponse,
-
-                refetch,
-                setRefetch,
+                setSendResponse
             }}>
             {props.children}
         </DataContext.Provider>

@@ -8,8 +8,8 @@ export function StopTilleggstrekkConfirmationModal(props: {onConfirm: () => void
     return (
         <>
             <HStack gap="6">
-                <Button type="button" onClick={() => setOpen(true)} variant="tertiary">
-                    Avbryt
+                <Button type="button" onClick={() => setOpen(true)} variant="secondary">
+                    Stopp frivillig skattetrekk
                 </Button>
             </HStack>
 
@@ -18,11 +18,12 @@ export function StopTilleggstrekkConfirmationModal(props: {onConfirm: () => void
                     <BodyLong>Hvis du velger å stoppe det frivillige skattetrekket ditt, blir det stoppet fra og med neste måned. Vil du stoppe det frivillige skattetrekket ditt?</BodyLong>
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button type="button" variant="secondary" onClick={() => {setOpen(false)}}>
-                        Nei
-                    </Button>
+
                     <Button type="button" onClick={props.onConfirm} variant="primary">
                         Ja
+                    </Button>
+                    <Button type="button" variant="secondary" onClick={() => {setOpen(false)}}>
+                        Nei
                     </Button>
                 </Modal.Footer>
             </Modal>

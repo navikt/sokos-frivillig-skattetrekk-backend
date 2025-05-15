@@ -13,8 +13,20 @@ export enum SatsType {
     KRONER = "KRONER"
 }
 
+export interface Message {
+    details: string | null,
+    type: MessageType,
+}
+
+export enum MessageType {
+    ERROR,
+    WARNING,
+    INFO
+}
+
 export interface FrivilligSkattetrekkResponse {
     data: FrivilligSkattetrekkData
+    messages: Message[] | null
 }
 
 export interface FrivilligSkattetrekkData {
