@@ -4,9 +4,7 @@ import {SatsType, saveSkattetrekk} from "@/api/skattetrekkBackendClient";
 import {FormStateContext} from "@/state/FormState";
 import {DataContext} from "@/state/DataContextProvider";
 import {useNavigate} from "react-router-dom";
-import {FormatKroner} from "@/common/FormatKroner";
 import {showPercentageOrTable, visProsentEllerBelop} from "@/common/Utils";
-import {ArrowLeftIcon} from "@navikt/aksel-icons";
 
 export const OppsummeringPage = () => {
     const {tilleggstrekkType, tilleggstrekkValue} = useContext(FormStateContext)
@@ -21,9 +19,11 @@ export const OppsummeringPage = () => {
             setButtonLoadinhg(true)
                 const response = await saveSkattetrekk(
                     {
+                        data: {
                         value: tilleggstrekkValue,
                         satsType: tilleggstrekkType,
-                    });
+                        }
+                    })
 
                 setSendResponse(response)
                 setButtonLoadinhg(false)

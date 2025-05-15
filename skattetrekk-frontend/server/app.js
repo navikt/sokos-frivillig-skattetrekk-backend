@@ -23,9 +23,9 @@ app.get(
      basePath + '/api/skattetrekk',
      async (req, res) => {
 
+
          const newHeaders = await updateHeaders(req.headers)
 
-        console.log("Kaller  " + process.env.SKATTETREKK_BACKEND_URL + "/api/skattetrekk")
         const response = await fetch(process.env.SKATTETREKK_BACKEND_URL + "/api/skattetrekk", {
              method: req.method,
              headers: newHeaders
@@ -44,12 +44,34 @@ app.get(
     }
 );
 
+app.post(
+    basePath + '/api/skattetrekk',
+    async (req, res) => {
+
+        const newHeaders = await updateHeaders(req.headers)
+
+        const response = await fetch(process.env.SKATTETREKK_BACKEND_URL + "/api/skattetrekk", {
+            method: req.method,
+            headers: newHeaders,
+            body: JSON.stringify(req.body)
+        }).catch(err => {
+            console.log(err);
+            console.log(err.message);
+            res.status(500).send({
+                message: err.message
+            });
+        });
+
+        const body = await response.json();
+        const statuskode = response.status
+        res.status(statuskode).send(body)
+    }
+);
+
 
 async function updateHeaders(requestHeaders) {
     const idToken = requestHeaders['authorization'].replace('Bearer', '').trim();
-    console.log("Exchange Idporten token to tokenx");
     let accessToken = await getTokenValue(idToken);
-    console.log("TokenX received");
     let newHeaders = requestHeaders;
     newHeaders['authorization'] = 'Bearer ' + accessToken; // Override authorization header with new token
     return newHeaders

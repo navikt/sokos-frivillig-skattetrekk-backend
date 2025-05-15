@@ -31,15 +31,16 @@ export const routes: RouteObject[] = [
                 errorElement: <Error/>
             },
             {
+                path: import.meta.env.BASE_URL + PageLinks.OPPSUMMERING,
+                element: <OppsummeringPage/>,
+                errorElement: <Error/>
+            },
+            {
                 path: import.meta.env.BASE_URL + PageLinks.KVITTERING,
                 element: <KvitteringPage/>,
                 errorElement: <Error/>
             },
-            {
-                path: import.meta.env.BASE_URL + PageLinks.OPPSUMMERING,
-                element: <OppsummeringPage/>,
-                errorElement: <Error/>
-            }
+
         ]
     }
 ]

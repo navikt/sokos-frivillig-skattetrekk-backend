@@ -21,13 +21,13 @@ let init = JSON.parse(fs.readFileSync('mock/skattetrekkInitResponse.json', 'utf8
 let send = JSON.parse(fs.readFileSync('mock/skattetrekkSendResponse.json', 'utf8'));
 
 
-app.get('/pensjon/selvbetjening/skattetrekk/api/initSkattetrekk', (req, res) => {
+app.get('/utbetaling/skattetrekk/api/skattetrekk', (req, res) => {
     console.log("Kjører initiate");
     console.log(process.argv)
     res.send(init)
 })
 
-app.post('/pensjon/selvbetjening/skattetrekk/api/send', (req, res) => {
+app.post('/utbetaling/skattetrekk/api/skattetrekk', (req, res) => {
     console.log("Kjører send");
     res.send(send)
 })

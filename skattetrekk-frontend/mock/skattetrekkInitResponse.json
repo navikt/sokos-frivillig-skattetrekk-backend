@@ -1,12 +1,16 @@
 {
+  "data": {
   "tilleggstrekk": {
-    "trekkvedtakId": 1,
-    "sats": 2000,
-    "satstype": "KRONER"
+    "sats": 10,
+    "satsType": "PROSENT"
   },
-  "fremtidigTilleggstrekk": null,
+  "framtidigTilleggstrekk": {
+    "sats": 4444,
+    "satsType": "KRONER"
+  },
   "skattetrekk": {
-    "tabellNr": 7100,
-    "prosentsats": null
+    "tabellNr": null,
+    "prosentsats": 25
+  }
   }
 }

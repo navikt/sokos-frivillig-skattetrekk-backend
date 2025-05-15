@@ -2,10 +2,9 @@ import './App.css'
 import "@navikt/ds-css";
 import {Heading, VStack} from "@navikt/ds-react";
 import {routes} from "@/routes";
-import {createBrowserRouter, RouterProvider, useLocation} from "react-router-dom";
+import {createBrowserRouter, RouterProvider} from "react-router-dom";
 import {Suspense, useEffect} from "react";
 import {Loading} from "@/components/pageStatus/Loading";
-import {FormStateComponent} from "@/state/FormState";
 
 
 const browserRouter = createBrowserRouter(routes)
