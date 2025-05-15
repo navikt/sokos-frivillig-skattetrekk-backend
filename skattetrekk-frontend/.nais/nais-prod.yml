@@ -1,0 +1,58 @@
+apiVersion: "nais.io/v1alpha1"
+kind: "Application"
+metadata:
+  name: skattetrekk-frontend
+  namespace: okonomi
+  labels:
+    team: okonomi
+  annotations:
+    nais.io/run-as-user: "101" # nginx
+    nginx.ingress.kubernetes.io/proxy-buffer-size: "128k"
+spec:
+  image: "{{{ image }}}"
+  port: 8080
+  ingresses:
+    - https://www.nav.no/utbetaling/skattetrekk
+  replicas:
+    min: 1
+    max: 2
+  liveness:
+    path: /internal/health/liveness
+    initialDelay: 20
+    periodSeconds: 20
+    failureThreshold: 5
+    timeout: 1
+  readiness:
+    path: /internal/health/readiness
+    initialDelay: 20
+    periodSeconds: 20
+    failureThreshold: 5
+    timeout: 1
+  frontend:
+    generatedConfig:
+      mountPath: /usr/share/nginx/html/assets/nais.js
+  idporten:
+    enabled: true
+    sidecar:
+      enabled: true
+      autoLogin: true
+      autoLoginIgnorePaths:
+        - /internal/ping
+  tokenx:
+    enabled: true
+  accessPolicy:
+    outbound:
+      external:
+        - host: skattetrekk-backend.prod-fss-pub.nais.io
+
+  env:
+    - name: "VITE_DECORATOR_URL"
+      value: "https://www.nav.no/dekoratoren"
+    - name: "SKATTETREKK_BACKEND_URL"
+      value: "https://skattetrekk-backend.prod-fss-pub.nais.io"
+    - name: "SKATTETREKK_BACKEND_SCOPE"
+      value: "api://prod-fss.okonomi.skattetrekk-backend/.default"
+    - name: "SKATTETREKK_BACKEND_AUDIENCE"
+      value: "prod-fss:okonomi:skattetrekk-backend"
+    - name: "REPRESENTASJON_BANNER_URL"
+      value: "https://representasjon-banner-frontend-borger.intern.nav.no"
