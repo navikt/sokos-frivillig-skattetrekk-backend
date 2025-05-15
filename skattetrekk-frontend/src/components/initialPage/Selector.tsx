@@ -46,6 +46,8 @@ export function Selector(props: {
     function onClickSubmit(event: React.FormEvent) {
         event.preventDefault()
 
+        console.log("onClickSubmit")
+
         if (type == null) {
             setSelectorError(true)
             return
@@ -58,7 +60,8 @@ export function Selector(props: {
 
 
     return (
-        <VStack gap="4" id="skattetrekk-input">
+        <VStack gap="12" id="skattetrekk-input">
+            <VStack gap="4">
             <Heading size={"medium"} level={"2"}>Legg til frivillig tilleggstrekk</Heading>
             <RadioGroup id="typeRadio"
                         legend="Hvordan skal skatten trekkes?"
@@ -88,6 +91,7 @@ export function Selector(props: {
                            htmlSize={30}
                 /> : null
             }
+            </VStack>
 
             <HStack gap="2">
                 <Button variant="primary" size={"medium"} loading={props.buttonIsLoading} type={"submit"}

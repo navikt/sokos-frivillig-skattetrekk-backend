@@ -26,7 +26,7 @@ export const OppsummeringPage = () => {
                     });
 
                 setSendResponse(response)
-            setButtonLoadinhg(false)
+                setButtonLoadinhg(false)
                 navigate(import.meta.env.BASE_URL + "/kvittering", {
                     state: {
                         pid: pid

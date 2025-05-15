@@ -1,3 +1,19 @@
+export interface FrivilligSkattetrekkResponse {
+    data: FrivilligSkattetrekkData | null;
+    messages: FrivilligSkattetrekkMessage[] | null;
+}
+
+export interface FrivilligSkattetrekkMessage {
+    details: string | null,
+    type: FrivilligSkattetrekkType
+}
+
+export enum  FrivilligSkattetrekkType {
+    ERROR,
+    WARNING,
+    INFO
+}
+
 export interface TrekkDTO {
     sats: number | null;
     satsType: SatsType | null;
@@ -11,10 +27,6 @@ export interface ForenkletSkattetrekk {
 export enum SatsType {
     PROSENT = "PROSENT",
     KRONER = "KRONER"
-}
-
-export interface FrivilligSkattetrekkResponse {
-    data: FrivilligSkattetrekkData
 }
 
 export interface FrivilligSkattetrekkData {
@@ -65,7 +77,8 @@ export async function fetchSkattetrekk(): Promise<FrivilligSkattetrekkResponse> 
                     tabellNr: "800",
                     prosentsats: null
                 }
-            }
+            },
+            messages: null
         }
     }
 
@@ -78,7 +91,7 @@ export async function fetchSkattetrekk(): Promise<FrivilligSkattetrekkResponse> 
         response => {
             if (response.status >= 200 && response.status < 300) {
                 return response.json().then(data => {
-                    return data as FrivilligSkattetrekkResponse;
+                    return data as FrivilligSkattetrekkData;
                 })
             } else if (response.status == 400) {
                 return response.json().then(
@@ -126,7 +139,8 @@ export async function saveSkattetrekk(request: UpdateTilleggstrekkRequest): Prom
                     tabellNr: null, //"800",
                     prosentsats: 25
                 }
-            }
+            },
+            messages: null
         }
     }
 
@@ -140,7 +154,7 @@ export async function saveSkattetrekk(request: UpdateTilleggstrekkRequest): Prom
         response => {
             if (response.status >= 200 && response.status < 300) {
                 return response.json().then(data => {
-                    return data as FrivilligSkattetrekkResponse;
+                    return data as FrivilligSkattetrekkData;
                 })
             } else if (response.status == 400) {
                 return response.json().then(
