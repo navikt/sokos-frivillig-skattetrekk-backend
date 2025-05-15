@@ -14,7 +14,6 @@ data class FrivilligSkattetrekkData(
 )
 
 data class TrekkDto(
-    val trekkvedtakId:Long?,
     val sats: Double?,
     val satsType: SatsType?,
 )
@@ -25,7 +24,6 @@ data class Skattetrekk(
 )
 
 data class ForenkletSkattetrekkDto(
-    val trekkvedtakId: Long?,
     val tabellNr: String?,
     val prosentsats: Int?
 )

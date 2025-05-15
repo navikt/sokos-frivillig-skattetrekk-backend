@@ -55,21 +55,19 @@ class HentSkattOgTrekkService(
     }
 
     private fun AndreTrekkResponse.mapToTrekkDTO(): TrekkDto = TrekkDto(
-        trekkvedtakId = this.trekkvedtakId,
         sats = this.satsperiodeListe?.first()?.sats?.toDouble(),
         satsType = this.trekkalternativ?.kode?.let { if (it == TREKK_KODE_LOPP) SatsType.PROSENT else SatsType.KRONER }
     )
 
     private fun determineForenkletSkattetrekk(skattetrekk: Skattetrekk?): ForenkletSkattetrekkDto {
 
-        val trekkVedtakId = skattetrekk?.trekkvedtakId
         val tabellNr = skattetrekk?.tabellnr?.trim()
         val prosentsats = skattetrekk?.prosentsats
 
-        if (!tabellNr.isNullOrEmpty() && "0000" != tabellNr) return ForenkletSkattetrekkDto(trekkVedtakId, tabellNr, null)
-        if (prosentsats != null) return ForenkletSkattetrekkDto(trekkVedtakId, null, prosentsats)
+        if (!tabellNr.isNullOrEmpty() && "0000" != tabellNr) return ForenkletSkattetrekkDto(tabellNr, null)
+        if (prosentsats != null) return ForenkletSkattetrekkDto(null, prosentsats)
 
-        return ForenkletSkattetrekkDto(trekkVedtakId, null, null)
+        return ForenkletSkattetrekkDto( null, null)
     }
 
     private fun List<Satsperiode>.findRunningSatsperiode() = this.find { isDateInPeriod(Date(), IsoDateFormatter.parse(it.fom.toString()), IsoDateFormatter.parse(it.tom.toString())) } != null
