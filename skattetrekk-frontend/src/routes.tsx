@@ -45,16 +45,4 @@ export const routes: RouteObject[] = [
     }
 ]
 
-export const getFullPathForPage = (pageLink: PageLinks, href?: string) => {
-    return import.meta.env.BASE_URL + pageLink + (href ? `#${href}` : "")  + getPidQueryParamString()
-}
-
-export const getPidQueryParamString = () => {
-    const searchParams = new URLSearchParams(document.location.search)
-    const pid = searchParams.get('pid')
-    if (pid === null) {
-        return ''
-    }
-    return '?pid=' + pid
-}
 

@@ -1,4 +1,4 @@
-import {Accordion, Alert, BodyLong, Button, GuidePanel, Heading, HStack, Link, List, VStack} from "@navikt/ds-react";
+import {Accordion, Alert, BodyLong, GuidePanel, Heading, Link, List, VStack} from "@navikt/ds-react";
 import React, {useContext, useState} from "react";
 import {RegistrerteSkattetrekk} from "@/components/initialPage/RegistrerteSkattetrekk";
 import {useNavigate} from "react-router-dom";
@@ -6,13 +6,14 @@ import {SatsType} from "@/api/skattetrekkBackendClient";
 import {FormStateContext} from "@/state/FormState";
 import {Selector} from "@/components/initialPage/Selector";
 import {DataContext} from "@/state/DataContextProvider";
-import {getFullPathForPage, PageLinks} from "@/routes";
+import {PageLinks} from "@/routes";
 
 export function InitialPage() {
     const {setTilleggstrekkType, setTilleggstrekkValue} = useContext(FormStateContext)
     const {initiateResponse} = useContext(DataContext)
     const [buttonIsLoading, setButtonIsLoading] = useState(false)
     const navigate = useNavigate()
+    const pid = new URLSearchParams(document.location.search).get("pid")
 
 
     async function submitTilleggstrekk(type: SatsType, value: number | null) {
@@ -21,7 +22,11 @@ export function InitialPage() {
             setTilleggstrekkType(type)
             setTilleggstrekkValue(value)
 
-            navigate(getFullPathForPage(PageLinks.OPPSUMMERING))
+            navigate(import.meta.env.BASE_URL + PageLinks.OPPSUMMERING, {
+                state: {
+                    pid: pid
+                }
+            })
         }
     }
 

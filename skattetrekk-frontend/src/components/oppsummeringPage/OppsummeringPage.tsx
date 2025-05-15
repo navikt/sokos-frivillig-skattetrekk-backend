@@ -5,30 +5,34 @@ import {FormStateContext} from "@/state/FormState";
 import {DataContext} from "@/state/DataContextProvider";
 import {useNavigate} from "react-router-dom";
 import {showPercentageOrTable, visProsentEllerBelop} from "@/common/Utils";
-import {ArrowLeftIcon} from "@navikt/aksel-icons";
-import {getFullPathForPage, PageLinks} from "@/routes";
+import {PageLinks} from "@/routes";
 
 export const OppsummeringPage = () => {
     const {tilleggstrekkType, tilleggstrekkValue} = useContext(FormStateContext)
     const {initiateResponse, setSendResponse} = useContext(DataContext)
     const [buttonLoading, setButtonLoadinhg] = useState(false)
     const navigate = useNavigate()
+    const pid = new URLSearchParams(document.location.search).get("pid")
 
     async function submitTilleggstrekk() {
         if (tilleggstrekkType !== null && tilleggstrekkValue !== null) {
             setButtonLoadinhg(true)
-                const response = await saveSkattetrekk(
-                    {
-                        data: {
+            const response = await saveSkattetrekk(
+                {
+                    data: {
                         value: tilleggstrekkValue,
                         satsType: tilleggstrekkType,
-                        }
-                    })
+                    }
+                })
 
-                setSendResponse(response)
-                setButtonLoadinhg(false)
-                navigate(getFullPathForPage(PageLinks.OPPSUMMERING))
-            }
+            setSendResponse(response)
+            setButtonLoadinhg(false)
+            navigate(import.meta.env.BASE_URL + PageLinks.KVITTERING, {
+                state: {
+                    pid: pid
+                }
+            })
+        }
     }
 
     function sumStrekkString(){
