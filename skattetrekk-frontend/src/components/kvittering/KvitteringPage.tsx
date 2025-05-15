@@ -35,7 +35,7 @@ export const KvitteringPage = (props: {
         { sendResponse != null &&
             <VStack gap={{xs: "2", md: "6"}}>
                 <Heading size={"medium"} level="2">Dine registrerte skattetrekk</Heading>
-                <RegistrerteSkattetrekk skatteTrekk={sendResponse!.data?.skattetrekk!} tilleggstrekk={sendResponse.data!.tilleggstrekk!} framtidigTilleggstrekk={sendResponse!.data!.framtidigTilleggstrekk} />
+                <RegistrerteSkattetrekk skatteTrekk={sendResponse!.data!.skattetrekk!} tilleggstrekk={sendResponse!.data!.tilleggstrekk} framtidigTilleggstrekk={sendResponse!.data!.framtidigTilleggstrekk} />
             </VStack> }
 
       <Link href="https://www.nav.no/skattetrekk" target="_blank">Endre registrert frivillig skattetrekk</Link>

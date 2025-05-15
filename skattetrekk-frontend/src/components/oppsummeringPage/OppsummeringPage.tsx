@@ -5,14 +5,14 @@ import {FormStateContext} from "@/state/FormState";
 import {DataContext} from "@/state/DataContextProvider";
 import {useNavigate} from "react-router-dom";
 import {showPercentageOrTable, visProsentEllerBelop} from "@/common/Utils";
+import {ArrowLeftIcon} from "@navikt/aksel-icons";
+import {getFullPathForPage, PageLinks} from "@/routes";
 
 export const OppsummeringPage = () => {
     const {tilleggstrekkType, tilleggstrekkValue} = useContext(FormStateContext)
     const {initiateResponse, setSendResponse} = useContext(DataContext)
     const [buttonLoading, setButtonLoadinhg] = useState(false)
-
     const navigate = useNavigate()
-    const pid = new URLSearchParams(document.location.search).get("pid")
 
     async function submitTilleggstrekk() {
         if (tilleggstrekkType !== null && tilleggstrekkValue !== null) {
@@ -27,17 +27,13 @@ export const OppsummeringPage = () => {
 
                 setSendResponse(response)
                 setButtonLoadinhg(false)
-                navigate(import.meta.env.BASE_URL + "/kvittering", {
-                    state: {
-                        pid: pid
-                    }
-                })
+                navigate(getFullPathForPage(PageLinks.OPPSUMMERING))
             }
     }
 
     function sumStrekkString(){
         var result: string
-        if (tilleggstrekkType === SatsType.PROSENT && initiateResponse?.data?.skattetrekk?.prosentsats != null) {
+        if (tilleggstrekkType === SatsType.PROSENT && initiateResponse?.data!.skattetrekk?.prosentsats != null) {
             return (initiateResponse?.data.skattetrekk?.prosentsats + tilleggstrekkValue!) + " %"
         }
         if (tilleggstrekkType === SatsType.PROSENT) {
@@ -47,7 +43,7 @@ export const OppsummeringPage = () => {
         }
 
         result += " i tillegg til"
-        if (initiateResponse?.data?.skattetrekk?.prosentsats != null) {
+        if (initiateResponse?.data!.skattetrekk?.prosentsats != null) {
             result += ` ${initiateResponse?.data.skattetrekk?.prosentsats} % fra skattekortet`
         } else {
             result += " tabelltrekket"
@@ -72,7 +68,7 @@ export const OppsummeringPage = () => {
               </FormSummary.Answer>
               <FormSummary.Answer>
                     <FormSummary.Label>Skattekort</FormSummary.Label>
-                    <FormSummary.Value>{showPercentageOrTable(initiateResponse?.data?.skattetrekk!)}</FormSummary.Value>
+                    <FormSummary.Value>{showPercentageOrTable(initiateResponse?.data!.skattetrekk!)}</FormSummary.Value>
               </FormSummary.Answer>
               <FormSummary.Answer>
                   <Box padding="4" background="surface-subtle" borderRadius="large">

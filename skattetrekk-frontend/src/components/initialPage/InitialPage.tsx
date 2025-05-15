@@ -39,6 +39,8 @@ export function InitialPage() {
         return currentDate.getFullYear();
     }
 
+    console.log("initiateResponse", initiateResponse)
+
     return (
         <VStack gap="8">
             <VStack gap="6" id="samboer-historikk-tittel">
@@ -104,24 +106,14 @@ export function InitialPage() {
                 {/*    <Link href="nav.no">Les om frivillig skattetrekk</Link>*/}
             </VStack>
 
-            {/*<hr style={{ border: "0.5px solid black", width: "100%" }} />*/}
 
 
             <VStack gap="16">
-                {initiateResponse != null &&
-                    <VStack gap="5">
+                {initiateResponse?.data &&
+                    <VStack gap={{xs: "2", md: "6"}}>
                         <Heading size={"medium"} level="2">Dine registrerte skattetrekk</Heading>
-                        {initiateResponse?.data?.skattetrekk != null &&
-                            <RegistrerteSkattetrekk skatteTrekk={initiateResponse.data.skattetrekk}
-                                                    tilleggstrekk={initiateResponse.data.tilleggstrekk}
-                                                    framtidigTilleggstrekk={initiateResponse.data.framtidigTilleggstrekk}/>
-                        }
-                        {initiateResponse?.data?.tilleggstrekk != null &&
-                            <HStack>
-                                <Button variant="secondary" onClick={() => submitTilleggstrekk(SatsType.PROSENT, 0)}>Stopp
-                                    frivillig skattetrekk</Button>
-                            </HStack>}
-                    </VStack>}
+                        <RegistrerteSkattetrekk skatteTrekk={initiateResponse.data.skattetrekk!} tilleggstrekk={initiateResponse.data.tilleggstrekk} framtidigTilleggstrekk={initiateResponse.data.framtidigTilleggstrekk} />
+                    </VStack> }
 
                 <Accordion>
                     <Accordion.Item>
@@ -172,19 +164,13 @@ export function InitialPage() {
                     </Accordion.Item>
                 </Accordion>
 
-                <Selector submitTilleggstrekk={submitTilleggstrekk} maxKroner={10000}
-                          buttonIsLoading={buttonIsLoading}/>
+                {/*<Selector submitTilleggstrekk={submitTilleggstrekk} maxKroner={10000}*/}
+                {/*          buttonIsLoading={buttonIsLoading}/>*/}
             </VStack>
 
             {/*show a horizontal black line, to separate the sections in the page*/}
-            <hr style={{ border: "1px solid black", width: "100%" }} />
+            {/*<hr style={{ border: "1px solid black", width: "100%" }} />*/}
 
-
-            { initiateResponse?.data !== null &&
-                <VStack gap={{xs: "2", md: "6"}}>
-                    <Heading size={"medium"} level="2">Dine registrerte skattetrekk</Heading>
-                    <RegistrerteSkattetrekk skatteTrekk={initiateResponse!.data.skattetrekk!} tilleggstrekk={initiateResponse!.data.tilleggstrekk} framtidigTilleggstrekk={initiateResponse!.data.framtidigTilleggstrekk} />
-                </VStack> }
 
             <Selector submitTilleggstrekk={submitTilleggstrekk} maxKroner={10000} buttonIsLoading={buttonIsLoading}/>
         </VStack>

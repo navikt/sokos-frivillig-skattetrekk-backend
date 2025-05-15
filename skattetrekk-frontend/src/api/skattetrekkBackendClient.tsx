@@ -1,3 +1,19 @@
+export interface FrivilligSkattetrekkResponse {
+    data: FrivilligSkattetrekkData | null;
+    messages: FrivilligSkattetrekkMessage[] | null;
+}
+
+export interface FrivilligSkattetrekkMessage {
+    details: string | null,
+    type: FrivilligSkattetrekkType
+}
+
+export enum  FrivilligSkattetrekkType {
+    ERROR,
+    WARNING,
+    INFO
+}
+
 export interface TrekkDTO {
     sats: number | null;
     satsType: SatsType | null;
@@ -11,10 +27,6 @@ export interface ForenkletSkattetrekk {
 export enum SatsType {
     PROSENT = "PROSENT",
     KRONER = "KRONER"
-}
-
-export interface FrivilligSkattetrekkResponse {
-    data: FrivilligSkattetrekkData
 }
 
 export interface FrivilligSkattetrekkData {
@@ -49,6 +61,26 @@ export async function fetchSkattetrekk(): Promise<FrivilligSkattetrekkResponse> 
     } else {
         headers = {
             'Content-Type': 'application/json',
+        }
+    }
+
+    if(isMock) {
+        return {
+            data: {
+                tilleggstrekk: {
+                    sats: 45,
+                    satsType: SatsType.PROSENT
+                },
+                framtidigTilleggstrekk: {
+                    sats: 300,
+                    satsType: SatsType.KRONER
+                },
+                skattetrekk: {
+                    tabellNr: "800",
+                    prosentsats: null
+                }
+            },
+            messages:[]
         }
     }
 
@@ -93,6 +125,26 @@ export async function saveSkattetrekk(request: UpdateTilleggstrekkRequest): Prom
     }
 
     console.log("saveSkattetrekk", request)
+
+    if(isMock) {
+        return {
+            data: {
+                tilleggstrekk: {
+                    sats: 10,
+                    satsType: SatsType.PROSENT
+                },
+                framtidigTilleggstrekk: {
+                    sats: 4444,
+                    satsType: SatsType.KRONER
+                },
+                skattetrekk: {
+                    tabellNr: null, //"800",
+                    prosentsats: 25
+                }
+            },
+            messages: []
+        }
+    }
 
     return await fetch(BASE_URL+ "api/skattetrekk", {
             method: "POST",
