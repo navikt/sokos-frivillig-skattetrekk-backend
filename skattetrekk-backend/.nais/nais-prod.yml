@@ -1,7 +1,7 @@
 apiVersion: "nais.io/v1alpha1"
 kind: "Application"
 metadata:
-  name: skattetrekk-backend-q2
+  name: skattetrekk-backend
   namespace: okonomi
   labels:
     team: okonomi
@@ -9,8 +9,8 @@ spec:
   image: "{{{ image }}}"
   port: 8080
   ingresses:
-    - https://skattetrekk-backend-q2.intern.dev.nav.no
-    - https://skattetrekk-backend-q2.dev-fss-pub.nais.io
+    - https://skattetrekk-backend.intern.nav.no
+    - https://skattetrekk-backend.prod-fss-pub.nais.io
   liveness:
     path: actuator/health/liveness
     initialDelay: 30
@@ -57,19 +57,13 @@ spec:
   accessPolicy:
     inbound:
       rules:
-        - application: skattetrekk-frontend-q2
+        - application: skattetrekk-frontend
           namespace: okonomi
-          cluster: dev-gcp
-        - application: tokenx-token-generator
-          namespace: nais
-          cluster: dev-gcp
-        - application: azure-token-generator
-          namespace: nais
-          cluster: dev-gcp
+          cluster: prod-gcp
     outbound:
       rules:
-        - application: oppdrag-rest-proxy-q2
-          namespace: teampensjon
+        - application: oppdrag-rest-proxy
+          namespace: pensjondeployer
 
   env:
     - name: LOGGING_CONFIG
@@ -77,24 +71,24 @@ spec:
     - name: PDL_URL
       value: http://pdl-api.pdl.svc.nais.local/graphql
     - name: PDL_SCOPE
-      value: api://dev-fss.pdl.pdl-api/.default
+      value: api://prod-fss.pdl.pdl-api/.default
     - name: PDL_AUDIENCE
-      value: dev-fss:pdl:pdl-api
+      value: prod-fss:pdl:pdl-api
     - name: FULLMAKT_URL
-      value: http://pensjon-representasjon-q2.pensjon-person.svc.nais.local
+      value: http://pensjon-representasjon.pensjon-person.svc.nais.local
     - name: FULLMAKT_SCOPE
-      value: api://dev-fss.pensjon-person.pensjon-representasjon-q2/.default
+      value: api://prod-fss.pensjon-person.pensjon-representasjon/.default
     - name: FULLMAKT_AUDIENCE
-      value: dev-fss:pensjon-person:pensjon-representasjon-q2
+      value: prod-fss:pensjon-person:pensjon-representasjon
     - name: TREKK_URL
-      value: http://oppdrag-rest-proxy-q2.teampensjon.svc.nais.local
+      value: http://oppdrag-rest-proxy.pensjondeployer.svc.nais.local
     - name: TREKK_SCOPE
-      value: api://dev-fss.teampensjon.oppdrag-rest-proxy-q2/.default
+      value: api://prod-fss.pensjondeployer.oppdrag-rest-proxy/.default
     - name: TREKK_AUDIENCE
-      value: dev-fss:teampensjon:oppdrag-rest-proxy-q2
+      value: prod-fss:pensjondeployer:oppdrag-rest-proxy
     - name: NORG2_URL
-      value: https://norg2.intern.dev.nav.no/norg2/api/v1
+      value: https://norg2.intern.nav.no/norg2/api/v1
     - name: NORG2_SCOPE
-      value: api://dev-gcp.org.norg2/.default
+      value: api://prod-gcp.org.norg2/.default
     - name: NORG2_AUDIENCE
-      value: dev-gcp:org:norg2
+      value: prod-gcp:org:norg2
