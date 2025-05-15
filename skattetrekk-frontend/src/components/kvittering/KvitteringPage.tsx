@@ -32,11 +32,11 @@ export const KvitteringPage = (props: {
         <List.Item>Hvis du har lagt inn frivillig skattetrekk i slutten av måneden, kan det gå én måned ekstra før det starter å løpe.</List.Item>
       </List>
 
-        { sendResponse != null &&
-            <VStack gap={{xs: "2", md: "6"}}>
-                <Heading size={"medium"} level="2">Dine registrerte skattetrekk</Heading>
-                <RegistrerteSkattetrekk skatteTrekk={sendResponse!.data?.skattetrekk!} tilleggstrekk={sendResponse.data!.tilleggstrekk!} framtidigTilleggstrekk={sendResponse!.data!.framtidigTilleggstrekk} />
-            </VStack> }
+      {sendResponse?.data &&
+        <VStack gap={{xs: "2", md: "6"}}>
+            <Heading size={"medium"} level="2">Dine registrerte skattetrekk</Heading>
+            <RegistrerteSkattetrekk skatteTrekk={sendResponse.data!.skattetrekk!} tilleggstrekk={sendResponse.data!.tilleggstrekk} framtidigTilleggstrekk={sendResponse.data!.framtidigTilleggstrekk} />
+        </VStack> }
 
       <Link href="https://www.nav.no/skattetrekk" target="_blank">Endre registrert frivillig skattetrekk</Link>
     </VStack>

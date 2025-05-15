@@ -1,4 +1,4 @@
-import {Accordion, Alert, BodyLong, Button, GuidePanel, Heading, HStack, Link, List, VStack} from "@navikt/ds-react";
+import {Accordion, Alert, BodyLong, GuidePanel, Heading, Link, List, VStack} from "@navikt/ds-react";
 import React, {useContext, useState} from "react";
 import {RegistrerteSkattetrekk} from "@/components/initialPage/RegistrerteSkattetrekk";
 import {useNavigate} from "react-router-dom";
@@ -6,13 +6,14 @@ import {SatsType} from "@/api/skattetrekkBackendClient";
 import {FormStateContext} from "@/state/FormState";
 import {Selector} from "@/components/initialPage/Selector";
 import {DataContext} from "@/state/DataContextProvider";
-import {getFullPathForPage, PageLinks} from "@/routes";
+import {PageLinks} from "@/routes";
 
 export function InitialPage() {
     const {setTilleggstrekkType, setTilleggstrekkValue} = useContext(FormStateContext)
     const {initiateResponse} = useContext(DataContext)
     const [buttonIsLoading, setButtonIsLoading] = useState(false)
     const navigate = useNavigate()
+    const pid = new URLSearchParams(document.location.search).get("pid")
 
 
     async function submitTilleggstrekk(type: SatsType, value: number | null) {
@@ -21,7 +22,11 @@ export function InitialPage() {
             setTilleggstrekkType(type)
             setTilleggstrekkValue(value)
 
-            navigate(getFullPathForPage(PageLinks.OPPSUMMERING))
+            navigate(import.meta.env.BASE_URL + PageLinks.OPPSUMMERING, {
+                state: {
+                    pid: pid
+                }
+            })
         }
     }
 
@@ -38,6 +43,8 @@ export function InitialPage() {
         const currentDate = new Date();
         return currentDate.getFullYear();
     }
+
+    console.log("initiateResponse", initiateResponse)
 
     return (
         <VStack gap="8">
@@ -104,24 +111,14 @@ export function InitialPage() {
                 {/*    <Link href="nav.no">Les om frivillig skattetrekk</Link>*/}
             </VStack>
 
-            {/*<hr style={{ border: "0.5px solid black", width: "100%" }} />*/}
 
 
             <VStack gap="16">
-                {initiateResponse != null &&
-                    <VStack gap="5">
+                {initiateResponse?.data &&
+                    <VStack gap={{xs: "2", md: "6"}}>
                         <Heading size={"medium"} level="2">Dine registrerte skattetrekk</Heading>
-                        {initiateResponse?.data?.skattetrekk != null &&
-                            <RegistrerteSkattetrekk skatteTrekk={initiateResponse.data.skattetrekk}
-                                                    tilleggstrekk={initiateResponse.data.tilleggstrekk}
-                                                    framtidigTilleggstrekk={initiateResponse.data.framtidigTilleggstrekk}/>
-                        }
-                        {initiateResponse?.data?.tilleggstrekk != null &&
-                            <HStack>
-                                <Button variant="secondary" onClick={() => submitTilleggstrekk(SatsType.PROSENT, 0)}>Stopp
-                                    frivillig skattetrekk</Button>
-                            </HStack>}
-                    </VStack>}
+                        <RegistrerteSkattetrekk skatteTrekk={initiateResponse.data.skattetrekk!} tilleggstrekk={initiateResponse.data.tilleggstrekk} framtidigTilleggstrekk={initiateResponse.data.framtidigTilleggstrekk} />
+                    </VStack> }
 
                 <Accordion>
                     <Accordion.Item>
@@ -172,19 +169,13 @@ export function InitialPage() {
                     </Accordion.Item>
                 </Accordion>
 
-                <Selector submitTilleggstrekk={submitTilleggstrekk} maxKroner={10000}
-                          buttonIsLoading={buttonIsLoading}/>
+                {/*<Selector submitTilleggstrekk={submitTilleggstrekk} maxKroner={10000}*/}
+                {/*          buttonIsLoading={buttonIsLoading}/>*/}
             </VStack>
 
             {/*show a horizontal black line, to separate the sections in the page*/}
-            <hr style={{ border: "1px solid black", width: "100%" }} />
+            {/*<hr style={{ border: "1px solid black", width: "100%" }} />*/}
 
-
-            { initiateResponse?.data !== null &&
-                <VStack gap={{xs: "2", md: "6"}}>
-                    <Heading size={"medium"} level="2">Dine registrerte skattetrekk</Heading>
-                    <RegistrerteSkattetrekk skatteTrekk={initiateResponse!.data.skattetrekk!} tilleggstrekk={initiateResponse!.data.tilleggstrekk} framtidigTilleggstrekk={initiateResponse!.data.framtidigTilleggstrekk} />
-                </VStack> }
 
             <Selector submitTilleggstrekk={submitTilleggstrekk} maxKroner={10000} buttonIsLoading={buttonIsLoading}/>
         </VStack>

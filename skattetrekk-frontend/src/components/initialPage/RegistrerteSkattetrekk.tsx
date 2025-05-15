@@ -1,7 +1,8 @@
-import {HGrid} from "@navikt/ds-react";
+import {BodyLong, HGrid} from "@navikt/ds-react";
 import {ForenkletSkattetrekk, TrekkDTO} from "@/api/skattetrekkBackendClient";
 import "./RegistrerteSkattetrekk.css";
 import {showPercentageOrTable, visProsentEllerBelop} from "@/common/Utils";
+import {useEffect} from "react";
 
 
 type RegistrerteSkattetrekkProps = {
@@ -11,12 +12,17 @@ type RegistrerteSkattetrekkProps = {
 }
 
 export function RegistrerteSkattetrekk(props: RegistrerteSkattetrekkProps) {
+    useEffect(() => {
+        //log props
+        console.log("RegistrerteSkattetrekk props: ", props)
+    }, []);
+
     return (
         <HGrid gap="4" columns="min-content 1fr">
             <dt className="label"><strong>Trekk fra skattekortet:</strong></dt>
             <dd className="data">{showPercentageOrTable(props.skatteTrekk)}</dd>
 
-            <dt className="label"><strong>{props.framtidigTilleggstrekk ?  "Frivillig skattetrekk til og med nåværende måned:" : "Frivillig tilleggstrekk:"} </strong></dt>
+            <dt className="label"><strong>{props.tilleggstrekk ?  "Frivillig skattetrekk til og med nåværende måned:" : "Frivillig tilleggstrekk:"} </strong></dt>
             <dd className="data">{visProsentEllerBelop(props.tilleggstrekk)}</dd>
 
             {props.framtidigTilleggstrekk != null && <dt className="label"><strong>Frivillig skattetrekk fra og med neste måned:</strong></dt> }
