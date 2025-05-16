@@ -176,7 +176,7 @@ class BehandleTrekkService(
     }
 
     fun opprettStatsperiode(tilleggstrekk: Double, today: LocalDate): Satsperiode {
-        val forsteDatoNesteMaaned = today.plusMonths(1L).withDayOfMonth(1)
+        val forsteDatoNesteMaaned = today.withDayOfMonth(1)
         val sisteDagDetteAret = LocalDate.of(today.year, 12, 31)
         return Satsperiode(
             fom = forsteDatoNesteMaaned,
