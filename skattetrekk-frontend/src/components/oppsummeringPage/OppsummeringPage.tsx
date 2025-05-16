@@ -19,10 +19,8 @@ export const OppsummeringPage = () => {
             setButtonLoadinhg(true)
             const response = await saveSkattetrekk(
                 {
-                    data: {
-                        value: tilleggstrekkValue,
-                        satsType: tilleggstrekkType,
-                    }
+                    value: tilleggstrekkValue,
+                    satsType: tilleggstrekkType,
                 })
 
             setSendResponse(response)

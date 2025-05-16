@@ -1,8 +1,8 @@
 import './App.css'
 import "@navikt/ds-css";
 import {Heading, VStack} from "@navikt/ds-react";
-import {routes} from "@/routes";
-import {createBrowserRouter, RouterProvider} from "react-router-dom";
+import {PageLinks, routes} from "@/routes";
+import {createBrowserRouter, NavigateFunction, RouterProvider, useNavigate} from "react-router-dom";
 import {Suspense, useEffect} from "react";
 import {Loading} from "@/components/pageStatus/Loading";
 
@@ -25,3 +25,5 @@ export function App() {
 }
 
 export default App
+
+

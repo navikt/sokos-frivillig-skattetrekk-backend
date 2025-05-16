@@ -3,13 +3,11 @@ import React, {useContext} from "react";
 import {RegistrerteSkattetrekk} from "@/components/initialPage/RegistrerteSkattetrekk";
 import {useNavigate} from "react-router-dom";
 import {MessageType} from "@/api/skattetrekkBackendClient";
-import {FormStateContext} from "@/state/FormState";
 import {DataContext} from "@/state/DataContextProvider";
 import {PageLinks} from "@/routes";
 import {StopTilleggstrekkConfirmationModal} from "@/components/initialPage/StopTilleggstrekkConfirmationModal";
 
 export function InitialPage() {
-    const {setTilleggstrekkType, setTilleggstrekkValue} = useContext(FormStateContext)
     const {initiateResponse} = useContext(DataContext)
 
     const navigate = useNavigate()
@@ -23,7 +21,6 @@ export function InitialPage() {
             }
         })
     }
-
 
     async function stopTilleggstrekk() {
         //todo

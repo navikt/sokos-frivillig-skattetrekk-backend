@@ -8,7 +8,6 @@ import {DataContext} from "@/state/DataContextProvider";
 
 export const KvitteringPage = (props: {
 }) => {
-    const {tilleggstrekkType, tilleggstrekkValue} = useContext(FormStateContext)
     const {sendResponse} = useContext(DataContext)
     const [isWaiting, setIsWaiting] = useState(true)
 
@@ -34,7 +33,7 @@ export const KvitteringPage = (props: {
           <Heading level="3" size="small">
             {sendResponse.data.tilleggstrekk?.satsType === SatsType.PROSENT ?
                 `Frivillig skattetrekk på ${sendResponse.data.tilleggstrekk?.sats} % registrert` :
-                `Frivillig skattetrekk på ${numberFormatWithKr(tilleggstrekkValue ?? 0)} per måned registrert`}
+                `Frivillig skattetrekk på ${numberFormatWithKr(sendResponse.data.framtidigTilleggstrekk?.sats ?? 0)} per måned registrert`}
           </Heading>
           <BodyShort>
             Skattetrekket gjelder fra og med neste måned og ut året.

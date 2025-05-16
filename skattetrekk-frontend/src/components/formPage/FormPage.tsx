@@ -1,40 +1,45 @@
-import {
-    BodyLong,
-    BodyShort,
-    Box,
-    Button,
-    FormSummary,
-    Heading,
-    HStack,
-    List, Radio,
-    RadioGroup,
-    VStack
-} from '@navikt/ds-react'
+import {BodyLong, Button, Heading, HStack, Link, List, Radio, RadioGroup, TextField, VStack} from '@navikt/ds-react'
 import React, {useContext, useState} from 'react'
 import {SatsType, saveSkattetrekk} from "@/api/skattetrekkBackendClient";
-import {FormStateContext} from "@/state/FormState";
 import {DataContext} from "@/state/DataContextProvider";
-import {useNavigate} from "react-router-dom";
-import {showPercentageOrTable, visProsentEllerBelop} from "@/common/Utils";
+import {numberFormatWithKr, parseInntekt} from "@/common/Utils";
 import {PageLinks} from "@/routes";
-import {ListItem} from "@navikt/ds-react/cjs/list";
-import {Selector} from "@/components/formPage/Selector";
+import {FormStateContext} from "@/state/FormState";
+import {useNavigate} from "react-router-dom";
 
 export const FormPage = () => {
-    const {setTilleggstrekkType, setTilleggstrekkValue} = useContext(FormStateContext)
     const {initiateResponse, setSendResponse} = useContext(DataContext)
+    const {setTilleggstrekkType, setTilleggstrekkValue} = useContext(FormStateContext)
+
+    const [type, setType] = useState<SatsType | null>(null)
+    const [value, setValue] = useState<number | null>(null)
+
     const [buttonIsLoading, setButtonIsLoading] = useState(false)
-    const [pageState] = useState<"initial" | string>("initial")
+    const [pageState, setPageState] = useState<"initial" | "cannotProceed">("initial")
+
     const [canContinue, setCanContinue] = useState<boolean | null>(null)
+    const [canContinueError, setCanContinueError] = useState(false)
+    const [selectorError, setSelectorError] = useState(false)
+    const [valueError, setValueError] = useState<string | null>(null)
     const navigate = useNavigate()
     const pid = new URLSearchParams(document.location.search).get("pid")
 
-    async function submitTilleggstrekk(type: SatsType, value: number | null) {
-        if (type !== null && value !== null) {
+    async function onClickNext() {
+        if(canContinue === null) {
+            setCanContinueError(true)
+        } else if (canContinue === false) {
+            setPageState("cannotProceed")
+        } else if (type === null) {
+            setSelectorError(true)
+        }
+
+        else if (type !== null && value !== null) {
             setButtonIsLoading(true)
             setTilleggstrekkType(type)
             setTilleggstrekkValue(value)
 
+            var response = await saveSkattetrekk({satsType: type, value: value})
+            setSendResponse(response)
             navigate(import.meta.env.BASE_URL + PageLinks.OPPSUMMERING, {
                 state: {
                     pid: pid
@@ -43,50 +48,70 @@ export const FormPage = () => {
         }
     }
 
-    // async function submitTilleggstrekk() {
-    //     if (tilleggstrekkType !== null && tilleggstrekkValue !== null) {
-    //         setButtonLoadinhg(true)
-    //         const response = await saveSkattetrekk(
-    //             {
-    //                 data: {
-    //                     value: tilleggstrekkValue,
-    //                     satsType: tilleggstrekkType,
-    //                 }
-    //             })
-    //
-    //         setSendResponse(response)
-    //         setButtonLoadinhg(false)
-    //         navigate(import.meta.env.BASE_URL + PageLinks.KVITTERING, {
-    //             state: {
-    //                 pid: pid
-    //             }
-    //         })
-    //     }
-    // }
-    //
-    // function sumStrekkString(){
-    //     var result: string
-    //     if (tilleggstrekkType === SatsType.PROSENT && initiateResponse?.data!.skattetrekk?.prosentsats != null) {
-    //         return (initiateResponse?.data.skattetrekk?.prosentsats + tilleggstrekkValue!) + " %"
-    //     }
-    //     if (tilleggstrekkType === SatsType.PROSENT) {
-    //         result = tilleggstrekkValue + " %"
-    //     } else {
-    //         result = tilleggstrekkValue + " kr per måned"
-    //     }
-    //
-    //     result += " i tillegg til"
-    //     if (initiateResponse?.data!.skattetrekk?.prosentsats != null) {
-    //         result += ` ${initiateResponse?.data.skattetrekk?.prosentsats} % fra skattekortet`
-    //     } else {
-    //         result += " tabelltrekket"
-    //     }
-    //
-    //     return result
-    // }
-    const handleChange = (val: string) => {
+    const onChangeType = (val: SatsType) => {
+        setType(val);
+        setSelectorError(false)
+    }
 
+    const handleChangeValue = (val: string | null, typeVal: SatsType) => {
+        if (val === '' || val === null) {
+            setValueError(null)
+            setValue(null)
+            return
+        }
 
+        const numericValue = parseInntekt(val)
+
+        if (isNaN(numericValue) || numericValue < 0) {
+            setValueError('Du kan ikke skrive mellomrom, bokstaver eller tegn')
+        } else if (typeVal === SatsType.PROSENT && numericValue > 100) {
+            setValueError('Du kan maks oppgi 100 %')
+        } else if (typeVal === SatsType.KRONER && numericValue === 0) {
+            setValueError(`Du må oppgi et høyere beløp enn 0 kr. Ønsker du å stoppe et frivilligskattetrekk? Gå tilbake og klikk på knappen “Stopp frivillig skattetrekk”.`)
+        } else if (typeVal === SatsType.PROSENT && numericValue === 0) {
+            setValueError(`Du må oppgi mer enn 0 %. Ønsker du å stoppe et frivillig skattetrekk? Gå tilbake og klikk på knappen “Stopp frivillig skattetrekk”.`)
+        } else if (typeVal === SatsType.KRONER && numericValue > 99999) { //todo this value should come from initiateResponse.messages
+            setValueError(`Du kan maks oppgi ${numberFormatWithKr(99999)}. Vil du trekke et høyere beløp, kan du legge det inn som prosent`)
+        } else if (typeVal === SatsType.KRONER && numericValue === 0) {
+            setValueError('Du må oppgi et høyere beløp enn 0 kr')
+        }
+
+        else {
+            setValueError(null)
+            setValue(numericValue)
+        }
+    }
+
+    if(pageState === "cannotProceed") {
+        return (
+            <VStack gap="8" className="form-container">
+                <Heading level="2" size="medium">Du kan ikke registrere frivillig skattetrekk i denne tjenesten</Heading>
+                <VStack>
+                    <Heading level="3" size="small">
+                        Ikke alle pengestøtter kan få frivillig skattetrekk
+                    </Heading>
+                    <BodyLong>
+                        Noen pengestøtter kan ikke få frivillig skattetrekk fordi de er skattefrie.
+                    </BodyLong>
+                </VStack>
+                <VStack>
+                    <Heading level="3" size="small">
+                        Barnepensjon
+                    </Heading>
+                    <BodyLong>
+                        Frivillig skatterekk på barnepensjon kan desverre ikke registreres i denne tjenesten. <Link>Her finner du informasjon om frivillig skattetrekk og barnepensjon.</Link>                      {/*    TOOD link?*/}
+                    </BodyLong>
+                </VStack>
+
+                <HStack gap="2">
+                    <Button variant="secondary" size={"medium"} onClick={() => navigate(import.meta.env.BASE_URL + PageLinks.INDEX, {state: {pid: pid}})}>
+                        Tilbake
+                    </Button>
+                    <Button variant="tertiary" size={"medium"}> Avbryt </Button>
+
+                </HStack>
+            </VStack>
+        )
     }
 
   return (
@@ -113,23 +138,60 @@ export const FormPage = () => {
               </BodyLong>
           </VStack>
 
-          <RadioGroup legend="Har du en eller flere av pengestøttene i kulepunktlisten over?" onChange={setCanContinue}>
+          <RadioGroup
+              legend="Har du en eller flere av pengestøttene i kulepunktlisten over?"
+              onChange={(e) => {
+                  setCanContinue(e === "true")
+                  setCanContinueError(false)}}
+              error={canContinueError ? "Du må svare på om du har en av pengestøttene på kulepunktlisten" : undefined}>
               <Radio value="true">Ja</Radio>
               <Radio value="false">Nei</Radio>
           </RadioGroup>
 
           { canContinue &&
-              <Selector submitTilleggstrekk={submitTilleggstrekk} maxKroner={10000} buttonIsLoading={buttonIsLoading}/>}
+              <VStack gap="4">
+                  <Heading size={"medium"} level={"2"}>Legg til frivillig tilleggstrekk</Heading>
+                  <RadioGroup id="typeRadio"
+                              legend="Hvordan skal skatten trekkes?"
+                              size={"medium"}
+                              description="Skattetrekk per måned"
+                              value={type}
+                              onChange={(v) => {
+                                  onChangeType(v);
+                                  handleChangeValue((document.getElementById('tilleggstrekk_input') as HTMLInputElement).value, v)
+                              }}
+                              error={selectorError ? "Du må velge hvilken type frivillig skattetrekk du ønsker" : undefined}>
+                      <Radio value={SatsType.PROSENT}>Prosent på alle skattepliktige ytelser/pengestøtter</Radio>
+                      <Radio value={SatsType.KRONER}>Kroner på hver måneds første utbetaling av skattepliktig ytelse/pengestøtte </Radio>
+                  </RadioGroup>
+              </VStack> }
+
+              {canContinue && type &&
+                  <TextField id="tilleggstrekk_input"
+                             label={type === SatsType.PROSENT ? "Hvor mange prosent?" : "Hvor mange kroner?"}
+                             style={{width: "160px"}}
+                             inputMode="numeric"
+                             error={valueError}
+                             pattern="[\d\s]+"
+                             onBlur={(v => handleChangeValue(v.target.value, type))}
+                             onChange={(v => handleChangeValue(v.target.value, type))}
+                             htmlSize={30}
+                  />
+              }
+
 
 
           <VStack gap={"4"}>
               <HStack gap="2">
-                  <Button variant="secondary" size={"medium"} loading={buttonIsLoading} type={"submit"}>Tilbake</Button>
-                  {/*<Button variant="primary" size={"medium"}  ctype={"submit"}*/}
-                  {/*        onClick={()=>{}}> Neste </Button>*/}
-              </HStack>
-              <HStack>
-                  <Button variant="tertiary" size={"medium"}> Avbryt </Button>
+                  <Button variant="secondary" size={"medium"} onClick={() => navigate(import.meta.env.BASE_URL + PageLinks.INDEX, {state: {pid: pid}})}>
+                      Tilbake
+                  </Button>
+                  <Button variant="primary" size={"medium"} loading={buttonIsLoading} type={"submit"}
+                          onClick={onClickNext}> Neste </Button>
+                  </HStack>
+                        <Button variant="tertiary" size={"medium"}> Avbryt </Button>
+                  <HStack>
+
               </HStack>
           </VStack>
 
