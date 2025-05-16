@@ -63,6 +63,9 @@ export function InitialPage() {
                 }
             </VStack>
 
+            {/*<hr style={{ border: "0.5px solid black", width: "100%" }} />*/}
+
+
             <VStack gap="16">
                 {initiateResponse?.data &&
                     <VStack gap={{xs: "2", md: "6"}}>
