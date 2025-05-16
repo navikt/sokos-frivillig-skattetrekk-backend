@@ -1,4 +1,4 @@
-import {Accordion, Alert, BodyLong, GuidePanel, Heading, Link, List, VStack} from "@navikt/ds-react";
+import {Accordion, Alert, BodyLong, Button, GuidePanel, Heading, HStack, Link, List, VStack} from "@navikt/ds-react";
 import React, {useContext} from "react";
 import {RegistrerteSkattetrekk} from "@/components/initialPage/RegistrerteSkattetrekk";
 import {useNavigate} from "react-router-dom";
@@ -47,12 +47,10 @@ export function InitialPage() {
 
                 <GuidePanel poster>
                     <BodyLong>
-                        Nav trekker skatt på bakgrunn av ditt skattekort som Nav har mottatt fra Skatteetaten. Hvis du
-                        ønsker å trekke mer skatt av pengestøtten din fra Nav, kan du registrere et frivillig
-                        skattetrekk her.
+                        Nav trekker skatt på bakgrunn av ditt skattekort som Nav har mottatt fra Skatteetaten. Hvis du ønsker å trekke mer skatt av pengestøtten din fra Nav,
+                        kan du registrere et frivillig skattetrekk.
                     </BodyLong>
                 </GuidePanel>
-
 
                 {showDecemberMessage() &&
                     <Alert variant={"info"}>
@@ -64,8 +62,6 @@ export function InitialPage() {
                     </Alert>
                 }
             </VStack>
-
-
 
             <VStack gap="16">
                 {initiateResponse?.data &&
@@ -92,11 +88,11 @@ export function InitialPage() {
                     <Accordion.Item>
                         <Accordion.Header>Slik trekker Nav frivillig skattetrekk</Accordion.Header>
                         <Accordion.Content>
-                            <BodyLong spacing>Trekket du registrerer kommer i tillegg til det ordinære skattetrekket.
-                                Frivillig skattetrekk gjelder også ved utbetaling av feriepenger og
-                                for perioder hvor det ellers ikke blir trukket skatt. Det kan ikke registreres frivillig
-                                skattetrekk i skattefrie pengestøtter.</BodyLong>
-                            <Link href={"#"}>Les om frivillig skattetrekk</Link>
+                            <BodyLong spacing>Trekket du registrerer kommer i tillegg til det ordinære skattetrekket. Frivillig skattetrekk gjelder også ved utbetaling av feriepenger og
+                                for perioder hvor det ellers ikke blir trukket skatt. Det kan ikke trekkes frivillig skatt på skattefrie pengestøtter.
+                                Tilleggstrekket legges inn som et fast kronebeløp eller som et fast prosenttrekk per måned. </BodyLong>
+                            <Link href={"#"}>Les om frivillig skattetrekk</Link>{/*    TODO link?*/}
+
                         </Accordion.Content>
                     </Accordion.Item>
                     <Accordion.Item>
@@ -126,12 +122,12 @@ export function InitialPage() {
                                     <List.Item>Uførepensjon fra Statens pensjonskasse (SPK)</List.Item>
                                     <List.Item>Uføretrygd</List.Item>
                                 </List>
-                                <BodyLong>Frivillig skattetrekk registrert i denne tjenesten vil kun føre til trekk hvis
-                                    du har utbetaling av pengestøttene i kulepunktlisten.</BodyLong>
-                                <BodyLong> Barnepensjon kan også ha frivillig skattetrekk, men det kan desverre ikke
-                                    registreres i denne tjenesten.</BodyLong>
+                                <BodyLong>Frivillig skattetrekk registrert i denne tjenesten vil kun føre til trekk hvis du har utbetaling av pengestøttene i kulepunktlisten over.</BodyLong>
                                 <BodyLong> Noen pengestøtter kan ikke gis frivillig skattetrekk fordi de er
                                     skattefrie.</BodyLong>
+                                <BodyLong>Barnepensjon kan få frivillig skattetrekk, men det kan desverre ikke registreres i denne tjenesten. <Link target="_blank" href="https://www.nav.no/frivillig-skattetrekk">Les om hvordan registrere frivillig skattetrekk på barnepensjon. </Link>
+                                </BodyLong>
+
                             </VStack>
                         </Accordion.Content>
                     </Accordion.Item>

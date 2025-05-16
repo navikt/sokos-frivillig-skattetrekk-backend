@@ -1,24 +1,39 @@
 import {Alert, BodyShort, Heading, Link, List, VStack} from '@navikt/ds-react'
 import React, {useContext, useEffect, useState} from 'react'
 import {numberFormatWithKr} from "@/common/Utils";
-import {SatsType} from "@/api/skattetrekkBackendClient";
+import {MessageType, SatsType} from "@/api/skattetrekkBackendClient";
 import {FormStateContext} from "@/state/FormState";
 import {RegistrerteSkattetrekk} from "@/components/initialPage/RegistrerteSkattetrekk";
 import {DataContext} from "@/state/DataContextProvider";
 
 export const KvitteringPage = (props: {
 }) => {
-  const {tilleggstrekkType, tilleggstrekkValue} = useContext(FormStateContext)
-  const {sendResponse} = useContext(DataContext)
-  const [isWaiting, setIsWaiting] = useState(true)
+    const {tilleggstrekkType, tilleggstrekkValue} = useContext(FormStateContext)
+    const {sendResponse} = useContext(DataContext)
+    const [isWaiting, setIsWaiting] = useState(true)
+
+    if (sendResponse === null || sendResponse.messages?.some((msg: { type: MessageType }) => msg.type === MessageType.ERROR)) {
+        return (
+            <VStack gap="6" className="form-container">
+                <Alert variant="error">
+                    <VStack gap="3">
+                        <Heading level="3" size="small">
+                            Det har skjedd en teknisk feil. Hvis du har registrert informasjon, har den dessverre ikke blitt lagret. Vi beklager for dette. Du kan prøve igjen senere.
+                            Ta gjerne kontakt med oss hvis problemet fortsetter.
+                        </Heading>
+                    </VStack>
+                </Alert>
+            </VStack>
+        )
+    }
 
   return (
     <VStack gap="6" className="form-container">
       <Alert variant="success">
         <VStack gap="3">
           <Heading level="3" size="small">
-            {tilleggstrekkType === SatsType.PROSENT ?
-                `Frivillig skattetrekk på ${tilleggstrekkValue} % registrert` :
+            {sendResponse.data.tilleggstrekk?.satsType === SatsType.PROSENT ?
+                `Frivillig skattetrekk på ${sendResponse.data.tilleggstrekk?.sats} % registrert` :
                 `Frivillig skattetrekk på ${numberFormatWithKr(tilleggstrekkValue ?? 0)} per måned registrert`}
           </Heading>
           <BodyShort>

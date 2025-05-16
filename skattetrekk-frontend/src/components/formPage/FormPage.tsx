@@ -125,8 +125,8 @@ export const FormPage = () => {
           <VStack gap={"4"}>
               <HStack gap="2">
                   <Button variant="secondary" size={"medium"} loading={buttonIsLoading} type={"submit"}>Tilbake</Button>
-                  <Button variant="primary" size={"medium"}  ctype={"submit"}
-                          onClick={()=>{}}> Neste </Button>
+                  {/*<Button variant="primary" size={"medium"}  ctype={"submit"}*/}
+                  {/*        onClick={()=>{}}> Neste </Button>*/}
               </HStack>
               <HStack>
                   <Button variant="tertiary" size={"medium"}> Avbryt </Button>

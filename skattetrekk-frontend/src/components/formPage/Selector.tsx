@@ -1,5 +1,5 @@
 import {Button, Heading, HStack, Radio, RadioGroup, TextField, VStack} from "@navikt/ds-react";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {SatsType} from "@/api/skattetrekkBackendClient";
 import {numberFormatWithKr, parseInntekt} from "@/common/Utils";
 
@@ -55,6 +55,10 @@ export function Selector(props: {
             props.submitTilleggstrekk(type, value)
         }
     }
+
+    useEffect(() => {
+
+    }, []);
 
 
     return (
