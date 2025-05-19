@@ -1,19 +1,3 @@
-export interface FrivilligSkattetrekkResponse {
-    data: FrivilligSkattetrekkData | null;
-    messages: FrivilligSkattetrekkMessage[] | null;
-}
-
-export interface FrivilligSkattetrekkMessage {
-    details: string | null,
-    type: FrivilligSkattetrekkType
-}
-
-export enum  FrivilligSkattetrekkType {
-    ERROR,
-    WARNING,
-    INFO
-}
-
 export interface TrekkDTO {
     sats: number | null;
     satsType: SatsType | null;
@@ -29,6 +13,22 @@ export enum SatsType {
     KRONER = "KRONER"
 }
 
+export interface Message {
+    details: string | null,
+    type: MessageType,
+}
+
+export enum MessageType {
+    ERROR,
+    WARNING,
+    INFO
+}
+
+export interface FrivilligSkattetrekkResponse {
+    data: FrivilligSkattetrekkData
+    messages: Message[] | null
+}
+
 export interface FrivilligSkattetrekkData {
     tilleggstrekk: TrekkDTO | null;
     framtidigTilleggstrekk: TrekkDTO | null;
@@ -36,10 +36,8 @@ export interface FrivilligSkattetrekkData {
 }
 
 export interface UpdateTilleggstrekkRequest {
-    data: {
-        value: number;
-        satsType: SatsType
-    }
+    value: number;
+    satsType: SatsType
 }
 
 

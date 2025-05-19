@@ -36,7 +36,6 @@ function DataContextProvider(props: DataContextProviderProps) {
                 console.log("Response from fetchSkattetrekk: ", response)
                 setInitiateResponse(response)
             } catch (error) {
-                console.error("Error fetching skattetrekk: ", error)
                 setShouldRefetch(true) // Reset shouldRefetch to true since the refetch failed
             }
 
@@ -49,10 +48,6 @@ function DataContextProvider(props: DataContextProviderProps) {
             refetch() // Call refetch every time shouldRefetch is set to true.
         }
     }, [refetch, shouldRefetch])
-
-    useEffect(() => {
-        console.log("InitiateResponse: ", initiateResponse)
-    }, [initiateResponse])
 
     return (
         <DataContext.Provider
