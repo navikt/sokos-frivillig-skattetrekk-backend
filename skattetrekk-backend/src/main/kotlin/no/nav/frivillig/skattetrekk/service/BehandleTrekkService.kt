@@ -18,6 +18,7 @@ class BehandleTrekkService(
     private val log = LoggerFactory.getLogger(BehandleTrekkService::class.java)
 
     fun behandleTrekk(pid: String, tilleggstrekk: Int, satsType: SatsType) {
+
         val finnTrekkListe = trekkClient.finnTrekkListe(pid, TrekkTypeCode.FSKT)
         val trekkvedtakId = finnTrekkListe?.sortedByDescending { it.trekkperiodeFom }?.firstOrNull()?.trekkvedtakId
 

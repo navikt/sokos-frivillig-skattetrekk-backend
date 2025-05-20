@@ -4,6 +4,7 @@ import no.nav.frivillig.skattetrekk.endpoint.api.*
 import no.nav.frivillig.skattetrekk.security.SecurityContextUtil
 import no.nav.frivillig.skattetrekk.service.BehandleTrekkService
 import no.nav.frivillig.skattetrekk.service.HentSkattOgTrekkService
+import no.nav.frivillig.skattetrekk.service.Validering
 import org.springframework.http.HttpStatus.*
 import org.springframework.web.bind.annotation.*
 
@@ -19,6 +20,12 @@ class SkattetrekkController(
 
     @PostMapping
     fun behandleFrivilligSkattetrekk(@RequestBody request: BehandleRequest): FrivilligSkattetrekkInitResponse? {
+
+        val valideringsListe = Validering.valider(request.value, request.satsType)
+        if (valideringsListe.isNotEmpty()) {
+            return FrivilligSkattetrekkInitResponse(null, valideringsListe)
+        }
+
         behandleTrekkService.behandleTrekk(
             SecurityContextUtil.getPidFromContext(),
             request.value,
