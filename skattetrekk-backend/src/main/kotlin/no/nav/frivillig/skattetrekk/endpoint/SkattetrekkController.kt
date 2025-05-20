@@ -27,10 +27,6 @@ class SkattetrekkController(
         return skattetrekkService.hentSkattetrekk(SecurityContextUtil.getPidFromContext())
     }
 
-    @ResponseStatus(value = SERVICE_UNAVAILABLE, reason = "Oppdragssystemet er nede eller utilgjengelig")
-    @ExceptionHandler(OppdragUtilgjengeligException::class)
-    fun oppdragErNede() = Unit
-
     @ResponseStatus(value = SERVICE_UNAVAILABLE, reason = "Teknisk feil fra Oppdragssystemet, prøv igjen senere")
     @ExceptionHandler(TekniskFeilFraOppdragException::class)
     fun tekniskFeilFraOppdrag() = Unit

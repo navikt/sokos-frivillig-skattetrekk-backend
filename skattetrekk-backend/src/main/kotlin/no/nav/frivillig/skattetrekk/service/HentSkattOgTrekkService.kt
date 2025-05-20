@@ -4,6 +4,7 @@ import no.nav.frivillig.skattetrekk.client.trekk.TrekkClient
 import no.nav.frivillig.skattetrekk.client.trekk.api.*
 import no.nav.frivillig.skattetrekk.client.trekk.api.Skattetrekk
 import no.nav.frivillig.skattetrekk.endpoint.ClientException
+import no.nav.frivillig.skattetrekk.endpoint.OppdragUtilgjengeligException
 import no.nav.frivillig.skattetrekk.endpoint.api.*
 import no.nav.frivillig.skattetrekk.util.isDateInPeriod
 import org.slf4j.LoggerFactory
@@ -24,17 +25,26 @@ class HentSkattOgTrekkService(
 
     fun hentSkattetrekk(pid: String): FrivilligSkattetrekkInitResponse? {
 
-        log.info("Finner trekkliste for forskuddsskatt og frivillig skattetrekk")
-        val forskuddsTrekkListe = trekkClient.finnTrekkListe(pid, TrekkTypeCode.FSKT)
-        val tilleggsTrekkInfoListe = trekkClient.finnTrekkListe(pid, TrekkTypeCode.FRIS)
+        try {
+            log.info("Finner trekkliste for forskuddsskatt og frivillig skattetrekk")
+            val forskuddsTrekkListe = trekkClient.finnTrekkListe(pid, TrekkTypeCode.FSKT)
+            val tilleggsTrekkInfoListe = trekkClient.finnTrekkListe(pid, TrekkTypeCode.FRIS)
 
-        log.info("Henter skatt og trekk for forskuddsskatt og frivillig skattetrekk")
-        val skattetrekk = finnSkattetrekk(pid, forskuddsTrekkListe)
-        val tillegstrekkVedtakListe = opprettTilleggstrekkVedtakListe(pid, tilleggsTrekkInfoListe)
+            log.info("Henter skatt og trekk for forskuddsskatt og frivillig skattetrekk")
+            val skattetrekk = finnSkattetrekk(pid, forskuddsTrekkListe)
+            val tillegstrekkVedtakListe = opprettTilleggstrekkVedtakListe(pid, tilleggsTrekkInfoListe)
 
-
-        return createSkattetrekkInitResponse(skattetrekk, tillegstrekkVedtakListe, emptyList())
-
+            return createSkattetrekkInitResponse(skattetrekk, tillegstrekkVedtakListe, emptyList())
+        } catch (e: OppdragUtilgjengeligException) {
+            return createSkattetrekkInitResponse(
+                null,
+                emptyList(),
+                listOf(FrivilligSkattetrekkMessage(
+                    details = FrivilligSkattetrekkMessageDetail.OPPDRAG_UTILGJENGELIG,
+                    type = FrivilligSkattetrekkType.INFO
+                )
+            ))
+        }
     }
 
     private fun createSkattetrekkInitResponse(skattetrekk: Skattetrekk?, tilleggstrekkListe: List<AndreTrekkResponse?>, meldinger: List<FrivilligSkattetrekkMessage>): FrivilligSkattetrekkInitResponse {
