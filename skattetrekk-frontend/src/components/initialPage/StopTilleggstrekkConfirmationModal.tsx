@@ -19,7 +19,10 @@ export function StopTilleggstrekkConfirmationModal(props: {onConfirm: () => void
                 </Modal.Body>
                 <Modal.Footer>
 
-                    <Button type="button" onClick={props.onConfirm} variant="primary">
+                    <Button type="button" onClick={() => {
+                        props.onConfirm
+                        setOpen(false)
+                    }} variant="primary">
                         Ja
                     </Button>
                     <Button type="button" variant="secondary" onClick={() => {setOpen(false)}}>

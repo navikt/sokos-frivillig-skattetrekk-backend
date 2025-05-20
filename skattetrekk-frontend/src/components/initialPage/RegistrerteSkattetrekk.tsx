@@ -1,4 +1,4 @@
-import {BodyLong, HGrid} from "@navikt/ds-react";
+import {Alert, BodyLong, HGrid, VStack} from "@navikt/ds-react";
 import {ForenkletSkattetrekk, TrekkDTO} from "@/api/skattetrekkBackendClient";
 import "./RegistrerteSkattetrekk.css";
 import {showPercentageOrTable, visProsentEllerBelop} from "@/common/Utils";
@@ -18,20 +18,35 @@ export function RegistrerteSkattetrekk(props: RegistrerteSkattetrekkProps) {
     }, []);
 
     return (
-        <HGrid gap="4" columns="min-content 1fr">
-            <dt className="label">
-                <strong>{props.tilleggstrekk ? "Frivillig skattetrekk til og med nåværende måned:" : "Frivillig tilleggstrekk:"} </strong>
-            </dt>
-            <dd className="data">{visProsentEllerBelop(props.tilleggstrekk)}</dd>
+        <VStack gap="4">
+            {props.framtidigTilleggstrekk !== null &&
+                <Alert variant="info">
+                    <BodyLong>
+                        {/*TODO date?*/}
+                        Vi har registrert nytt frivillig skattetrekk på {visProsentEllerBelop(props.framtidigTilleggstrekk)} fra DATE
+                        Det kan ta inntil 14 dager før trekket kommer med på utbetalingene dine. Trekket gjelder ut året.
+                    </BodyLong>
+                </Alert>
+            }
 
-            <dt className="label"><strong>Trekk fra skattekortet {new Date().getFullYear()}:</strong></dt>
-            <dd className="data">{showPercentageOrTable(props.skatteTrekk)}</dd>
+            {props.tilleggstrekk !== null && props.framtidigTilleggstrekk?.sats === 0 && // TODO is this logic correct?
+                <Alert variant="info">
+                    <BodyLong>
+                        Det frivillige skattetrekket er stoppet fra og med neste måned.
+                    </BodyLong>
+                </Alert>
+            }
 
-            {props.framtidigTilleggstrekk != null &&
-                <dt className="label"><strong>Frivillig skattetrekk fra og med neste måned:</strong></dt>}
-            {props.framtidigTilleggstrekk != null &&
-                <dd className="data">{visProsentEllerBelop(props.framtidigTilleggstrekk)}</dd>}
-        </HGrid>)
+            <HGrid gap="4" columns="min-content 1fr">
+                <dt className="label">
+                    <strong>Frivillig tilleggstrekk:</strong>
+                </dt>
+                <dd className="data">{visProsentEllerBelop(props.tilleggstrekk)}</dd>
+
+                <dt className="label"><strong>Trekk fra skattekortet:</strong></dt>
+                <dd className="data">{showPercentageOrTable(props.skatteTrekk)}</dd>
+            </HGrid>
+        </VStack>)
 }
 
 

@@ -12,74 +12,83 @@ export const FormPage = () => {
     const {setTilleggstrekkType, setTilleggstrekkValue} = useContext(FormStateContext)
 
     const [type, setType] = useState<SatsType | null>(null)
-    const [value, setValue] = useState<number | null>(null)
+    const [value, setValue] = useState<string | null>(null)
 
     const [buttonIsLoading, setButtonIsLoading] = useState(false)
     const [pageState, setPageState] = useState<"initial" | "cannotProceed">("initial")
 
     const [canContinue, setCanContinue] = useState<boolean | null>(null)
-    const [canContinueError, setCanContinueError] = useState(false)
-    const [selectorError, setSelectorError] = useState(false)
+    const [canContinueError, setCanContinueError] = useState<string | null>(null)
+    const [selectorError, setSelectorError] = useState<string | null>(null)
     const [valueError, setValueError] = useState<string | null>(null)
     const navigate = useNavigate()
     const pid = new URLSearchParams(document.location.search).get("pid")
 
     async function onClickNext() {
-        if(canContinue === null) {
-            setCanContinueError(true)
-        } else if (canContinue === false) {
-            setPageState("cannotProceed")
-        } else if (type === null) {
-            setSelectorError(true)
-        }
+        if(validateInput()) {
 
-        else if (type !== null && value !== null) {
-            setButtonIsLoading(true)
-            setTilleggstrekkType(type)
-            setTilleggstrekkValue(value)
+            if (canContinue === false) {
+                setPageState("cannotProceed")
+            }
 
-            var response = await saveSkattetrekk({satsType: type, value: value})
-            setSendResponse(response)
-            navigate(import.meta.env.BASE_URL + PageLinks.OPPSUMMERING, {
-                state: {
-                    pid: pid
-                }
-            })
+            console.log("value", value, "type", type)
+            if (type !== null && value !== null) {
+                setButtonIsLoading(true)
+                setTilleggstrekkType(type)
+                var tillleggstrekkValue = parseInntekt(value)
+                setTilleggstrekkValue(tillleggstrekkValue)
+                var response = await saveSkattetrekk({satsType: type, value: tillleggstrekkValue })
+                    setSendResponse(response)
+                    navigate(import.meta.env.BASE_URL + PageLinks.OPPSUMMERING, {
+                        state: {
+                            pid: pid
+                        }
+                    })
+                setButtonIsLoading(false)
+            }
         }
     }
 
     const onChangeType = (val: SatsType) => {
-        setType(val);
-        setSelectorError(false)
+        setType(val)
+        setValue(null)
+        setSelectorError(null)
+        setValueError(null)
     }
 
-    const handleChangeValue = (val: string | null, typeVal: SatsType) => {
-        if (val === '' || val === null) {
-            setValueError(null)
-            setValue(null)
-            return
-        }
+    const validateInput = (): boolean => {
+        const numericValue = parseInntekt(value)
 
-        const numericValue = parseInntekt(val)
+        console.log("numericValue", numericValue)
 
-        if (isNaN(numericValue) || numericValue < 0) {
-            setValueError('Du kan ikke skrive mellomrom, bokstaver eller tegn')
-        } else if (typeVal === SatsType.PROSENT && numericValue > 100) {
+        if(canContinue === null) {
+            setCanContinueError("Du må svare på om du har en av pengestøttene på kulepunktlisten")
+        } else if (type === null) {
+            setSelectorError("Du må velge hvilken type frivillig skattetrekk du ønsker")
+        } else if (value === '' || value === null) {
+            setValueError("Må oppgi et beløp")
+        } else if (isNaN(numericValue) || numericValue < 0) {
+            setValueError('Du kan ikke skrive bokstaver eller tegn')
+        } else if (type === SatsType.PROSENT && numericValue > 100) {
             setValueError('Du kan maks oppgi 100 %')
-        } else if (typeVal === SatsType.KRONER && numericValue === 0) {
+        } else if (type === SatsType.KRONER && numericValue === 0) {
             setValueError(`Du må oppgi et høyere beløp enn 0 kr. Ønsker du å stoppe et frivilligskattetrekk? Gå tilbake og klikk på knappen “Stopp frivillig skattetrekk”.`)
-        } else if (typeVal === SatsType.PROSENT && numericValue === 0) {
+        } else if (type === SatsType.PROSENT && numericValue === 0) {
             setValueError(`Du må oppgi mer enn 0 %. Ønsker du å stoppe et frivillig skattetrekk? Gå tilbake og klikk på knappen “Stopp frivillig skattetrekk”.`)
-        } else if (typeVal === SatsType.KRONER && numericValue > 99999) { //todo this value should come from initiateResponse.messages
+        } else if (type === SatsType.KRONER && numericValue > 99999) { //todo this value should come from initiateResponse.messages
             setValueError(`Du kan maks oppgi ${numberFormatWithKr(99999)}. Vil du trekke et høyere beløp, kan du legge det inn som prosent`)
-        } else if (typeVal === SatsType.KRONER && numericValue === 0) {
+        } else if (type === SatsType.KRONER && numericValue === 0) {
             setValueError('Du må oppgi et høyere beløp enn 0 kr')
         }
 
         else {
+            setCanContinueError(null)
             setValueError(null)
-            setValue(numericValue)
+            setValueError(null)
+            return true
         }
+
+        return false
     }
 
     if(pageState === "cannotProceed") {
@@ -142,8 +151,9 @@ export const FormPage = () => {
               legend="Har du en eller flere av pengestøttene i kulepunktlisten over?"
               onChange={(e) => {
                   setCanContinue(e === "true")
-                  setCanContinueError(false)}}
-              error={canContinueError ? "Du må svare på om du har en av pengestøttene på kulepunktlisten" : undefined}>
+                  setCanContinueError(null)}}
+              value={canContinue === null ? undefined : canContinue.toString()}
+              error={canContinueError}>
               <Radio value="true">Ja</Radio>
               <Radio value="false">Nei</Radio>
           </RadioGroup>
@@ -158,11 +168,10 @@ export const FormPage = () => {
                               value={type}
                               onChange={(v) => {
                                   onChangeType(v);
-                                  handleChangeValue((document.getElementById('tilleggstrekk_input') as HTMLInputElement).value, v)
                               }}
-                              error={selectorError ? "Du må velge hvilken type frivillig skattetrekk du ønsker" : undefined}>
-                      <Radio value={SatsType.PROSENT}>Prosent på alle skattepliktige ytelser/pengestøtter</Radio>
-                      <Radio value={SatsType.KRONER}>Kroner på hver måneds første utbetaling av skattepliktig ytelse/pengestøtte </Radio>
+                              error={selectorError}>
+                      <Radio value={SatsType.PROSENT} description="Trekkes fra alle utbetalinger">Prosent på alle skattepliktige ytelser/pengestøtter</Radio>
+                      <Radio value={SatsType.KRONER} description= "Trekkes vanligvis fra månedens første utbetaling">Kroner på hver måneds første utbetaling av skattepliktig ytelse/pengestøtte </Radio>
                   </RadioGroup>
               </VStack> }
 
@@ -173,8 +182,13 @@ export const FormPage = () => {
                              inputMode="numeric"
                              error={valueError}
                              pattern="[\d\s]+"
-                             onBlur={(v => handleChangeValue(v.target.value, type))}
-                             onChange={(v => handleChangeValue(v.target.value, type))}
+                             value={value ?? ""}
+                             onChange={(v) => {
+                                 setValue(v.target.value)
+                             }}
+                             onBlur={(v) => {
+                                 setValue(v.target.value)
+                             }}
                              htmlSize={30}
                   />
               }
@@ -188,11 +202,10 @@ export const FormPage = () => {
                   </Button>
                   <Button variant="primary" size={"medium"} loading={buttonIsLoading} type={"submit"}
                           onClick={onClickNext}> Neste </Button>
-                  </HStack>
-                        <Button variant="tertiary" size={"medium"}> Avbryt </Button>
-                  <HStack>
-
               </HStack>
+            <HStack>
+                <Button variant="tertiary" size={"medium"}> Avbryt </Button>
+            </HStack>
           </VStack>
 
 

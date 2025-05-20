@@ -1,16 +1,9 @@
-{
-  "data": {
+{"data": {
   "tilleggstrekk": {
-    "sats": 10,
+    "sats": 2,
     "satsType": "PROSENT"
   },
-  "framtidigTilleggstrekk": {
-    "sats": 4444,
-    "satsType": "KRONER"
-  },
-  "skattetrekk": {
-    "tabellNr": null,
-    "prosentsats": 25
-  }
-  }
-}
+  "framtidigTilleggstrekk": null,
+  "skattetrekk":
+  {"tabellNr":null,"prosentsats":33}},
+  "messages":[]}

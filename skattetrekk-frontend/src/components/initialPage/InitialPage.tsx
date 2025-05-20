@@ -2,13 +2,13 @@ import {Accordion, Alert, BodyLong, Button, GuidePanel, Heading, HStack, Link, L
 import React, {useContext} from "react";
 import {RegistrerteSkattetrekk} from "@/components/initialPage/RegistrerteSkattetrekk";
 import {useNavigate} from "react-router-dom";
-import {MessageType} from "@/api/skattetrekkBackendClient";
+import {MessageType, SatsType, saveSkattetrekk} from "@/api/skattetrekkBackendClient";
 import {DataContext} from "@/state/DataContextProvider";
 import {PageLinks} from "@/routes";
 import {StopTilleggstrekkConfirmationModal} from "@/components/initialPage/StopTilleggstrekkConfirmationModal";
 
 export function InitialPage() {
-    const {initiateResponse} = useContext(DataContext)
+    const {initiateResponse, setInitiateResponse} = useContext(DataContext)
 
     const navigate = useNavigate()
     const pid = new URLSearchParams(document.location.search).get("pid")
@@ -23,7 +23,12 @@ export function InitialPage() {
     }
 
     async function stopTilleggstrekk() {
-        //todo
+        const response = await saveSkattetrekk(
+            {
+                value: 0,
+                satsType: SatsType.KRONER,
+            })
+        setInitiateResponse(response)
     }
 
     function showDecemberMessage() {
@@ -36,28 +41,43 @@ export function InitialPage() {
         return currentDate.getFullYear();
     }
 
-    console.log("initiateResponse", initiateResponse)
+
+
+    if (initiateResponse?.messages?.find(message => message.code === "SERVICE_UNAVAILABLE")) { //TODO code?
+        return (
+            <VStack gap="6">
+                {guidePanel()}
+                <Alert variant="warning">
+                    <Heading spacing size="small" level="3">
+                        Tjenesten er ikke åpen nå
+                    </Heading>
+                    <BodyLong spacing>Av tekniske årsaker er registrering av frivillig skattetrekk i denne tjenesten kun
+                        åpent mandag-fredag 06:00 til 21:30. Offentlige fridager og helger er denne tjenesten ofte
+                        stengt.</BodyLong>
+                    <BodyLong><strong>I åpningstidene kan du gjøre dette i denne tjenesten</strong></BodyLong>
+                    <li>se registrert frivillig skattetrekk </li>
+                    <li>registrere frivillig skattetrekk </li>
+                    <li>stoppe frivillig skattetrekk </li>
+                </Alert>
+            </VStack>
+        )
+    }
 
     return (
         <VStack gap="8">
-            <VStack gap="6" id="samboer-historikk-tittel">
+            <VStack gap="6">
 
-                <GuidePanel poster>
-                    <BodyLong>
-                        Nav trekker skatt på bakgrunn av ditt skattekort som Nav har mottatt fra Skatteetaten. Hvis du ønsker å trekke mer skatt av pengestøtten din fra Nav,
-                        kan du registrere et frivillig skattetrekk.
-                    </BodyLong>
-                </GuidePanel>
+                { guidePanel()}
 
-                {showDecemberMessage() &&
-                    <Alert variant={"info"}>
-                        <VStack gap="5">
-                            <BodyLong> Frivillig skattetrekk du legger inn nå, vil gjelde for {getYear()}. </BodyLong>
-                            <BodyLong> Når skattekortet for {getYear()} kommer i slutten av desember, blir det oppdatert
-                                her. Frem til da vises årets skattekort.</BodyLong>
-                        </VStack>
-                    </Alert>
-                }
+                {/*{showDecemberMessage() &&*/}
+                {/*    <Alert variant={"info"}>*/}
+                {/*        <VStack gap="5">*/}
+                {/*            <BodyLong> Frivillig skattetrekk du legger inn nå, vil gjelde for {getYear()}. </BodyLong>*/}
+                {/*            <BodyLong> Når skattekortet for {getYear()} kommer i slutten av desember, blir det oppdatert*/}
+                {/*                her. Frem til da vises årets skattekort.</BodyLong>*/}
+                {/*        </VStack>*/}
+                {/*    </Alert>*/}
+                {/*}*/}
             </VStack>
 
             {/*<hr style={{ border: "0.5px solid black", width: "100%" }} />*/}
@@ -69,7 +89,7 @@ export function InitialPage() {
                         <Heading size={"medium"} level="2">Dine registrerte skattetrekk</Heading>
                         {
                             initiateResponse?.messages?.map((message) => {
-                                if (message.type === MessageType.INFO) {
+                                if (message.code === "USER_HAS_STOPPED_TILLEGGSTREKK") { // todo clarify with gard this logic
                                     return (
                                         <Alert variant="info">
                                             Det frivillige skattetrekket er stoppet fra og med neste måned.
@@ -80,7 +100,8 @@ export function InitialPage() {
                         }
 
                         <RegistrerteSkattetrekk skatteTrekk={initiateResponse.data.skattetrekk!} tilleggstrekk={initiateResponse.data.tilleggstrekk} framtidigTilleggstrekk={initiateResponse.data.framtidigTilleggstrekk} />
-                        {initiateResponse.data.tilleggstrekk === null &&
+                        {/*TODO clarify logic below with gard*/}
+                        {initiateResponse.data.tilleggstrekk !== null && initiateResponse.data.framtidigTilleggstrekk?.sats !== 0 &&
                             <StopTilleggstrekkConfirmationModal onConfirm={stopTilleggstrekk}/>}
                     </VStack> }
 
@@ -141,7 +162,8 @@ export function InitialPage() {
             {/*<hr style={{ border: "1px solid black", width: "100%" }} />*/}
 
             <HStack>
-                <Button variant="primary" onClick={onClickContinue}>Start registrering</Button>
+                <Button variant="primary" onClick={onClickContinue}>{initiateResponse?.data?.tilleggstrekk || initiateResponse?.data?.framtidigTilleggstrekk ?
+                    "Endre frivillig skattetrekk" : "Start registrering"}</Button>
             </HStack>
 
 
@@ -150,4 +172,15 @@ export function InitialPage() {
 
 
     )
+
+    function guidePanel() {
+        return (
+            <GuidePanel poster>
+                <BodyLong>
+                    Nav trekker skatt på bakgrunn av ditt skattekort som Nav har mottatt fra Skatteetaten. Hvis du ønsker å trekke mer skatt av pengestøtten din fra Nav,
+                    kan du registrere et frivillig skattetrekk.
+                </BodyLong>
+            </GuidePanel>
+        )
+    }
 }
