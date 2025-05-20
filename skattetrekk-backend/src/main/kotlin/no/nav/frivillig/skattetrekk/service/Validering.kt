@@ -22,7 +22,7 @@ class Validering {
                         )
                     )
                 }
-                if (tilleggstrekk <= 0) {
+                if (tilleggstrekk < 0) {
                     valideringsListe.add(
                         FrivilligSkattetrekkMessage(
                             details = FrivilligSkattetrekkMessageDetail.MIN_BELOP,
