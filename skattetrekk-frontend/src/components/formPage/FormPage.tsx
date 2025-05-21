@@ -170,8 +170,8 @@ export const FormPage = () => {
                                   onChangeType(v);
                               }}
                               error={selectorError}>
-                      <Radio value={SatsType.PROSENT} description="Trekkes fra alle utbetalinger">Prosent på alle skattepliktige ytelser/pengestøtter</Radio>
-                      <Radio value={SatsType.KRONER} description= "Trekkes vanligvis fra månedens første utbetaling">Kroner på hver måneds første utbetaling av skattepliktig ytelse/pengestøtte </Radio>
+                      <Radio value={SatsType.PROSENT} description="Trekkes fra alle utbetalinger">Prosent</Radio>
+                      <Radio value={SatsType.KRONER} description= "Trekkes vanligvis fra månedens første utbetaling">Kroner per måned</Radio>
                   </RadioGroup>
               </VStack> }
 
