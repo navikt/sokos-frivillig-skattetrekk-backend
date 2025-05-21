@@ -1,11 +1,26 @@
-import {Accordion, Alert, BodyLong, Button, GuidePanel, Heading, HStack, Link, List, VStack} from "@navikt/ds-react";
-import React, {useContext} from "react";
+import {
+    Accordion,
+    Alert,
+    BodyLong,
+    BodyShort,
+    Box,
+    Button,
+    GuidePanel,
+    Heading,
+    HStack,
+    Link,
+    List,
+    Loader,
+    VStack
+} from "@navikt/ds-react";
+import React, {useContext, useEffect} from "react";
 import {RegistrerteSkattetrekk} from "@/components/initialPage/RegistrerteSkattetrekk";
 import {useNavigate} from "react-router-dom";
-import {MessageType, SatsType, saveSkattetrekk} from "@/api/skattetrekkBackendClient";
+import {MessageCode, SatsType, saveSkattetrekk} from "@/api/skattetrekkBackendClient";
 import {DataContext} from "@/state/DataContextProvider";
 import {PageLinks} from "@/routes";
 import {StopTilleggstrekkConfirmationModal} from "@/components/initialPage/StopTilleggstrekkConfirmationModal";
+import {resetFormState} from "@/state/FormState";
 
 export function InitialPage() {
     const {initiateResponse, setInitiateResponse} = useContext(DataContext)
@@ -13,6 +28,9 @@ export function InitialPage() {
     const navigate = useNavigate()
     const pid = new URLSearchParams(document.location.search).get("pid")
 
+    useEffect(() => {
+        resetFormState()
+    })
 
     function onClickContinue() {
         navigate(import.meta.env.BASE_URL + PageLinks.ENDRING, {
@@ -31,7 +49,7 @@ export function InitialPage() {
         setInitiateResponse(response)
     }
 
-    function showDecemberMessage() {
+    function isDecember() {
         const currentDate = new Date();
         return currentDate.getMonth() === 11;
     }
@@ -42,8 +60,18 @@ export function InitialPage() {
     }
 
 
+    if(initiateResponse === null) {
+        return (
+            <Box background="bg-subtle" padding="16" borderRadius="large">
+                <VStack align="center" gap="20">
+                    <Loader size="3xlarge" />
+                    <BodyShort align="center">{"Vent mens vi laster inn siden."}</BodyShort>
+                </VStack>
+            </Box>
+        )
+    }
 
-    if (initiateResponse?.messages?.find(message => message.code === "SERVICE_UNAVAILABLE")) { //TODO code?
+    if (initiateResponse?.messages?.find(message => message.code === MessageCode.SERVICE_UNAVAILABLE)) { //TODO code?
         return (
             <VStack gap="6">
                 {guidePanel()}
@@ -69,39 +97,25 @@ export function InitialPage() {
 
                 { guidePanel()}
 
-                {/*{showDecemberMessage() &&*/}
-                {/*    <Alert variant={"info"}>*/}
-                {/*        <VStack gap="5">*/}
-                {/*            <BodyLong> Frivillig skattetrekk du legger inn nå, vil gjelde for {getYear()}. </BodyLong>*/}
-                {/*            <BodyLong> Når skattekortet for {getYear()} kommer i slutten av desember, blir det oppdatert*/}
-                {/*                her. Frem til da vises årets skattekort.</BodyLong>*/}
-                {/*        </VStack>*/}
-                {/*    </Alert>*/}
-                {/*}*/}
+                {isDecember() &&
+                    <Alert variant={"info"}>
+                        <VStack gap="5">
+                            <BodyLong> Frivillig skattetrekk du legger inn nå, vil gjelde for {getYear() + 1}. </BodyLong>
+                            <BodyLong> Når skattekortet for {getYear() + 1} kommer i slutten av desember, blir det oppdatert
+                                her. Frem til da vises årets skattekort.</BodyLong>
+                        </VStack>
+                    </Alert>
+                }
             </VStack>
-
-            {/*<hr style={{ border: "0.5px solid black", width: "100%" }} />*/}
-
 
             <VStack gap="16">
                 {initiateResponse?.data &&
                     <VStack gap={{xs: "2", md: "6"}}>
                         <Heading size={"medium"} level="2">Dine registrerte skattetrekk</Heading>
-                        {
-                            initiateResponse?.messages?.map((message) => {
-                                if (message.code === "USER_HAS_STOPPED_TILLEGGSTREKK") { // todo clarify with gard this logic
-                                    return (
-                                        <Alert variant="info">
-                                            Det frivillige skattetrekket er stoppet fra og med neste måned.
-                                        </Alert>
-                                    )
-                                }
-                            })
-                        }
 
-                        <RegistrerteSkattetrekk skatteTrekk={initiateResponse.data.skattetrekk!} tilleggstrekk={initiateResponse.data.tilleggstrekk} framtidigTilleggstrekk={initiateResponse.data.framtidigTilleggstrekk} />
+                        <RegistrerteSkattetrekk skatteTrekk={initiateResponse.data.skattetrekk!} tilleggstrekk={initiateResponse.data.tilleggstrekk} framtidigTilleggstrekk={initiateResponse.data.framtidigTilleggstrekk} isDecember={isDecember()} />
                         {/*TODO clarify logic below with gard*/}
-                        {initiateResponse.data.tilleggstrekk !== null && initiateResponse.data.framtidigTilleggstrekk?.sats !== 0 &&
+                        {initiateResponse.data.tilleggstrekk !== null || initiateResponse.data.framtidigTilleggstrekk?.sats !== 0 &&
                             <StopTilleggstrekkConfirmationModal onConfirm={stopTilleggstrekk}/>}
                     </VStack> }
 
@@ -112,7 +126,7 @@ export function InitialPage() {
                             <BodyLong spacing>Trekket du registrerer kommer i tillegg til det ordinære skattetrekket. Frivillig skattetrekk gjelder også ved utbetaling av feriepenger og
                                 for perioder hvor det ellers ikke blir trukket skatt. Det kan ikke trekkes frivillig skatt på skattefrie pengestøtter.
                                 Tilleggstrekket legges inn som et fast kronebeløp eller som et fast prosenttrekk per måned. </BodyLong>
-                            <Link href={"#"}>Les om frivillig skattetrekk</Link>{/*    TODO link?*/}
+                            <Link href={"https://www.nav.no/frivillig-skattetrekk"}>Les om frivillig skattetrekk</Link>
 
                         </Accordion.Content>
                     </Accordion.Item>
@@ -154,23 +168,13 @@ export function InitialPage() {
                     </Accordion.Item>
                 </Accordion>
 
-                {/*<Selector submitTilleggstrekk={submitTilleggstrekk} maxKroner={10000}*/}
-                {/*          buttonIsLoading={buttonIsLoading}/>*/}
             </VStack>
 
-            {/*show a horizontal black line, to separate the sections in the page*/}
-            {/*<hr style={{ border: "1px solid black", width: "100%" }} />*/}
-
             <HStack>
-                <Button variant="primary" onClick={onClickContinue}>{initiateResponse?.data?.tilleggstrekk || initiateResponse?.data?.framtidigTilleggstrekk ?
+                <Button variant="primary" onClick={onClickContinue}>{initiateResponse?.data?.tilleggstrekk ?
                     "Endre frivillig skattetrekk" : "Start registrering"}</Button>
             </HStack>
-
-
-
         </VStack>
-
-
     )
 
     function guidePanel() {

@@ -46,7 +46,7 @@ export function showPercentageOrTable(skattetrekk: ForenkletSkattetrekk) {
 
 export function visProsentEllerBelop(tilleggstrekk: TrekkDTO | null) {
   if (tilleggstrekk == null) {
-    return "Ingen tilleggstrekk"
+    return "Ingen"
   }
 
   if (tilleggstrekk.satsType == SatsType.PROSENT && tilleggstrekk.sats != null) {
@@ -55,5 +55,5 @@ export function visProsentEllerBelop(tilleggstrekk: TrekkDTO | null) {
     return `${numberFormatWithKr(tilleggstrekk.sats)} per måned`
   }
 
-  return "Ingen tilleggstrekk"
+  return "Ingen"
 }
