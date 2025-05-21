@@ -19,6 +19,7 @@ export interface Message {
     code: string | null,
 }
 
+
 export enum MessageType {
     ERROR,
     WARNING,
