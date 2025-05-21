@@ -43,12 +43,6 @@ spec:
   tokenx:
     enabled: true
   observability:
-    autoInstrumentation:
-      enabled: true
-      runtime: nodejs
-      destinations:
-        - id: "grafana-lgtm"
-        - id: "elastic-apm"
     logging:
       destinations:
         - id: elastic
