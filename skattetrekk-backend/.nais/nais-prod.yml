@@ -64,6 +64,8 @@ spec:
       rules:
         - application: oppdrag-rest-proxy
           namespace: pensjondeployer
+        - application: pensjon-representasjon
+          namespace: pensjon-person
 
   env:
     - name: LOGGING_CONFIG

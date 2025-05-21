@@ -70,6 +70,8 @@ spec:
       rules:
         - application: oppdrag-rest-proxy-q2
           namespace: teampensjon
+        - application: pensjon-representasjon-q2
+          namespace: pensjon-person
 
   env:
     - name: LOGGING_CONFIG
