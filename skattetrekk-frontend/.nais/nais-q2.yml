@@ -41,6 +41,17 @@ spec:
         - /internal/ping
   tokenx:
     enabled: true
+  observability:
+    autoInstrumentation:
+      enabled: true
+      runtime: nodejs
+      destinations:
+        - id: "grafana-lgtm"
+        - id: "elastic-apm"
+    logging:
+      destinations:
+        - id: elastic
+        - id: loki
   accessPolicy:
     inbound:
       rules:
