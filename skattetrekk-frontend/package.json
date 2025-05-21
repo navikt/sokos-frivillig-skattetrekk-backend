@@ -9,7 +9,7 @@
     "dev": "vite --port 3000",
     "dev-json": "node run.cjs",
     "dev-local-backend-mot-q2": "vite --port 3000",
-    "build": "tsc && vite build",
+    "build": "tsc && vite build --mode development",
     "build:production": "tsc && vite build --mode production",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"

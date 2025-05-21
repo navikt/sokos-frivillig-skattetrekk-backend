@@ -16,7 +16,9 @@ export enum SatsType {
 export interface Message {
     details: string | null,
     type: MessageType,
+    code: string | null,
 }
+
 
 export enum MessageType {
     ERROR,

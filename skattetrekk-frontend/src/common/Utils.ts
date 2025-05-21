@@ -28,7 +28,7 @@ export function formatDateLong(value: Date): string {
   return date.toLocaleDateString('no-NO', { day: 'numeric', month: 'long', year: 'numeric' })
 }
 
-export const parseInntekt = (s: string) => {
+export const parseInntekt = (s: string | null) => {
   if (!s) return 0
   if (s.includes('.')) {
     return NaN

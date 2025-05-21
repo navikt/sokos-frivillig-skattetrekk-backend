@@ -4,19 +4,19 @@ import {SatsType, saveSkattetrekk} from "@/api/skattetrekkBackendClient";
 import {FormStateContext} from "@/state/FormState";
 import {DataContext} from "@/state/DataContextProvider";
 import {useNavigate} from "react-router-dom";
-import {showPercentageOrTable, visProsentEllerBelop} from "@/common/Utils";
+import {numberFormatWithKr, showPercentageOrTable, visProsentEllerBelop} from "@/common/Utils";
 import {PageLinks} from "@/routes";
 
 export const OppsummeringPage = () => {
     const {tilleggstrekkType, tilleggstrekkValue} = useContext(FormStateContext)
     const {initiateResponse, setSendResponse} = useContext(DataContext)
-    const [buttonLoading, setButtonLoadinhg] = useState(false)
+    const [buttonLoading, setButtonLoading] = useState(false)
     const navigate = useNavigate()
     const pid = new URLSearchParams(document.location.search).get("pid")
 
     async function submitTilleggstrekk() {
         if (tilleggstrekkType !== null && tilleggstrekkValue !== null) {
-            setButtonLoadinhg(true)
+            setButtonLoading(true)
             const response = await saveSkattetrekk(
                 {
                     value: tilleggstrekkValue,
@@ -24,7 +24,7 @@ export const OppsummeringPage = () => {
                 })
 
             setSendResponse(response)
-            setButtonLoadinhg(false)
+            setButtonLoading(false)
             navigate(import.meta.env.BASE_URL + PageLinks.KVITTERING, {
                 state: {
                     pid: pid
@@ -41,10 +41,11 @@ export const OppsummeringPage = () => {
         if (tilleggstrekkType === SatsType.PROSENT) {
             result = tilleggstrekkValue + " %"
         } else {
-            result = tilleggstrekkValue + " kr per måned"
+            result = numberFormatWithKr(tilleggstrekkValue!) + " kr per måned"
         }
 
         result += " i tillegg til"
+
         if (initiateResponse?.data!.skattetrekk?.prosentsats != null) {
             result += ` ${initiateResponse?.data.skattetrekk?.prosentsats} % fra skattekortet`
         } else {
@@ -87,11 +88,18 @@ export const OppsummeringPage = () => {
           </FormSummary.Answers>
       </FormSummary>
 
-    <HStack gap="2">
-        <Button variant="primary" size={"medium"} loading={buttonLoading} type={"submit"}
-                onClick={submitTilleggstrekk}> Registrer </Button>
-        <Button variant="tertiary" size={"medium"}> Avbryt </Button>
-    </HStack>
+          <VStack gap="6">
+              <HStack gap="2">
+                  <Button variant="secondary" size={"medium"} onClick={() => navigate(import.meta.env.BASE_URL + PageLinks.ENDRING, {state: {pid: pid}})}>
+                        Tilbake
+                  </Button>
+                  <Button variant="primary" size={"medium"} loading={buttonLoading} type={"submit"}
+                        onClick={submitTilleggstrekk}> Registrer </Button>
+              </HStack>
+              <HStack gap="2">
+                  <Button variant="tertiary" size={"medium"}> Avbryt </Button>
+              </HStack>
+          </VStack>
       </VStack>
   )
 }
