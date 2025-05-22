@@ -10,7 +10,7 @@ import {PageLinks} from "@/routes";
 export const OppsummeringPage = () => {
     const {tilleggstrekkType, tilleggstrekkValue} = useContext(FormStateContext)
     const {initiateResponse, setSendResponse} = useContext(DataContext)
-    const [buttonLoading, setIsSending] = useState(false)
+    const [isSending, setIsSending] = useState(false)
     const navigate = useNavigate()
     const pid = new URLSearchParams(document.location.search).get("pid")
 
@@ -55,7 +55,7 @@ export const OppsummeringPage = () => {
         return result
     }
 
-    if(buttonLoading === null) {
+    if(isSending) {
         return (
             <Box background="bg-subtle" padding="16" borderRadius="large">
                 <VStack align="center" gap="8">

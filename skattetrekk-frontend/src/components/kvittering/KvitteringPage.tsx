@@ -49,7 +49,8 @@ export const KvitteringPage = (props: {
           <Alert variant="success">
               <VStack gap="3">
                   <Heading level="3" size="small">
-                      {sendResponse.data.tilleggstrekk?.satsType === SatsType.PROSENT ?
+                      {/*TODO PEB-1184 review logikken*/}
+                      {sendResponse.data.framtidigTilleggstrekk?.satsType === SatsType.PROSENT ?
                           `Frivillig skattetrekk på ${sendResponse.data.tilleggstrekk?.sats} % registrert` :
                           `Frivillig skattetrekk på ${numberFormatWithKr(sendResponse.data.framtidigTilleggstrekk?.sats ?? 0)} per måned registrert`}
                   </Heading>
