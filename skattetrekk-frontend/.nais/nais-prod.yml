@@ -47,7 +47,6 @@ spec:
       runtime: nodejs
       destinations:
         - id: "grafana-lgtm"
-        - id: "elastic-apm"
     logging:
       destinations:
         - id: elastic
