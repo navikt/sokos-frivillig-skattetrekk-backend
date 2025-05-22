@@ -16,7 +16,7 @@ export enum SatsType {
 export interface Message {
     details: string | null,
     type: MessageType,
-    code: string | null,
+    code: MessageCode | null,
 }
 
 
@@ -24,6 +24,10 @@ export enum MessageType {
     ERROR,
     WARNING,
     INFO
+}
+
+export enum MessageCode { //TODO these codes are placeholders. Check with backend for real codes
+    SERVICE_UNAVAILABLE
 }
 
 export interface FrivilligSkattetrekkResponse {

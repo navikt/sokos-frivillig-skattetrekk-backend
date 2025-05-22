@@ -1,5 +1,5 @@
 import {BodyLong, Button, Heading, HStack, Link, List, Radio, RadioGroup, TextField, VStack} from '@navikt/ds-react'
-import React, {useContext, useState} from 'react'
+import React, {useContext, useEffect, useState} from 'react'
 import {SatsType, saveSkattetrekk} from "@/api/skattetrekkBackendClient";
 import {DataContext} from "@/state/DataContextProvider";
 import {numberFormatWithKr, parseInntekt} from "@/common/Utils";
@@ -9,31 +9,32 @@ import {useNavigate} from "react-router-dom";
 
 export const FormPage = () => {
     const {initiateResponse, setSendResponse} = useContext(DataContext)
-    const {setTilleggstrekkType, setTilleggstrekkValue} = useContext(FormStateContext)
+    const {isEligible, tilleggstrekkType, tilleggstrekkValue, setTilleggstrekkType, setTilleggstrekkValue, setIsEligible} = useContext(FormStateContext)
 
-    const [type, setType] = useState<SatsType | null>(null)
-    const [value, setValue] = useState<string | null>(null)
+    const [type, setType] = useState<SatsType | null>(tilleggstrekkType)
+    const [value, setValue] = useState<string | null>(tilleggstrekkValue?.toString() ?? null)
 
     const [buttonIsLoading, setButtonIsLoading] = useState(false)
     const [pageState, setPageState] = useState<"initial" | "cannotProceed">("initial")
+    const [shouldValidateForm, setShouldValidateForm] = useState(false)
 
-    const [canContinue, setCanContinue] = useState<boolean | null>(null)
+    const [canContinue, setCanContinue] = useState<boolean | null>(isEligible)
     const [canContinueError, setCanContinueError] = useState<string | null>(null)
     const [selectorError, setSelectorError] = useState<string | null>(null)
     const [valueError, setValueError] = useState<string | null>(null)
     const navigate = useNavigate()
     const pid = new URLSearchParams(document.location.search).get("pid")
 
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, [pageState]);
+
     async function onClickNext() {
+        setShouldValidateForm(true)
         if(validateInput()) {
-
-            if (canContinue === false) {
-                setPageState("cannotProceed")
-            }
-
-            console.log("value", value, "type", type)
             if (type !== null && value !== null) {
                 setButtonIsLoading(true)
+                setIsEligible(canContinue)
                 setTilleggstrekkType(type)
                 var tillleggstrekkValue = parseInntekt(value)
                 setTilleggstrekkValue(tillleggstrekkValue)
@@ -59,10 +60,10 @@ export const FormPage = () => {
     const validateInput = (): boolean => {
         const numericValue = parseInntekt(value)
 
-        console.log("numericValue", numericValue)
-
         if(canContinue === null) {
             setCanContinueError("Du må svare på om du har en av pengestøttene på kulepunktlisten")
+        } else if (canContinue === false) {
+            setPageState("cannotProceed")
         } else if (type === null) {
             setSelectorError("Du må velge hvilken type frivillig skattetrekk du ønsker")
         } else if (value === '' || value === null) {
@@ -113,10 +114,12 @@ export const FormPage = () => {
                 </VStack>
 
                 <HStack gap="2">
-                    <Button variant="secondary" size={"medium"} onClick={() => navigate(import.meta.env.BASE_URL + PageLinks.INDEX, {state: {pid: pid}})}>
+                    <Button variant="secondary" size={"medium"} onClick={() => setPageState("initial")}>
                         Tilbake
                     </Button>
-                    <Button variant="tertiary" size={"medium"}> Avbryt </Button>
+                    <Button variant="tertiary" size={"medium"} onClick={() => navigate(import.meta.env.BASE_URL + PageLinks.INDEX, {state: {pid: pid}})}>
+                        Avbryt
+                    </Button>
 
                 </HStack>
             </VStack>
@@ -169,6 +172,11 @@ export const FormPage = () => {
                               onChange={(v) => {
                                   onChangeType(v);
                               }}
+                              onBlur={() => {
+                                  if (shouldValidateForm) {
+                                      validateInput();
+                                  }
+                              }}
                               error={selectorError}>
                       <Radio value={SatsType.PROSENT} description="Trekkes fra alle utbetalinger">Prosent</Radio>
                       <Radio value={SatsType.KRONER} description= "Trekkes vanligvis fra månedens første utbetaling">Kroner per måned</Radio>
@@ -186,8 +194,10 @@ export const FormPage = () => {
                              onChange={(v) => {
                                  setValue(v.target.value)
                              }}
-                             onBlur={(v) => {
-                                 setValue(v.target.value)
+                             onBlur={() => {
+                                 if (shouldValidateForm) {
+                                     validateInput();
+                                 }
                              }}
                              htmlSize={30}
                   />
@@ -204,7 +214,7 @@ export const FormPage = () => {
                           onClick={onClickNext}> Neste </Button>
               </HStack>
             <HStack>
-                <Button variant="tertiary" size={"medium"}> Avbryt </Button>
+                <Button variant="tertiary" size={"medium"} onClick={() => navigate(import.meta.env.BASE_URL + PageLinks.INDEX, {state: {pid: pid}})}> Avbryt </Button>
             </HStack>
           </VStack>
 

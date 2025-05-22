@@ -1,4 +1,4 @@
-import {BodyShort, Box, Button, FormSummary, Heading, HStack, VStack} from '@navikt/ds-react'
+import {BodyLong, BodyShort, Box, Button, FormSummary, Heading, HStack, VStack} from '@navikt/ds-react'
 import React, {useContext, useState} from 'react'
 import {SatsType, saveSkattetrekk} from "@/api/skattetrekkBackendClient";
 import {FormStateContext} from "@/state/FormState";
@@ -57,10 +57,13 @@ export const OppsummeringPage = () => {
 
   return (
       <VStack gap="12">
+          <Heading level="2" size="large">Oppsummering</Heading>
+          <BodyLong>Nå kan du se over at alt er riktig før du registrerer det frivillige skattetrekket.</BodyLong>
+
       <FormSummary>
           <FormSummary.Header>
               <FormSummary.Heading level="2">Skattetrekk</FormSummary.Heading>
-              <FormSummary.EditLink href="#" />
+              <FormSummary.EditLink onClick={() => navigate(import.meta.env.BASE_URL + PageLinks.ENDRING, {state: {pid: pid}})} />
           </FormSummary.Header>
 
 
@@ -76,12 +79,12 @@ export const OppsummeringPage = () => {
               <FormSummary.Answer>
                   <Box padding="4" background="surface-subtle" borderRadius="large">
                       <VStack gap={{ xs: '2', sm: '1' }}>
-                          <Heading level="4" size="small">
-                              Skattetrekk til sammen med din endring
-                          </Heading>
-                          <BodyShort className="sum">
-                              {sumStrekkString()}
-                          </BodyShort>
+                          <BodyLong size="medium" style={{ fontSize: "1.1rem" }}>
+                              <strong>Skattetrekk til sammen med din endring</strong>
+                          </BodyLong>
+                          <BodyLong className="sum" size={"large"} style={{ fontSize: "1.5rem" }}>
+                              <strong>{sumStrekkString()}</strong>
+                          </BodyLong>
                       </VStack>
                   </Box>
                 </FormSummary.Answer>
@@ -97,7 +100,7 @@ export const OppsummeringPage = () => {
                         onClick={submitTilleggstrekk}> Registrer </Button>
               </HStack>
               <HStack gap="2">
-                  <Button variant="tertiary" size={"medium"}> Avbryt </Button>
+                  <Button variant="tertiary" size={"medium"} onClick={() => navigate(import.meta.env.BASE_URL + PageLinks.INDEX, {state: {pid: pid}})}> Avbryt </Button>
               </HStack>
           </VStack>
       </VStack>
