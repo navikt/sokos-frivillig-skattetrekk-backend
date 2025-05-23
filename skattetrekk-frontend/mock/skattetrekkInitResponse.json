@@ -1,9 +1,1 @@
-{"data":{
-  "tilleggstrekk": {
-    "sats": 8,
-    "satsType": "PROSENT"
-  },
-  "framtidigTilleggstrekk": null,
-  "skattetrekk":
-  {"tabellNr":null,"prosentsats":99}},
-  "messages":[]}
+{"data":{"tilleggstrekk":null,"framtidigTilleggstrekk":null,"skattetrekk":{"tabellNr":null,"prosentsats":50}},"messages":[]}
