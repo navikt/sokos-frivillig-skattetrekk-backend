@@ -1,4 +1,4 @@
-import {BodyLong, BodyShort, Box, Button, FormSummary, Heading, HStack, VStack} from '@navikt/ds-react'
+import {BodyLong, BodyShort, Box, Button, FormSummary, Heading, HStack, Loader, VStack} from '@navikt/ds-react'
 import React, {useContext, useState} from 'react'
 import {SatsType, saveSkattetrekk} from "@/api/skattetrekkBackendClient";
 import {FormStateContext} from "@/state/FormState";
@@ -10,13 +10,13 @@ import {PageLinks} from "@/routes";
 export const OppsummeringPage = () => {
     const {tilleggstrekkType, tilleggstrekkValue} = useContext(FormStateContext)
     const {initiateResponse, setSendResponse} = useContext(DataContext)
-    const [buttonLoading, setButtonLoading] = useState(false)
+    const [isSending, setIsSending] = useState(false)
     const navigate = useNavigate()
     const pid = new URLSearchParams(document.location.search).get("pid")
 
     async function submitTilleggstrekk() {
         if (tilleggstrekkType !== null && tilleggstrekkValue !== null) {
-            setButtonLoading(true)
+            setIsSending(true)
             const response = await saveSkattetrekk(
                 {
                     value: tilleggstrekkValue,
@@ -24,7 +24,7 @@ export const OppsummeringPage = () => {
                 })
 
             setSendResponse(response)
-            setButtonLoading(false)
+            setIsSending(false)
             navigate(import.meta.env.BASE_URL + PageLinks.KVITTERING, {
                 state: {
                     pid: pid
@@ -53,6 +53,20 @@ export const OppsummeringPage = () => {
         }
 
         return result
+    }
+
+    if(isSending) {
+        return (
+            <Box background="bg-subtle" padding="16" borderRadius="large">
+                <VStack align="center" gap="8">
+                    <Heading align="center" size={"large"} level="2">
+                        Vent mens vi sender inn
+                    </Heading>
+                    <Loader size="3xlarge" />
+                    <BodyShort align="center">Dette kan ta opptil ett minutt.</BodyShort>
+                </VStack>
+            </Box>
+        )
     }
 
   return (
@@ -96,7 +110,7 @@ export const OppsummeringPage = () => {
                   <Button variant="secondary" size={"medium"} onClick={() => navigate(import.meta.env.BASE_URL + PageLinks.ENDRING, {state: {pid: pid}})}>
                         Tilbake
                   </Button>
-                  <Button variant="primary" size={"medium"} loading={buttonLoading} type={"submit"}
+                  <Button variant="primary" size={"medium"} type={"submit"}
                         onClick={submitTilleggstrekk}> Registrer </Button>
               </HStack>
               <HStack gap="2">
