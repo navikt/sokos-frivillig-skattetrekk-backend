@@ -6,7 +6,7 @@
   "main": "src/server/app.js",
   "scripts": {
     "dev-local": "concurrently --kill-others-on-fail  \"vite --port 8080 \" \"node mock/server.cjs\"",
-    "dev": "vite --port 3000",
+    "dev": "vite --port 8080",
     "dev-json": "node run.cjs",
     "dev-local-backend-mot-q2": "vite --port 3000",
     "build": "tsc && vite build --mode development",

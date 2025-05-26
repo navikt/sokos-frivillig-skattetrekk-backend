@@ -14,13 +14,14 @@ jobs:
       run:
         working-directory: ./skattetrekk-frontend
     permissions:
+      actions: read
       contents: read
       id-token: write
     outputs:
       image: ${{ steps.docker-build-push.outputs.image }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v4.1.1
 
       - name: Use Node.js
         uses: actions/setup-node@v4
@@ -38,12 +39,16 @@ jobs:
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
 
       - name: Install dependencies
-        run: npm ci
+        if: steps.cache-node.outputs.cache-hit != 'true'
+        run: cd ${{ inputs.path }} && npm ci
         env:
           NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
 
-      - name: Build application
-        run: npm run build
+      - name: Build frontend application
+        run: cd ${{ inputs.path }} && npm ci && npm run build
+        env:
+          FARO_TELEMETRY_URL: 'https://telemetry.ekstern.dev.nav.no/collect'
+          NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
 
       - name: docker-build-push
         uses: nais/docker-build-push@v0
