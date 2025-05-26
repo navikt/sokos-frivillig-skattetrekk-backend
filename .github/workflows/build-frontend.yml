@@ -40,12 +40,12 @@ jobs:
 
       - name: Install dependencies
         if: steps.cache-node.outputs.cache-hit != 'true'
-        run: cd ${{ inputs.path }} && npm ci
+        run: npm ci
         env:
           NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
 
       - name: Build frontend application
-        run: cd ${{ inputs.path }} && npm ci && npm run build
+        run: npm ci && npm run build
         env:
           FARO_TELEMETRY_URL: 'https://telemetry.ekstern.dev.nav.no/collect'
           NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
