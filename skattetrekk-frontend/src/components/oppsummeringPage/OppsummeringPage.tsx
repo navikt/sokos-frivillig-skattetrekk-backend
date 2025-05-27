@@ -44,7 +44,7 @@ export const OppsummeringPage = () => {
         if (tilleggstrekkType === SatsType.PROSENT && tilleggstrekkValue != null) {
             return ((skattetrekk?.prosentsats) ? skattetrekk.prosentsats : + tilleggstrekkValue!)  + " %"
         }
-        if (location.state.tilleggstrekkType === SatsType.PROSENT) {
+        if (tilleggstrekkType === SatsType.PROSENT) {
             result = tilleggstrekkValue + " %"
         } else {
             result = numberFormatWithKr(tilleggstrekkValue!) + " kr per måned"
@@ -52,7 +52,7 @@ export const OppsummeringPage = () => {
 
         result += " i tillegg til"
 
-        if (location.state.prosentsats != null) {
+        if (skattetrekk?.prosentsats != null) {
             result += ` ${skattetrekk} % fra skattekortet`
         } else {
             result += " tabelltrekket"
