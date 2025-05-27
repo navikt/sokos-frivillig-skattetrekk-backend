@@ -58,7 +58,7 @@ class BehandleTrekkService(
         return null
     }
 
-    fun oppdaterTrekk(pid: String, trekkvedtakId: Long, tilleggstrekk: Int, satsType: SatsType): Long? {
+    fun oppdaterTrekk(pid: String, trekkvedtakId: Long, tilleggstrekk: Int, satsType: SatsType) {
 
         log.info("Henter skatt og trekk for vedtakId=$trekkvedtakId")
         val andreTrekk = trekkClient.hentSkattOgTrekk(pid, trekkvedtakId)
@@ -84,15 +84,14 @@ class BehandleTrekkService(
                 opphorTrekk(pid, trekkvedtakId, nesteMaaned)
 
                 log.info("Oppretter nytt frivillig skattetrekk")
-                return trekkClient.opprettAndreTrekk(
+                trekkClient.opprettAndreTrekk(
                     pid,
                     OpprettAndreTrekkRequest(
                         Kilde.PPO1.name,
                         opprettNyttTrekkRequest(pid, tilleggstrekk, trekkalternativKode.name, brukersNavEnhet,nesteMaaned)
-                    ))?.trekkvedtakId
+                    ))
             }
         }
-        return null
 
     }
 
