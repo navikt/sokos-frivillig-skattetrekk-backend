@@ -71,7 +71,7 @@ class BehandleTrekkService(
         val lopendeSatsperioder = sorterteSatsperioder.filter { isLopende(it) }
         val fremtidigeSatsperioder = sorterteSatsperioder.filter { isFremtidig(it) }
 
-        if (trekkvedtakId != null && (lopendeSatsperioder.isNotEmpty() || fremtidigeSatsperioder.isNotEmpty())) {
+        if (lopendeSatsperioder.isNotEmpty() || fremtidigeSatsperioder.isNotEmpty()) {
 
             // sjekk har nytt fremtidig trekk, dvs tilleggstrekket er > 0
             if (skalOppretteNyttTrekk(tilleggstrekk, andreTrekk)) {
