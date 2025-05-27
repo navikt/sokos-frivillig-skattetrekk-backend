@@ -7,7 +7,7 @@ import {PageLinks} from "@/routes";
 import {FormStateContext} from "@/state/FormState";
 import {useNavigate} from "react-router-dom";
 
-export const FormPage = () => {
+export const EndringPage = () => {
     const {initiateResponse, setSendResponse} = useContext(DataContext)
     const {isEligible, tilleggstrekkType, tilleggstrekkValue, setTilleggstrekkType, setTilleggstrekkValue, setIsEligible} = useContext(FormStateContext)
 
@@ -42,7 +42,10 @@ export const FormPage = () => {
                     setSendResponse(response)
                     navigate(import.meta.env.BASE_URL + PageLinks.OPPSUMMERING, {
                         state: {
-                            pid: pid
+                            pid: pid,
+                            tilleggstrekkType: type,
+                            tilleggstrekkValue: tillleggstrekkValue,
+                            skattetrekk: initiateResponse?.data.skattetrekk!!
                         }
                     })
                 setButtonIsLoading(false)

@@ -1,28 +1,30 @@
 import {BodyLong, BodyShort, Box, Button, FormSummary, Heading, HStack, Loader, VStack} from '@navikt/ds-react'
 import React, {useContext, useState} from 'react'
-import {SatsType, saveSkattetrekk} from "@/api/skattetrekkBackendClient";
+import {ForenkletSkattetrekk, SatsType, saveSkattetrekk} from "@/api/skattetrekkBackendClient";
 import {FormStateContext} from "@/state/FormState";
 import {DataContext} from "@/state/DataContextProvider";
-import {useNavigate} from "react-router-dom";
+import {useLocation, useNavigate} from "react-router-dom";
 import {numberFormatWithKr, showPercentageOrTable, visProsentEllerBelop} from "@/common/Utils";
 import {PageLinks} from "@/routes";
 
 export const OppsummeringPage = () => {
-    const {tilleggstrekkType, tilleggstrekkValue} = useContext(FormStateContext)
-    const {initiateResponse, setSendResponse} = useContext(DataContext)
+    const {tilleggstrekkType} = useContext(FormStateContext)
+    const {setSendResponse} = useContext(DataContext)
     const [isSending, setIsSending] = useState(false)
     const navigate = useNavigate()
+    const location = useLocation()
+    window.history.state.usr = location
+
     const pid = new URLSearchParams(document.location.search).get("pid")
 
     async function submitTilleggstrekk() {
-        if (tilleggstrekkType !== null && tilleggstrekkValue !== null) {
+        if (tilleggstrekkType !== null && location.state.tilleggstrekkValue !== null) {
             setIsSending(true)
             const response = await saveSkattetrekk(
                 {
-                    value: tilleggstrekkValue,
+                    value: location.state.tilleggstrekkValue,
                     satsType: tilleggstrekkType,
                 })
-
             setSendResponse(response)
             setIsSending(false)
             navigate(import.meta.env.BASE_URL + PageLinks.KVITTERING, {
@@ -33,12 +35,16 @@ export const OppsummeringPage = () => {
         }
     }
 
-    function sumStrekkString(){
-        var result: string
-        if (tilleggstrekkType === SatsType.PROSENT && initiateResponse?.data!.skattetrekk?.prosentsats != null) {
-            return (initiateResponse?.data.skattetrekk?.prosentsats + tilleggstrekkValue!) + " %"
+    function sumStrekkString(
+            skattetrekk: ForenkletSkattetrekk | null,
+            tilleggstrekkType: SatsType | null,
+            tilleggstrekkValue: number | null) {
+
+        let result: string
+        if (tilleggstrekkType === SatsType.PROSENT && tilleggstrekkValue != null) {
+            return ((skattetrekk?.prosentsats) ? skattetrekk.prosentsats : + tilleggstrekkValue!)  + " %"
         }
-        if (tilleggstrekkType === SatsType.PROSENT) {
+        if (location.state.tilleggstrekkType === SatsType.PROSENT) {
             result = tilleggstrekkValue + " %"
         } else {
             result = numberFormatWithKr(tilleggstrekkValue!) + " kr per måned"
@@ -46,8 +52,8 @@ export const OppsummeringPage = () => {
 
         result += " i tillegg til"
 
-        if (initiateResponse?.data!.skattetrekk?.prosentsats != null) {
-            result += ` ${initiateResponse?.data.skattetrekk?.prosentsats} % fra skattekortet`
+        if (location.state.prosentsats != null) {
+            result += ` ${skattetrekk} % fra skattekortet`
         } else {
             result += " tabelltrekket"
         }
@@ -84,11 +90,11 @@ export const OppsummeringPage = () => {
           <FormSummary.Answers>
               <FormSummary.Answer>
                   <FormSummary.Label>Frivillig skattetrekk</FormSummary.Label>
-                  <FormSummary.Value>{visProsentEllerBelop({sats:tilleggstrekkValue, satsType:tilleggstrekkType})}</FormSummary.Value>
+                  <FormSummary.Value>{visProsentEllerBelop({sats:location.state.tilleggstrekkValue, satsType:location.state.tilleggstrekkType})}</FormSummary.Value>
               </FormSummary.Answer>
               <FormSummary.Answer>
                     <FormSummary.Label>Skattekort</FormSummary.Label>
-                    <FormSummary.Value>{showPercentageOrTable(initiateResponse?.data!.skattetrekk!)}</FormSummary.Value>
+                    <FormSummary.Value>{showPercentageOrTable(location.state.skattetrekk!)}</FormSummary.Value>
               </FormSummary.Answer>
               <FormSummary.Answer>
                   <Box padding="4" background="surface-subtle" borderRadius="large">
@@ -97,7 +103,11 @@ export const OppsummeringPage = () => {
                               <strong>Skattetrekk til sammen med din endring</strong>
                           </BodyLong>
                           <BodyLong className="sum" size={"large"} style={{ fontSize: "1.5rem" }}>
-                              <strong>{sumStrekkString()}</strong>
+                              <strong>{sumStrekkString(
+                                  location.state.skattetrekk,
+                                  location.state.tilleggstrekkType,
+                                  location.state.tilleggstrekkValue
+                              )}</strong>
                           </BodyLong>
                       </VStack>
                   </Box>

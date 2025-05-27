@@ -5,7 +5,7 @@ import {Error} from "@/components/pageStatus/Error";
 import {KvitteringPage} from "@/components/kvittering/KvitteringPage";
 import {useEffect} from "react";
 import {OppsummeringPage} from "@/components/oppsummeringPage/OppsummeringPage";
-import {FormPage} from "@/components/formPage/FormPage";
+import {EndringPage} from "@/components/endringPage/EndringPage";
 
 const ScrollToTop = () => {
     const {pathname} = useLocation()
@@ -34,12 +34,13 @@ export const routes: RouteObject[] = [
             },
             {
                 path: import.meta.env.BASE_URL + PageLinks.ENDRING,
-                element: <FormPage/>,
+                element: <EndringPage/>,
                 errorElement: <Error/>
             },
             {
                 path: import.meta.env.BASE_URL + PageLinks.OPPSUMMERING,
                 element: <OppsummeringPage/>,
+                loader: initSkattetrekkLoader,
                 errorElement: <Error/>
             },
             {
