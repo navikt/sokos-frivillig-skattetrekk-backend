@@ -8,7 +8,6 @@ import {numberFormatWithKr, showPercentageOrTable, visProsentEllerBelop} from "@
 import {PageLinks} from "@/routes";
 
 export const OppsummeringPage = () => {
-    const {tilleggstrekkType} = useContext(FormStateContext)
     const {setSendResponse} = useContext(DataContext)
     const [isSending, setIsSending] = useState(false)
     const navigate = useNavigate()
@@ -18,12 +17,12 @@ export const OppsummeringPage = () => {
     const pid = new URLSearchParams(document.location.search).get("pid")
 
     async function submitTilleggstrekk() {
-        if (tilleggstrekkType !== null && location.state.tilleggstrekkValue !== null) {
+        if (location.state.tilleggstrekkType !== null && location.state.tilleggstrekkValue !== null) {
             setIsSending(true)
             const response = await saveSkattetrekk(
                 {
                     value: location.state.tilleggstrekkValue,
-                    satsType: tilleggstrekkType,
+                    satsType: location.state.tilleggstrekkType,
                 })
             setSendResponse(response)
             setIsSending(false)
@@ -38,27 +37,34 @@ export const OppsummeringPage = () => {
     function sumStrekkString(
             skattetrekk: ForenkletSkattetrekk | null,
             tilleggstrekkType: SatsType | null,
-            tilleggstrekkValue: number | null) {
+            tilleggstrekkValue: number | null): string {
 
-        let result: string
-        if (tilleggstrekkType === SatsType.PROSENT && tilleggstrekkValue != null) {
-            return ((skattetrekk?.prosentsats) ? skattetrekk.prosentsats : + tilleggstrekkValue!)  + " %"
+        if ((skattetrekk?.prosentsats === null)  && skattetrekk?.tabellNr === null) {
+            if (tilleggstrekkType == SatsType.PROSENT){
+                return (tilleggstrekkValue + " %")
+            }
+            return (numberFormatWithKr(tilleggstrekkValue!) + " per måned")
         }
-        if (tilleggstrekkType === SatsType.PROSENT) {
-            result = tilleggstrekkValue + " %"
+
+        let sammensattResultatTekst: string
+
+        if (tilleggstrekkType === SatsType.PROSENT && skattetrekk?.prosentsats != null) {
+            return (skattetrekk.prosentsats + tilleggstrekkValue!)  + " %"
+        } else if (tilleggstrekkType === SatsType.KRONER) {
+            sammensattResultatTekst = numberFormatWithKr(tilleggstrekkValue!) + " per måned"
         } else {
-            result = numberFormatWithKr(tilleggstrekkValue!) + " kr per måned"
+            sammensattResultatTekst = tilleggstrekkValue + " %"
         }
 
-        result += " i tillegg til"
+        sammensattResultatTekst += " i tillegg til"
 
         if (skattetrekk?.prosentsats != null) {
-            result += ` ${skattetrekk?.prosentsats} % fra skattekortet`
+            sammensattResultatTekst += ` ${skattetrekk?.prosentsats} % fra skattekortet`
         } else {
-            result += " tabelltrekket"
+            sammensattResultatTekst += " tabelltrekket"
         }
 
-        return result
+        return sammensattResultatTekst
     }
 
     if(isSending) {
