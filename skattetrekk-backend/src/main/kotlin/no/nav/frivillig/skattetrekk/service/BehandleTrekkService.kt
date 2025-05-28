@@ -25,7 +25,7 @@ class BehandleTrekkService(
         if (trekkvedtakId != null && tilleggstrekk == 0) {
             log.info("Opphører trekk = $trekkvedtakId")
             opphoerTrekk(pid, trekkvedtakId)
-        } else if (trekkvedtakId != null && trekkvedtakId > 0) {
+        } else if (trekkvedtakId != null && tilleggstrekk > 0) {
             log.info("Oppdaterer trekk = $trekkvedtakId")
             oppdaterTrekk(pid, trekkvedtakId, tilleggstrekk, satsType)
         } else {
