@@ -42,6 +42,8 @@ export function showPercentageOrTable(skattetrekk: ForenkletSkattetrekk) {
   } else if (skattetrekk.prosentsats != null) {
     return `${skattetrekk.prosentsats} %`
   }
+
+  return "Ingen"
 }
 
 export function visProsentEllerBelop(tilleggstrekk: TrekkDTO | null) {

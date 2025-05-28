@@ -1,27 +1,39 @@
 import {Alert, BodyLong, BodyShort, Box, Heading, Link, List, Loader, VStack} from '@navikt/ds-react'
-import React, {useContext, useState} from 'react'
+import React, {useContext, useEffect, useState} from 'react'
 import {numberFormatWithKr} from "@/common/Utils";
-import {MessageType, SatsType} from "@/api/skattetrekkBackendClient";
+import {fetchSkattetrekk, FrivilligSkattetrekkResponse, MessageType, SatsType} from "@/api/skattetrekkBackendClient";
 import {DataContext} from "@/state/DataContextProvider";
 import {PageLinks} from "@/routes";
-import {useNavigate} from "react-router-dom";
+import {useLoaderData, useLocation, useNavigate} from "react-router-dom";
 
 export const KvitteringPage = (props: {
 }) => {
-    const {sendResponse} = useContext(DataContext)
-    const [isWaiting, setIsWaiting] = useState(true)
-
+    const [kvitteringInfo, setKvitteringInfo] = useState<FrivilligSkattetrekkResponse | null>(null)
+    const {sendResponse, setSendResponse} = useContext(DataContext)
     const navigate = useNavigate()
-    const pid = new URLSearchParams(document.location.search).get("pid")
+    const location = useLocation()
+    window.history.state.usr = location
 
-    console.log("sendResponse", sendResponse)
+    const loaderData = useLoaderData() as FrivilligSkattetrekkResponse | null;
 
-    if(sendResponse === null) {
+
+    useEffect(() => {
+        if (sendResponse !== null){
+            setKvitteringInfo(sendResponse)
+        }
+        if (sendResponse === null) {
+            setKvitteringInfo(loaderData)
+        }
+
+    }, [sendResponse]);
+
+
+    if(kvitteringInfo === null) {
         return (
             <Box background="bg-subtle" padding="16" borderRadius="large">
                 <VStack align="center" gap="8">
                     <Heading align="center" size={"large"} level="2">
-                        Vent mens vi sender inn
+                        Vent mens vi venter på svar
                     </Heading>
                     <Loader size="3xlarge" />
                     <BodyShort align="center">Dette kan ta opptil ett minutt.</BodyShort>
@@ -49,10 +61,9 @@ export const KvitteringPage = (props: {
           <Alert variant="success">
               <VStack gap="3">
                   <Heading level="3" size="small">
-                      {/*TODO PEB-1184 review logikken*/}
-                      {sendResponse.data.framtidigTilleggstrekk?.satsType === SatsType.PROSENT ?
-                          `Frivillig skattetrekk på ${sendResponse.data.tilleggstrekk?.sats} % registrert` :
-                          `Frivillig skattetrekk på ${numberFormatWithKr(sendResponse.data.framtidigTilleggstrekk?.sats ?? 0)} per måned registrert`}
+                      {kvitteringInfo.data.framtidigTilleggstrekk?.satsType === SatsType.PROSENT ?
+                          `Frivillig skattetrekk på ${kvitteringInfo.data.framtidigTilleggstrekk?.sats} % registrert` :
+                          `Frivillig skattetrekk på ${numberFormatWithKr(kvitteringInfo.data.framtidigTilleggstrekk?.sats ?? 0)} per måned registrert`}
                   </Heading>
                   <BodyLong>
                       Skattetrekket gjelder ut året.
@@ -71,7 +82,7 @@ export const KvitteringPage = (props: {
           <div style={{borderBottom: '0.5px solid black', width: '100%'}}/>
 
           <Link href="https://www.nav.no/minside" target="_blank">Gå til Min side</Link>
-          <Link onClick={() => navigate(import.meta.env.BASE_URL + PageLinks.INDEX, {state: {pid: pid}})}
+          <Link onClick={() => navigate(import.meta.env.BASE_URL + PageLinks.INDEX, {state: {pid: location.state.pid}})}
                 target="_blank">Endre registrert frivillig skattetrekk</Link>
       </VStack>
   )
