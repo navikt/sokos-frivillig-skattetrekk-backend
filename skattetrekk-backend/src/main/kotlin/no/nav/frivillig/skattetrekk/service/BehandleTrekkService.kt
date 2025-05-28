@@ -127,7 +127,7 @@ class BehandleTrekkService(
         return finnesIkkeLopende || finnesIkkeFremtidigTrekk
     }
 
-    private fun opprettNyttTrekkRequest(pid: String, tilleggstrekk: Int, trekkalternativKode: String, brukersNavEnhet: String, date: LocalDate): AndreTrekkRequest =
+    private fun opprettNyttTrekkRequest(pid: String, tilleggstrekk: Int, trekkalternativKode: String, brukersNavEnhet: String, trekkGjelderFraOgMed: LocalDate): AndreTrekkRequest =
         AndreTrekkRequest(
             ansvarligEnhetId = brukersNavEnhet,
             debitorOffnr = pid,
@@ -140,7 +140,7 @@ class BehandleTrekkService(
                     erFeilregistrert = null
                 )
             ),
-            satsperiodeListe = listOf(opprettStatsperiode(tilleggstrekk.toDouble(), date)),
+            satsperiodeListe = listOf(opprettStatsperiode(tilleggstrekk.toDouble(), trekkGjelderFraOgMed)),
         )
 
     private fun lagOppdaterTrekkRequest(
