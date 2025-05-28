@@ -35,19 +35,15 @@ export const EndringPage = () => {
             if (type !== null && value !== null) {
                 setButtonIsLoading(true)
                 setIsEligible(canContinue)
-                setTilleggstrekkType(type)
                 var tillleggstrekkValue = parseInntekt(value)
-                setTilleggstrekkValue(tillleggstrekkValue)
-                var response = await saveSkattetrekk({satsType: type, value: tillleggstrekkValue })
-                    setSendResponse(response)
-                    navigate(import.meta.env.BASE_URL + PageLinks.OPPSUMMERING, {
-                        state: {
-                            pid: pid,
-                            tilleggstrekkType: type,
-                            tilleggstrekkValue: tillleggstrekkValue,
-                            skattetrekk: initiateResponse?.data.skattetrekk!!
-                        }
-                    })
+                navigate(import.meta.env.BASE_URL + PageLinks.OPPSUMMERING, {
+                    state: {
+                        pid: pid,
+                        tilleggstrekkType: type,
+                        tilleggstrekkValue: tillleggstrekkValue,
+                        skattetrekk: initiateResponse?.data.skattetrekk!!
+                    }
+                })
                 setButtonIsLoading(false)
             }
         }
