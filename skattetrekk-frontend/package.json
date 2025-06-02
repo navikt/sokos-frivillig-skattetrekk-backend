@@ -48,6 +48,6 @@
     "vite": "^6.3.2",
     "vite-plugin-eslint2": "^5.0.3",
     "vite-plugin-stylelint": "^6.0.0",
-    "vitest": "^3.1.4"
+    "vitest": "^3.2.0"
   }
 }
