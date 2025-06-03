@@ -19,7 +19,7 @@ class BehandleTrekkService(
 
     fun behandleTrekk(pid: String, tilleggstrekk: Int, satsType: SatsType) {
 
-        val finnTrekkListe = trekkClient.finnTrekkListe(pid, TrekkTypeCode.FSKT)
+        val finnTrekkListe = trekkClient.finnTrekkListe(pid, TrekkTypeCode.FRIS)
         val trekkvedtakId = finnTrekkListe?.sortedByDescending { it.trekkperiodeFom }?.firstOrNull()?.trekkvedtakId
 
         if (trekkvedtakId != null && tilleggstrekk == 0) {
@@ -127,7 +127,7 @@ class BehandleTrekkService(
         return finnesIkkeLopende || finnesIkkeFremtidigTrekk
     }
 
-    private fun opprettNyttTrekkRequest(pid: String, tilleggstrekk: Int, trekkalternativKode: String, brukersNavEnhet: String, date: LocalDate): AndreTrekkRequest =
+    private fun opprettNyttTrekkRequest(pid: String, tilleggstrekk: Int, trekkalternativKode: String, brukersNavEnhet: String, trekkGjelderFraOgMed: LocalDate): AndreTrekkRequest =
         AndreTrekkRequest(
             ansvarligEnhetId = brukersNavEnhet,
             debitorOffnr = pid,
@@ -140,7 +140,7 @@ class BehandleTrekkService(
                     erFeilregistrert = null
                 )
             ),
-            satsperiodeListe = listOf(opprettStatsperiode(tilleggstrekk.toDouble(), date)),
+            satsperiodeListe = listOf(opprettStatsperiode(tilleggstrekk.toDouble(), trekkGjelderFraOgMed)),
         )
 
     private fun lagOppdaterTrekkRequest(
