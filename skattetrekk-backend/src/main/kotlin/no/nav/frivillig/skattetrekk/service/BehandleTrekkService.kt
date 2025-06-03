@@ -20,7 +20,7 @@ class BehandleTrekkService(
     fun behandleTrekk(pid: String, tilleggstrekk: Int, satsType: SatsType) {
 
         val finnTrekkListe = trekkClient.finnTrekkListe(pid, TrekkTypeCode.FRIS)
-        val trekkvedtakId = finnTrekkListe?.sortedByDescending { it.trekkperiodeFom }?.firstOrNull()?.trekkvedtakId
+        val trekkvedtakId = finnTrekkListe.sortedByDescending { it.trekkperiodeFom }.firstOrNull()?.trekkvedtakId
 
         if (trekkvedtakId != null && tilleggstrekk == 0) {
             log.info("Opphører trekk = $trekkvedtakId")
