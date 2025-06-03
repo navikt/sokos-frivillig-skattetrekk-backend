@@ -51,8 +51,7 @@ class HentSkattOgTrekkService(
 
         val forenkletSkattetrekk = determineForenkletSkattetrekk(skattetrekk)
         val currentTilleggstrekk = tilleggstrekkListe.find { it?.satsperiodeListe?.toList()?.findRunningSatsperiode() == true }
-
-        val nextTilleggstrekk = tilleggstrekkListe.find { it?.satsperiodeListe?.toList()?.hasNextSatsperiode() == true }
+        val nextTilleggstrekk = tilleggstrekkListe.findLast { it?.satsperiodeListe?.toList()?.hasNextSatsperiode() == true }
 
         return FrivilligSkattetrekkInitResponse(
             messages = meldinger,
