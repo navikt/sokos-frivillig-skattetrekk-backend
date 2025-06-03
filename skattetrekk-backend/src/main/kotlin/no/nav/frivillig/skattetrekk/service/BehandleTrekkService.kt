@@ -144,6 +144,11 @@ class BehandleTrekkService(
         )
 
     fun utledOpphorsdato(lopendeSatsperioder: List<Satsperiode>, fremtidigeSatsperioder: List<Satsperiode>): LocalDate? {
+
+        if (lopendeSatsperioder.isEmpty() && fremtidigeSatsperioder.isEmpty()) {
+            return null
+        }
+
         val forsteDagNesteMaaned = LocalDate.now().plusMonths(1L).withDayOfMonth(1)
 
         if(lopendeSatsperioder.isNotEmpty()) {
