@@ -175,7 +175,7 @@ class BehandleTrekkService(
             if (isFremtidig(nySatsperiode.fom!!,it)) {
                 oppdaterSatsperioder.remove(it) // Fjerner fremtidig satsperiode
             } else if (it.tom == null || it.tom.isAfter(nySatsperiode.fom)) {
-                oppdaterSatsperioder.remove(it)
+                oppdaterSatsperioder.remove(it) // Fjerner løpende satsperiode, da den oppdateres med ny
                 val oppdatertSisteEksisterendeSatsperiode = it.copy(tom = nySatsperiode.fom?.minusDays(1))
                 oppdaterSatsperioder.add(oppdatertSisteEksisterendeSatsperiode)
             }
