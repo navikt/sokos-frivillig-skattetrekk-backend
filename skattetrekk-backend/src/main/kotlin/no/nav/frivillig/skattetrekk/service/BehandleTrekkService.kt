@@ -22,13 +22,12 @@ class BehandleTrekkService(
 
     fun behandleTrekk(pid: String, tilleggstrekk: Int, satsType: SatsType) {
 
-        val finnTrekkListe = trekkClient.finnTrekkListe(pid, TrekkTypeCode.FRIS)
-        val trekkvedtakId = finnTrekkListe.sortedByDescending { it.trekkperiodeFom }.firstOrNull()?.trekkvedtakId
+        val finnTrekkListe = trekkClient.finnTrekkListe(pid, TrekkTypeCode.FRIS).sortedByDescending { it.trekkperiodeFom }
 
-        if (trekkvedtakId != null && tilleggstrekk == 0) {
-            opphoerTrekk(pid, trekkvedtakId)
-        } else if (trekkvedtakId != null && tilleggstrekk > 0) {
-            oppdaterTrekk(pid, trekkvedtakId, tilleggstrekk, satsType)
+        if (tilleggstrekk == 0) {
+            finnTrekkListe.forEach { if (it.trekkvedtakId != null) opphoerTrekk(pid, it.trekkvedtakId) }
+        } else if (tilleggstrekk > 0) {
+            finnTrekkListe.forEach { if (it.trekkvedtakId != null) oppdaterTrekk(pid, it.trekkvedtakId, tilleggstrekk, satsType) }
         } else {
             opprettTrekk(pid, tilleggstrekk, satsType)
         }
