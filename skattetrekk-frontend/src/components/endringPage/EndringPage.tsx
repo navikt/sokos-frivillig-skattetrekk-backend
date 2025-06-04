@@ -127,8 +127,10 @@ export const EndringPage = () => {
       <VStack gap="12">
           <VStack gap={"6"}>
           <Heading level="2" size="medium">Dette kan du registrere frivillig skattetrekk på her:</Heading>
-              <BodyLong>
-                  Bare skattepliktige pengestøtter kan få frivillig skattetrekk.
+              <article>
+                  <BodyLong>
+                      Bare skattepliktige pengestøtter kan få frivillig skattetrekk.
+                  </BodyLong>
                   <List>
                         <List.Item>Arbeidsavklaringspenger (AAP)</List.Item>
                         <List.Item>Dagpenger</List.Item>
@@ -144,7 +146,9 @@ export const EndringPage = () => {
                         <List.Item>Uførepensjon fra Statens pensjonskasse (SPK)</List.Item>
                         <List.Item>Uføretrygd</List.Item>
                   </List>
-              </BodyLong>
+              </article>
+
+
           </VStack>
 
           <RadioGroup
@@ -152,7 +156,7 @@ export const EndringPage = () => {
               onChange={(e) => {
                   setCanContinue(e === "true")
                   setCanContinueError(null)}}
-              value={canContinue === null ? undefined : canContinue.toString()}
+              value={canContinue === null ? null : canContinue.toString()}
               error={canContinueError}>
               <Radio value="true">Ja</Radio>
               <Radio value="false">Nei</Radio>

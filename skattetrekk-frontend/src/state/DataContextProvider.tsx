@@ -33,7 +33,6 @@ function DataContextProvider(props: DataContextProviderProps) {
             setShouldRefetch(false)
             try {
                 const response = await fetchSkattetrekk()
-                console.log("Response from fetchSkattetrekk: ", response)
                 setInitiateResponse(response)
             } catch (error) {
                 setShouldRefetch(true) // Reset shouldRefetch to true since the refetch failed

@@ -14,7 +14,7 @@ export function App() {
 
     return (
         <div className="mainBody">
-            <VStack gap="6" className="contentWrapper">
+            <VStack gap="14" className="contentWrapper">
                 <Heading size={"xlarge"} level={"1"}>Frivillig skattetrekk</Heading>
                 <Suspense fallback={<Loading/>}>
                     <RouterProvider router={browserRouter}/>
