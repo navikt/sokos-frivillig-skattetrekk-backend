@@ -114,7 +114,6 @@ export function InitialPage() {
                         <Heading size={"medium"} level="2">Dine registrerte skattetrekk</Heading>
 
                         <RegistrerteSkattetrekk skatteTrekk={initiateResponse.data.skattetrekk!} tilleggstrekk={initiateResponse.data.tilleggstrekk} framtidigTilleggstrekk={initiateResponse.data.framtidigTilleggstrekk} isDecember={isDecember()} />
-                        {/*TODO PEB-1178 forklar logikk nedenfor*/}
                         {initiateResponse.data.tilleggstrekk !== null || initiateResponse.data.framtidigTilleggstrekk?.sats !== 0 ? <></> :
                             <StopTilleggstrekkConfirmationModal onConfirm={stopTilleggstrekk}/>}
                     </VStack> }

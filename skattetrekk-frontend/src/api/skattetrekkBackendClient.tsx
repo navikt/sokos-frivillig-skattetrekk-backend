@@ -108,8 +108,6 @@ export async function saveSkattetrekk(request: UpdateTilleggstrekkRequest): Prom
         }
     }
 
-    console.log("saveSkattetrekk", request)
-
     return await fetch(BASE_URL+ "api/skattetrekk", {
             method: "POST",
             credentials: "include",

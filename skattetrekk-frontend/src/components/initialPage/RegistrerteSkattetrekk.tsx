@@ -15,12 +15,10 @@ type RegistrerteSkattetrekkProps = {
 export function RegistrerteSkattetrekk(props: RegistrerteSkattetrekkProps) {
     return (
         <VStack gap="6">
-            {/*TODO PEB-1178 forklar logikk nedenfor*/}
             { (props.framtidigTilleggstrekk !== null && props.framtidigTilleggstrekk!.sats! > 0) &&
                 <Alert variant="info">
                     {props.isDecember ?
                         <BodyLong>
-                            {/*TODO PEB-1181 hent dato fra backend*/}
                             Nytt frivillig skattetrekk på {visProsentEllerBelop(props.framtidigTilleggstrekk)}vil gjelde fra januar neste år.
                             Hvis du registrerte trekket i slutten av desember, kan det ta inntil midten av januar før trekket kommer med på utbetalingene dine.
                         </BodyLong> :
