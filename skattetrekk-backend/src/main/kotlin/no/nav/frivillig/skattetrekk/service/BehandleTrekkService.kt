@@ -99,7 +99,7 @@ class BehandleTrekkService(
             ?.sortedBy { it.fom } ?: emptyList()
 
         val lopendeSatsperioder = sorterteSatsperioder.filter { isLopende(it) }
-        val fremtidigeSatsperioder = sorterteSatsperioder.filter { isFremtidig(it) }
+        val fremtidigeSatsperioder = sorterteSatsperioder.filter { isFremtidig(LocalDate.now(), it) }
 
         val opphorDato = utledOpphorsdato(lopendeSatsperioder, fremtidigeSatsperioder)
         // Opphør løpende trekk, om det finnes
@@ -117,7 +117,7 @@ class BehandleTrekkService(
         }
 
         val finnesIkkeLopende = andreTrekk?.satsperiodeListe?.find { isLopende(it) } == null
-        val finnesIkkeFremtidigTrekk = andreTrekk?.satsperiodeListe?.find { isFremtidig(it) } == null
+        val finnesIkkeFremtidigTrekk = andreTrekk?.satsperiodeListe?.find { isFremtidig(LocalDate.now(), it) } == null
 
         return finnesIkkeLopende || finnesIkkeFremtidigTrekk
     }
@@ -172,7 +172,9 @@ class BehandleTrekkService(
         val oppdaterSatsperioder = eksisterendeSatsperioder.toMutableList()
 
         eksisterendeSatsperioder.forEach {
-            if (it.tom == null || it.tom.isAfter(nySatsperiode.fom)) {
+            if (isFremtidig(nySatsperiode.fom!!,it)) {
+                oppdaterSatsperioder.remove(it) // Fjerner fremtidig satsperiode
+            } else if (it.tom == null || it.tom.isAfter(nySatsperiode.fom)) {
                 oppdaterSatsperioder.remove(it)
                 val oppdatertSisteEksisterendeSatsperiode = it.copy(tom = nySatsperiode.fom?.minusDays(1))
                 oppdaterSatsperioder.add(oppdatertSisteEksisterendeSatsperiode)
@@ -188,11 +190,10 @@ class BehandleTrekkService(
         trekkClient.opphorAndreTrekk(pid, opphorAndreTrekkRequest)
     }
 
-    fun isFremtidig(satsperiode: Satsperiode): Boolean {
+    fun isFremtidig(gjeldendeDato: LocalDate, satsperiode: Satsperiode): Boolean {
         if (!satsperiode.erFeilregistrert!!) {
             val fom = satsperiode.fom
-            val today = LocalDate.now()
-            return today.isBefore(fom)
+            return gjeldendeDato.isBefore(fom)
         }
 
         return false

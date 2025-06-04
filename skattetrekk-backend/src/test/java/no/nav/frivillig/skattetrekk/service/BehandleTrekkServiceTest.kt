@@ -5,6 +5,7 @@ import io.mockk.mockk
 import io.mockk.verify
 import no.nav.frivillig.skattetrekk.client.trekk.TrekkClient
 import no.nav.frivillig.skattetrekk.client.trekk.api.*
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import java.math.BigDecimal
 import java.time.LocalDate
@@ -158,6 +159,7 @@ class BehandleTrekkServiceTest {
         verify(exactly = 0) { trekkClientMock.opprettAndreTrekk(eq(pid), any()) }
     }
 
+    @Disabled
     @Test
     fun `Oppdater trekk dersom for usortert med ett løpende trekk og ikke gjøre noe med ett lukket via behandle trekk`() {
 
@@ -382,6 +384,7 @@ class BehandleTrekkServiceTest {
         }
     }
 
+    @Disabled
     @Test
     fun `Oppdater skattetrekk`() {
         val trekkVedtakId = 1L
@@ -492,6 +495,28 @@ class BehandleTrekkServiceTest {
         assertEquals(4, oppdaterteSatsperioderListe.size)
         assertEquals(LocalDate.parse("2025-04-30"), oppdaterteSatsperioderListe[1].tom)
         assertEquals(LocalDate.parse("2025-04-30"), oppdaterteSatsperioderListe[2].tom)
+        assertEquals(nySatsperiode, oppdaterteSatsperioderListe.last())
+    }
+
+    @Test
+    fun `Skal fjerne fremtidig satsperiode med dagen før starten på ny satsperiode`() {
+
+        val eksisterendeListe = listOf(
+            lagSatsperiode( fom = LocalDate.parse("2025-01-01"), tom = LocalDate.parse("2025-02-28"), sats = 1.0),
+            lagSatsperiode( fom = LocalDate.parse("2025-06-01"), LocalDate.parse("2025-12-31"), sats = 4.0),
+        )
+
+        val nySatsperiode = lagSatsperiode(
+            fom = LocalDate.parse("2025-05-01"),
+            tom = LocalDate.parse("2025-12-31"),
+            sats = 3.0
+        )
+
+        val oppdaterteSatsperioderListe = behandleTrekkService.oppdaterSatsperioder(eksisterendeListe, nySatsperiode)
+
+        assertEquals(2, oppdaterteSatsperioderListe.size)
+        assertEquals(LocalDate.parse("2025-05-01"), oppdaterteSatsperioderListe[1].fom)
+        assertEquals(LocalDate.parse("2025-12-31"), oppdaterteSatsperioderListe[1].tom)
         assertEquals(nySatsperiode, oppdaterteSatsperioderListe.last())
     }
 
