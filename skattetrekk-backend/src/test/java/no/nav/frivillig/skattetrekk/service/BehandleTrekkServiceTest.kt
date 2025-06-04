@@ -16,7 +16,12 @@ class BehandleTrekkServiceTest {
     private val pid = "12345678910"
     private val trekkClientMock = mockk<TrekkClient>()
     private val geografiskLokasjonServiceMock = mockk<GeografiskLokasjonService>()
-    private val behandleTrekkService = BehandleTrekkService(trekkClientMock, geografiskLokasjonServiceMock)
+    private val hentSkattOgTrekkService = mockk<HentSkattOgTrekkService>()
+    private val behandleTrekkService = BehandleTrekkService(
+        trekkClientMock,
+        geografiskLokasjonServiceMock,
+        hentSkattOgTrekkService
+    )
 
     @Test
     fun `Opphor trekk dersom ett løpende trekk via behandle trekk`() {
@@ -406,7 +411,7 @@ class BehandleTrekkServiceTest {
 
         every { trekkClientMock.finnTrekkListe(pid, any()) } returns trekkListe
 
-        behandleTrekkService.oppdaterTrekk(pid, trekkListe, tilleggstrekk, SatsType.KRONER)
+        behandleTrekkService.oppdaterTrekk(pid, trekkVedtakId, tilleggstrekk, SatsType.KRONER)
 
         verify(exactly = 1) {
             trekkClientMock.opphorAndreTrekk(
@@ -423,7 +428,74 @@ class BehandleTrekkServiceTest {
         }
     }
 
-    private fun lagSatsperiode(fom: LocalDate, tom: LocalDate, sats: Double): Satsperiode {
+    @Test
+    fun `Skal lukke den siste åpne eksisterende satsperioden med dagen før starten på ny satsperiode`() {
+
+        val eksisterendeListe = listOf(
+            lagSatsperiode( fom = LocalDate.parse("2025-01-01"), tom = LocalDate.parse("2025-02-28"), sats = 1.0),
+            lagSatsperiode( fom = LocalDate.parse("2025-03-01"), LocalDate.parse("2025-03-31"), sats = 2.0),
+            lagSatsperiode( fom = LocalDate.parse("2025-04-01"), LocalDate.parse("2025-12-31"), sats = 3.0),
+        )
+
+        val nySatsperiode = lagSatsperiode(
+            fom = LocalDate.parse("2025-05-01"),
+            tom = LocalDate.parse("2025-12-31"),
+            sats = 200.0
+        )
+
+        val oppdaterteSatsperioderListe = behandleTrekkService.oppdaterSatsperioder(eksisterendeListe, nySatsperiode)
+
+        assertEquals(4, oppdaterteSatsperioderListe.size)
+        assertEquals(LocalDate.parse("2025-04-30"), oppdaterteSatsperioderListe[2].tom)
+        assertEquals(nySatsperiode, oppdaterteSatsperioderListe.last())
+    }
+
+    @Test
+    fun `Skal lukke den siste åpne eksisterende satsperioden med null tom dato med dagen før starten på ny satsperiode`() {
+
+        val eksisterendeListe = listOf(
+            lagSatsperiode( fom = LocalDate.parse("2025-01-01"), tom = LocalDate.parse("2025-02-28"), sats = 1.0),
+            lagSatsperiode( fom = LocalDate.parse("2025-03-01"), LocalDate.parse("2025-03-31"), sats = 2.0),
+            lagSatsperiode( fom = LocalDate.parse("2025-04-01"), null, sats = 3.0),
+        )
+
+        val nySatsperiode = lagSatsperiode(
+            fom = LocalDate.parse("2025-05-01"),
+            tom = LocalDate.parse("2025-12-31"),
+            sats = 200.0
+        )
+
+        val oppdaterteSatsperioderListe = behandleTrekkService.oppdaterSatsperioder(eksisterendeListe, nySatsperiode)
+
+        assertEquals(4, oppdaterteSatsperioderListe.size)
+        assertEquals(LocalDate.parse("2025-04-30"), oppdaterteSatsperioderListe[2].tom)
+        assertEquals(nySatsperiode, oppdaterteSatsperioderListe.last())
+    }
+
+    @Test
+    fun `Skal lukke alle åpne eksisterende satsperioder med dagen før starten på ny satsperiode`() {
+
+        val eksisterendeListe = listOf(
+            lagSatsperiode( fom = LocalDate.parse("2025-01-01"), tom = LocalDate.parse("2025-02-28"), sats = 1.0),
+            lagSatsperiode( fom = LocalDate.parse("2025-03-01"), LocalDate.parse("2025-12-31"), sats = 2.0),
+            lagSatsperiode( fom = LocalDate.parse("2025-04-01"), LocalDate.parse("2025-12-31"), sats = 3.0),
+        )
+
+        val nySatsperiode = lagSatsperiode(
+            fom = LocalDate.parse("2025-05-01"),
+            tom = LocalDate.parse("2025-12-31"),
+            sats = 200.0
+        )
+
+        val oppdaterteSatsperioderListe = behandleTrekkService.oppdaterSatsperioder(eksisterendeListe, nySatsperiode)
+
+        assertEquals(4, oppdaterteSatsperioderListe.size)
+        assertEquals(LocalDate.parse("2025-04-30"), oppdaterteSatsperioderListe[1].tom)
+        assertEquals(LocalDate.parse("2025-04-30"), oppdaterteSatsperioderListe[2].tom)
+        assertEquals(nySatsperiode, oppdaterteSatsperioderListe.last())
+    }
+
+    private fun lagSatsperiode(fom: LocalDate, tom: LocalDate?, sats: Double): Satsperiode {
         return Satsperiode(fom, tom, BigDecimal.valueOf(sats), erFeilregistrert = false)
     }
 
