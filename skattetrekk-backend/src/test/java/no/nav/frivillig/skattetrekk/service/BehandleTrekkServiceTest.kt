@@ -20,8 +20,7 @@ class BehandleTrekkServiceTest {
     private val hentSkattOgTrekkService = mockk<HentSkattOgTrekkService>()
     private val behandleTrekkService = BehandleTrekkService(
         trekkClientMock,
-        geografiskLokasjonServiceMock,
-        hentSkattOgTrekkService
+        geografiskLokasjonServiceMock
     )
 
     @Test
@@ -212,7 +211,7 @@ class BehandleTrekkServiceTest {
         every { geografiskLokasjonServiceMock.hentNavEnhet(pid) } returns "NAV Enhet"
         every { trekkClientMock.opprettAndreTrekk(eq(pid), any()) } returns OpprettAndreTrekkResponse(1L)
 
-        val trekkVedtakId = behandleTrekkService.opprettTrekk(pid, 20, SatsType.PROSENT)
+        val trekkVedtakId = behandleTrekkService.opprettTrekk(pid, 20, SatsType.PROSENT, LocalDate.parse("2025-01-01"))
 
         verify(exactly = 1) { trekkClientMock.opprettAndreTrekk(eq(pid), any()) }
         verify(exactly = 0) { trekkClientMock.opphorAndreTrekk(eq(pid), any()) }
@@ -226,7 +225,7 @@ class BehandleTrekkServiceTest {
         every { geografiskLokasjonServiceMock.hentNavEnhet(pid) } returns "NAV Enhet"
         every { trekkClientMock.opprettAndreTrekk(eq(pid), any()) } returns OpprettAndreTrekkResponse(1L)
 
-        val trekkVedtakId = behandleTrekkService.opprettTrekk(pid, 20, SatsType.KRONER)
+        val trekkVedtakId = behandleTrekkService.opprettTrekk(pid, 20, SatsType.KRONER, LocalDate.parse("2025-01-01"))
 
         verify(exactly = 1) { trekkClientMock.opprettAndreTrekk(eq(pid), any()) }
 
@@ -236,7 +235,7 @@ class BehandleTrekkServiceTest {
     @Test
     fun `Ikke opprett nytt frivillig skattetrekk dersom tilleggstrekk er 0`() {
 
-        val trekkvedtakId = behandleTrekkService.opprettTrekk(pid, 0, SatsType.KRONER)
+        val trekkvedtakId = behandleTrekkService.opprettTrekk(pid, 0, SatsType.KRONER, LocalDate.parse("2025-01-01"))
 
         verify(exactly = 0) { trekkClientMock.opprettAndreTrekk(eq(pid), any()) }
         verify(exactly = 0) { geografiskLokasjonServiceMock.hentNavEnhet(pid) }
