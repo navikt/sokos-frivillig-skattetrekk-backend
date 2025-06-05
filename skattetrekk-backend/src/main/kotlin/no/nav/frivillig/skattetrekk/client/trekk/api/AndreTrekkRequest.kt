@@ -21,5 +21,5 @@ data class AndreTrekkRequest(
     @JsonFormat(pattern = "yyyy-MM-dd", timezone = "Europe/Oslo")
     @JsonProperty("prioritetFom") val prioritetFom: LocalDate? = null,
     @JsonProperty("satsperiodeListe") val satsperiodeListe: List<Satsperiode>,
-    @JsonProperty("fagomradeListe") val fagomradeListe: List<Fagomrade>,
+    @JsonProperty("fagomradeListe") val fagomradeListe: List<Fagomrade>?,
 )

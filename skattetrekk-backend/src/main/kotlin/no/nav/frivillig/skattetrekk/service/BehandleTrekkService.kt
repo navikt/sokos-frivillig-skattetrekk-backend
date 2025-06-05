@@ -2,7 +2,9 @@ package no.nav.frivillig.skattetrekk.service
 
 import no.nav.frivillig.skattetrekk.client.trekk.TrekkClient
 import no.nav.frivillig.skattetrekk.client.trekk.api.*
+import no.nav.frivillig.skattetrekk.endpoint.ClientException
 import no.nav.pensjon.pselv.consumer.behandletrekk.oppdragrestproxy.Kilde
+import no.nav.pensjon.pselv.consumer.behandletrekk.oppdragrestproxy.OppdaterAndreTrekkRequest
 import no.nav.pensjon.pselv.consumer.behandletrekk.oppdragrestproxy.OpphorAndreTrekkRequest
 import no.nav.pensjon.pselv.consumer.behandletrekk.oppdragrestproxy.OpprettAndreTrekkRequest
 import org.slf4j.LoggerFactory
@@ -19,19 +21,20 @@ class BehandleTrekkService(
 
     fun behandleTrekk(pid: String, tilleggstrekk: Int, satsType: SatsType) {
 
-        val finnTrekkListe = trekkClient.finnTrekkListe(pid, TrekkTypeCode.FRIS)
-        val trekkvedtakId = finnTrekkListe.sortedByDescending { it.trekkperiodeFom }.firstOrNull()?.trekkvedtakId
+        val finnTrekkListe = trekkClient.finnTrekkListe(pid, TrekkTypeCode.FRIS).sortedByDescending { it.trekkperiodeFom }
 
-        if (trekkvedtakId != null && tilleggstrekk == 0) {
-            opphoerTrekk(pid, trekkvedtakId)
-        } else if (trekkvedtakId != null && tilleggstrekk > 0) {
-            oppdaterTrekk(pid, finnTrekkListe, tilleggstrekk, satsType)
+        if (finnTrekkListe.isNotEmpty() && tilleggstrekk == 0) {
+            finnTrekkListe.forEach { if (it.trekkvedtakId != null) opphoerTrekk(pid, it.trekkvedtakId) }
+        } else if (finnTrekkListe.isNotEmpty() && tilleggstrekk > 0) {
+            // finnTrekkListe.forEach { if (it.trekkvedtakId != null) oppdaterTrekk(pid, it.trekkvedtakId, tilleggstrekk, satsType) } // Denne fungerer ikke før øyeblikket
+            finnTrekkListe.forEach { if (it.trekkvedtakId != null) opphoerTrekk(pid, it.trekkvedtakId) }
+            opprettTrekk(pid, tilleggstrekk, satsType, LocalDate.now().plusMonths(1L).withDayOfMonth(1))
         } else {
-            opprettTrekk(pid, tilleggstrekk, satsType)
+            opprettTrekk(pid, tilleggstrekk, satsType, LocalDate.now().withDayOfMonth(1))
         }
     }
 
-    fun opprettTrekk(pid: String, tilleggstrekk: Int, satsType: SatsType): Long? {
+    fun opprettTrekk(pid: String, tilleggstrekk: Int, satsType: SatsType, gjelderFraOgMed: LocalDate): Long? {
 
         log.info("Henter skatt og trekk")
 
@@ -46,7 +49,7 @@ class BehandleTrekkService(
                 pid,
                 OpprettAndreTrekkRequest(
                     Kilde.PPO1.name,
-                    opprettNyttTrekkRequest(pid, tilleggstrekk, trekkalternativKode.name, brukersNavEnhet, LocalDate.now().withDayOfMonth(1))
+                    opprettNyttTrekkRequest(pid, tilleggstrekk, trekkalternativKode.name, brukersNavEnhet, gjelderFraOgMed)
                 ))
 
             return trekkOpprettet?.trekkvedtakId
@@ -55,44 +58,35 @@ class BehandleTrekkService(
         return null
     }
 
-    fun oppdaterTrekk(pid: String, trekkListe: List<TrekkInfo>, tilleggstrekk: Int, satsType: SatsType) {
 
-        val brukersNavEnhet = geografiskLokasjonService.hentNavEnhet(pid)
+    fun oppdaterTrekk(pid: String, trekkvedtakId: Long, tilleggstrekk: Int, satsType: SatsType) {
         val trekkalternativKode = if (satsType == SatsType.KRONER) TrekkalternativKode.LOPM else TrekkalternativKode.LOPP
+        val andreTrekkResponse = trekkClient.hentSkattOgTrekk(pid, trekkvedtakId)?.andreTrekk
+        if (andreTrekkResponse != null) {
+            val sorterteSatsperioder = andreTrekkResponse.satsperiodeListe?.sortedBy { it.fom } ?: emptyList()
+            val nySatsperiode = opprettStatsperiode(tilleggstrekk, LocalDate.now().plusMonths(1).withDayOfMonth(1))
+            val oppdaterteSatsperioder = oppdaterSatsperioder(sorterteSatsperioder, nySatsperiode)
 
-        trekkListe.forEach { trekkInfo ->
+            val andreTrekkRequest = AndreTrekkRequest(
+                ansvarligEnhetId = andreTrekkResponse.ansvarligEnhetId!!,
+                belopSaldotrekk = andreTrekkResponse.belopSaldotrekk,
+                datoOppfolging = andreTrekkResponse.datoOppfolging,
+                gyldigTom = andreTrekkResponse.prioritetFom,
+                debitorOffnr = andreTrekkResponse.debitor?.id!!,
+                trekkalternativKode = trekkalternativKode.name,
+                trekktypeKode = andreTrekkResponse.trekktype?.kode!!,
+                tssEksternId = andreTrekkResponse.tssEksternId,
+                kreditorKid = andreTrekkResponse.kreditor?.id,
+                kreditorRef = andreTrekkResponse.kreditorRef,
+                prioritetFom = andreTrekkResponse.prioritetFom,
+                satsperiodeListe = oppdaterteSatsperioder,
+                fagomradeListe = andreTrekkResponse.fagomradeListe,
+            )
 
-            if (trekkInfo.trekkvedtakId != null) {
-
-                val andreTrekk = trekkClient.hentSkattOgTrekk(pid, trekkInfo.trekkvedtakId)
-                    ?.andreTrekk
-
-                val sorterteSatsperioder = andreTrekk
-                    ?.satsperiodeListe
-                    ?.sortedBy { it.fom } ?: emptyList()
-
-                val lopendeSatsperioder = sorterteSatsperioder.filter { isLopende(it) }
-                val fremtidigeSatsperioder = sorterteSatsperioder.filter { isFremtidig(it) }
-
-                val opphorDato = utledOpphorsdato(lopendeSatsperioder, fremtidigeSatsperioder)
-                // Opphør løpende trekk, om det finnes
-                if (opphorDato != null) {
-                    log.info("Opphører trekk med trekkvedtakId=${trekkInfo.trekkvedtakId}, fom=$opphorDato")
-                    opphorTrekk(pid, trekkInfo.trekkvedtakId, opphorDato)
-                }
-            }
+            val oppdaterAndreTrekkRequest = OppdaterAndreTrekkRequest(
+                trekkvedtakId = trekkvedtakId, andreTrekk = andreTrekkRequest, kilde = Kilde.PPO1.name)
+            trekkClient.oppdaterAndreTrekk(pid, oppdaterAndreTrekkRequest)
         }
-
-        log.info("Oppretter nytt frivillig skattetrekk")
-
-        val nesteMaaned = LocalDate.now().plusMonths(1L).withDayOfMonth(1)
-
-        trekkClient.opprettAndreTrekk(
-            pid,
-            OpprettAndreTrekkRequest(
-                Kilde.PPO1.name,
-                opprettNyttTrekkRequest(pid, tilleggstrekk, trekkalternativKode.name, brukersNavEnhet,nesteMaaned)
-            ))
     }
 
     fun opphoerTrekk(pid: String, trekkvedtakId: Long) {
@@ -104,7 +98,7 @@ class BehandleTrekkService(
             ?.sortedBy { it.fom } ?: emptyList()
 
         val lopendeSatsperioder = sorterteSatsperioder.filter { isLopende(it) }
-        val fremtidigeSatsperioder = sorterteSatsperioder.filter { isFremtidig(it) }
+        val fremtidigeSatsperioder = sorterteSatsperioder.filter { isFremtidig(LocalDate.now(), it) }
 
         val opphorDato = utledOpphorsdato(lopendeSatsperioder, fremtidigeSatsperioder)
         // Opphør løpende trekk, om det finnes
@@ -117,12 +111,12 @@ class BehandleTrekkService(
     private fun skalOppretteNyttTrekk(tilleggstrekk: Int, andreTrekk: AndreTrekkResponse?): Boolean {
         if (andreTrekk == null) {
             return tilleggstrekk > 0
-        } else if (andreTrekk != null && tilleggstrekk == 0) {
+        } else if (tilleggstrekk == 0) {
             return false
         }
 
         val finnesIkkeLopende = andreTrekk?.satsperiodeListe?.find { isLopende(it) } == null
-        val finnesIkkeFremtidigTrekk = andreTrekk?.satsperiodeListe?.find { isFremtidig(it) } == null
+        val finnesIkkeFremtidigTrekk = andreTrekk?.satsperiodeListe?.find { isFremtidig(LocalDate.now(), it) } == null
 
         return finnesIkkeLopende || finnesIkkeFremtidigTrekk
     }
@@ -140,7 +134,7 @@ class BehandleTrekkService(
                     erFeilregistrert = null
                 )
             ),
-            satsperiodeListe = listOf(opprettStatsperiode(tilleggstrekk.toDouble(), trekkGjelderFraOgMed)),
+            satsperiodeListe = listOf(opprettStatsperiode(tilleggstrekk, trekkGjelderFraOgMed)),
         )
 
     fun utledOpphorsdato(lopendeSatsperioder: List<Satsperiode>, fremtidigeSatsperioder: List<Satsperiode>): LocalDate? {
@@ -163,14 +157,38 @@ class BehandleTrekkService(
         return forsteDagNesteMaaned
     }
 
-    fun opprettStatsperiode(tilleggstrekk: Double, today: LocalDate): Satsperiode {
-        val forsteDatoNesteMaaned = today.withDayOfMonth(1)
-        val sisteDagDetteAret = LocalDate.of(today.year, 12, 31)
+    fun opprettStatsperiode(tilleggstrekk: Int, gjelderFom: LocalDate): Satsperiode {
+        val sisteDagDetteAret = LocalDate.of(gjelderFom.year, 12, 31)
         return Satsperiode(
-            fom = forsteDatoNesteMaaned,
+            fom = gjelderFom,
             tom = sisteDagDetteAret,
-            sats = tilleggstrekk.toBigDecimal()
+            sats = tilleggstrekk.toBigDecimal(),
+            erFeilregistrert = false,
+            sporing = Sporing(
+                opprettetInfo = Sporingsdetalj(
+                    kilde = Kilde.PPO1.name,
+                    opprettetAvId = "system",
+                    opprettetDato = LocalDate.now()
+                )
+            )
         )
+    }
+
+    fun oppdaterSatsperioder(eksisterendeSatsperioder: List<Satsperiode>, nySatsperiode: Satsperiode): List<Satsperiode> {
+        val oppdaterSatsperioder = eksisterendeSatsperioder.toMutableList()
+
+        eksisterendeSatsperioder.forEach {
+            if (isFremtidig(nySatsperiode.fom!!,it)) {
+                oppdaterSatsperioder.remove(it) // Fjerner fremtidig satsperiode
+            } else if (it.tom == null || it.tom.isAfter(nySatsperiode.fom)) {
+                oppdaterSatsperioder.remove(it) // Fjerner løpende satsperiode, da den oppdateres med ny
+                val oppdatertSisteEksisterendeSatsperiode = it.copy(tom = nySatsperiode.fom?.minusDays(1))
+                oppdaterSatsperioder.add(oppdatertSisteEksisterendeSatsperiode)
+            }
+        }
+
+        oppdaterSatsperioder.add(nySatsperiode)
+        return oppdaterSatsperioder
     }
 
     fun opphorTrekk(pid: String, trekkvedtakId: Long, opphorFom: LocalDate) {
@@ -178,11 +196,10 @@ class BehandleTrekkService(
         trekkClient.opphorAndreTrekk(pid, opphorAndreTrekkRequest)
     }
 
-    fun isFremtidig(satsperiode: Satsperiode): Boolean {
+    fun isFremtidig(gjeldendeDato: LocalDate, satsperiode: Satsperiode): Boolean {
         if (!satsperiode.erFeilregistrert!!) {
             val fom = satsperiode.fom
-            val today = LocalDate.now()
-            return today.isBefore(fom)
+            return gjeldendeDato.isBefore(fom)
         }
 
         return false
