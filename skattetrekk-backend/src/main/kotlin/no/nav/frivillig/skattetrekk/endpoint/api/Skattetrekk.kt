@@ -10,14 +10,19 @@ data class FrivilligSkattetrekkInitResponse(
 
 data class FrivilligSkattetrekkData(
     val tilleggstrekk: TrekkDto?,
-    val framtidigTilleggstrekk: TrekkDto?,
+    val framtidigTilleggstrekk: FremtidigTrekkDto?,
     val skattetrekk: ForenkletSkattetrekkDto
 )
 
 data class TrekkDto(
     val sats: Double?,
+    val satsType: SatsType?
+)
+
+data class FremtidigTrekkDto(
+    val sats: Double?,
     val satsType: SatsType?,
-    val registrert: LocalDate?
+    val gyldigFraOgMed: LocalDate? = null,
 )
 
 data class Skattetrekk(

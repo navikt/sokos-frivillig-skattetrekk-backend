@@ -57,7 +57,7 @@ class HentSkattOgTrekkService(
             messages = meldinger,
             data = FrivilligSkattetrekkData(
                 tilleggstrekk = currentTilleggstrekk?.mapToTrekkDTO(),
-                framtidigTilleggstrekk = nextTilleggstrekk?.mapToTrekkDTO(),
+                framtidigTilleggstrekk = nextTilleggstrekk?.mapToFremtidigTrekk(),
                 skattetrekk = forenkletSkattetrekk
             )
         )
@@ -65,9 +65,15 @@ class HentSkattOgTrekkService(
 
     private fun AndreTrekkResponse.mapToTrekkDTO(): TrekkDto = TrekkDto(
         sats = this.satsperiodeListe?.first()?.sats?.toDouble(),
-        satsType = this.trekkalternativ?.kode?.let { if (it == TREKK_KODE_LOPP) SatsType.PROSENT else SatsType.KRONER },
-        registrert = this.prioritetFom
+        satsType = this.trekkalternativ?.kode?.let { if (it == TREKK_KODE_LOPP) SatsType.PROSENT else SatsType.KRONER }
     )
+
+    private fun AndreTrekkResponse.mapToFremtidigTrekk(): FremtidigTrekkDto = FremtidigTrekkDto(
+        sats = this.satsperiodeListe?.first()?.sats?.toDouble(),
+        satsType = this.trekkalternativ?.kode?.let { if (it == TREKK_KODE_LOPP) SatsType.PROSENT else SatsType.KRONER },
+        gyldigFraOgMed = this.satsperiodeListe?.sortedByDescending { it.fom }?.last()?.fom,
+    )
+
 
     private fun determineForenkletSkattetrekk(skattetrekk: Skattetrekk?): ForenkletSkattetrekkDto {
 
