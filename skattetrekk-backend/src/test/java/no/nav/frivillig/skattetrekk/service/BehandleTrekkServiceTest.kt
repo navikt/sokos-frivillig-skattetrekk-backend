@@ -104,7 +104,7 @@ class BehandleTrekkServiceTest {
         )
         every { trekkClientMock.opphorAndreTrekk(eq(pid), any()) } returns Unit
         every { geografiskLokasjonServiceMock.hentNavEnhet(pid) } returns "NAV Enhet"
-        every { trekkClientMock.hentSkattOgTrekk(pid, trekkvedtakId) } returns lagHentSkattOgTrekkRespons(trekkvedtakId, listOf(
+        every { trekkClientMock.hentSkattOgTrekk(pid, any()) } returns lagHentSkattOgTrekkRespons(trekkvedtakId, listOf(
             lagSatsperiode(
                 fom = LocalDate.now().minusMonths(1L),
                 tom = LocalDate.now().plusMonths(3L),
@@ -115,7 +115,7 @@ class BehandleTrekkServiceTest {
 
         behandleTrekkService.behandleTrekk(pid,0, SatsType.KRONER)
 
-        verify(exactly = 1) { trekkClientMock.opphorAndreTrekk(eq(pid), any())}
+        verify(exactly = 2) { trekkClientMock.opphorAndreTrekk(eq(pid), any())}
         verify(exactly = 0) { trekkClientMock.opprettAndreTrekk(eq(pid), any()) }
 
     }
@@ -144,7 +144,7 @@ class BehandleTrekkServiceTest {
         )
         every { trekkClientMock.opphorAndreTrekk(eq(pid), any()) } returns Unit
         every { geografiskLokasjonServiceMock.hentNavEnhet(pid) } returns "NAV Enhet"
-        every { trekkClientMock.hentSkattOgTrekk(pid, trekkvedtakId) } returns lagHentSkattOgTrekkRespons(trekkvedtakId, listOf(
+        every { trekkClientMock.hentSkattOgTrekk(pid, any()) } returns lagHentSkattOgTrekkRespons(trekkvedtakId, listOf(
             lagSatsperiode(
                 fom = LocalDate.now().minusMonths(1L),
                 tom = LocalDate.now().plusMonths(3L),
@@ -154,7 +154,7 @@ class BehandleTrekkServiceTest {
 
         behandleTrekkService.behandleTrekk(pid,0, SatsType.KRONER)
 
-        verify(exactly = 1) { trekkClientMock.opphorAndreTrekk(eq(pid), any())}
+        verify(exactly = 2) { trekkClientMock.opphorAndreTrekk(eq(pid), any())}
         verify(exactly = 0) { trekkClientMock.opprettAndreTrekk(eq(pid), any()) }
     }
 
