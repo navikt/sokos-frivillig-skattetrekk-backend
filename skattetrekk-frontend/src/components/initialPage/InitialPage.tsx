@@ -23,7 +23,7 @@ import {StopTilleggstrekkConfirmationModal} from "@/components/initialPage/StopT
 import {resetFormState} from "@/state/FormState";
 
 export function InitialPage() {
-    const {initiateResponse, setInitiateResponse} = useContext(DataContext)
+    const {initiateResponse} = useContext(DataContext)
 
     const navigate = useNavigate()
     const pid = new URLSearchParams(document.location.search).get("pid")
@@ -40,14 +40,7 @@ export function InitialPage() {
         })
     }
 
-    async function stopTilleggstrekk() {
-        const response = await saveSkattetrekk(
-            {
-                value: 0,
-                satsType: SatsType.KRONER,
-            })
-        setInitiateResponse(response)
-    }
+
 
     function isDecember() {
         const currentDate = new Date();
@@ -92,7 +85,7 @@ export function InitialPage() {
     }
 
     return (
-        <VStack gap="8">
+        <VStack gap="12">
             <VStack gap="6">
 
                 { guidePanel()}
@@ -110,12 +103,14 @@ export function InitialPage() {
 
             <VStack gap="16">
                 {initiateResponse?.data &&
-                    <VStack gap={{xs: "2", md: "6"}}>
+                    <VStack gap={"4"}>
                         <Heading size={"medium"} level="2">Dine registrerte skattetrekk</Heading>
 
                         <RegistrerteSkattetrekk skatteTrekk={initiateResponse.data.skattetrekk!} tilleggstrekk={initiateResponse.data.tilleggstrekk} framtidigTilleggstrekk={initiateResponse.data.framtidigTilleggstrekk} isDecember={isDecember()} />
-                        {initiateResponse.data.tilleggstrekk !== null || initiateResponse.data.framtidigTilleggstrekk?.sats !== 0 ? <></> :
-                            <StopTilleggstrekkConfirmationModal onConfirm={stopTilleggstrekk}/>}
+                        {initiateResponse.data.tilleggstrekk !== null && initiateResponse.data.framtidigTilleggstrekk?.sats !== 0 ?
+                            <StopTilleggstrekkConfirmationModal/>
+                            : <></>
+                        }
                     </VStack> }
 
                 <Accordion>

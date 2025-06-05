@@ -1,8 +1,24 @@
-import {useState} from 'react'
+import {useContext, useState} from 'react'
 import {BodyLong, Button, HStack, Modal} from '@navikt/ds-react'
+import {SatsType, saveSkattetrekk} from "@/api/skattetrekkBackendClient";
+import {DataContext} from "@/state/DataContextProvider";
 
-export function StopTilleggstrekkConfirmationModal(props: {onConfirm: () => void}) {
+export function StopTilleggstrekkConfirmationModal() {
     const [open, setOpen] = useState(false)
+    const [isLoading, setIsLoading] = useState(false)
+    const {setInitiateResponse} = useContext(DataContext)
+
+    async function onConfirm() {
+        setIsLoading(true)
+        const response = await saveSkattetrekk(
+            {
+                value: 0,
+                satsType: SatsType.KRONER,
+            })
+        setInitiateResponse(response)
+        setIsLoading(false)
+        setOpen(false)
+    }
 
 
     return (
@@ -19,10 +35,7 @@ export function StopTilleggstrekkConfirmationModal(props: {onConfirm: () => void
                 </Modal.Body>
                 <Modal.Footer>
 
-                    <Button type="button" onClick={() => {
-                        props.onConfirm
-                        setOpen(false)
-                    }} variant="primary">
+                    <Button type="button" onClick={onConfirm} variant="primary" loading={isLoading}>
                         Ja
                     </Button>
                     <Button type="button" variant="secondary" onClick={() => {setOpen(false)}}>
