@@ -26,7 +26,7 @@ class BehandleTrekkService(
         if (finnTrekkListe.isNotEmpty() && tilleggstrekk == 0) {
             finnTrekkListe.forEach { if (it.trekkvedtakId != null) opphoerTrekk(pid, it.trekkvedtakId) }
         } else if (finnTrekkListe.isNotEmpty() && tilleggstrekk > 0) {
-            // finnTrekkListe.forEach { if (it.trekkvedtakId != null) oppdaterTrekk(pid, it.trekkvedtakId, tilleggstrekk, satsType) }
+            // finnTrekkListe.forEach { if (it.trekkvedtakId != null) oppdaterTrekk(pid, it.trekkvedtakId, tilleggstrekk, satsType) } // Denne fungerer ikke før øyeblikket
             finnTrekkListe.forEach { if (it.trekkvedtakId != null) opphoerTrekk(pid, it.trekkvedtakId) }
             opprettTrekk(pid, tilleggstrekk, satsType, LocalDate.now().plusMonths(1L).withDayOfMonth(1))
         } else {
