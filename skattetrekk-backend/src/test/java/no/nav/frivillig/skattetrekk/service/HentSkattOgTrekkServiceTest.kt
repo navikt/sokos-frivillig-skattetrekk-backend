@@ -81,8 +81,8 @@ class HentSkattOgTrekkServiceTest {
     ) = TrekkInfo(
         trekkvedtakId = trekkVedtakId,
         debitor = Bruker(
-            kreditorOffnr = fnr,
-            kreditorNavn = "Test Testesen",
+            id = fnr,
+            navn = "Test Testesen",
         ),
         kreditor = null,
         kreditorRef = null,
