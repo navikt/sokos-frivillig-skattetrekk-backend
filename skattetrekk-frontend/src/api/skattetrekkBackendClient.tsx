@@ -1,6 +1,7 @@
 export interface TrekkDTO {
     sats: number | null;
     satsType: SatsType | null;
+    gyldigFraOgMed: Date | null;
 }
 
 export interface ForenkletSkattetrekk {
