@@ -65,7 +65,8 @@ class HentSkattOgTrekkService(
 
     private fun AndreTrekkResponse.mapToTrekkDTO(): TrekkDto = TrekkDto(
         sats = this.satsperiodeListe?.first()?.sats?.toDouble(),
-        satsType = this.trekkalternativ?.kode?.let { if (it == TREKK_KODE_LOPP) SatsType.PROSENT else SatsType.KRONER }
+        satsType = this.trekkalternativ?.kode?.let { if (it == TREKK_KODE_LOPP) SatsType.PROSENT else SatsType.KRONER },
+        registrert = this.prioritetFom
     )
 
     private fun determineForenkletSkattetrekk(skattetrekk: Skattetrekk?): ForenkletSkattetrekkDto {

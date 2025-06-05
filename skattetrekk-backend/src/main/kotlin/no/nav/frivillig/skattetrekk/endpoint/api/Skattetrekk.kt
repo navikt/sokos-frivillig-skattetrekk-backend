@@ -1,6 +1,7 @@
 package no.nav.frivillig.skattetrekk.endpoint.api
 
 import no.nav.frivillig.skattetrekk.client.trekk.api.SatsType
+import java.time.LocalDate
 
 data class FrivilligSkattetrekkInitResponse(
     val data: FrivilligSkattetrekkData?,
@@ -16,6 +17,7 @@ data class FrivilligSkattetrekkData(
 data class TrekkDto(
     val sats: Double?,
     val satsType: SatsType?,
+    val registrert: LocalDate?
 )
 
 data class Skattetrekk(
