@@ -1,5 +1,6 @@
-import {createContext, useCallback, useEffect, useState} from 'react'
+import React, {createContext, useCallback, useEffect, useState} from 'react'
 import {fetchSkattetrekk, FrivilligSkattetrekkData, FrivilligSkattetrekkResponse} from "@/api/skattetrekkBackendClient";
+import {BodyShort, Box, Loader, VStack} from "@navikt/ds-react";
 
 interface DataContextValue {
     initiateResponse: FrivilligSkattetrekkResponse | null
@@ -23,6 +24,8 @@ interface DataContextProviderProps {
     children?: React.ReactNode
 }
 
+const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
+
 function DataContextProvider(props: DataContextProviderProps) {
     const [shouldRefetch, setShouldRefetch] = useState(true)
     const [initiateResponse, setInitiateResponse] = useState(DataContextDefaultValue.initiateResponse)
@@ -32,6 +35,7 @@ function DataContextProvider(props: DataContextProviderProps) {
         async ()  => {
             setShouldRefetch(false)
             try {
+                await delay(1000)
                 const response = await fetchSkattetrekk()
                 setInitiateResponse(response)
             } catch (error) {
@@ -57,7 +61,15 @@ function DataContextProvider(props: DataContextProviderProps) {
                 sendResponse,
                 setSendResponse
             }}>
-            {props.children}
+            {(initiateResponse === null) ?
+                (
+                    <Box background="bg-subtle" padding="16" borderRadius="large">
+                        <VStack align="center" gap="20">
+                            <Loader size="3xlarge" />
+                            <BodyShort align="center">{"Vent mens vi laster inn siden."}</BodyShort>
+                        </VStack>
+                    </Box>
+                ) : props.children}
         </DataContext.Provider>
     )
 }

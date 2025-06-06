@@ -52,18 +52,6 @@ export function InitialPage() {
         return currentDate.getFullYear();
     }
 
-
-    if(initiateResponse === null) {
-        return (
-            <Box background="bg-subtle" padding="16" borderRadius="large">
-                <VStack align="center" gap="20">
-                    <Loader size="3xlarge" />
-                    <BodyShort align="center">{"Vent mens vi laster inn siden."}</BodyShort>
-                </VStack>
-            </Box>
-        )
-    }
-
     if (initiateResponse?.messages?.find(message => message.code === MessageCode.SERVICE_UNAVAILABLE)) { //TODO code?
         return (
             <VStack gap="6">
