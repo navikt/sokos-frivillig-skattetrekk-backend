@@ -73,6 +73,7 @@ async function updateHeaders(requestHeaders) {
     const idToken = requestHeaders['authorization'].replace('Bearer', '').trim();
     let accessToken = await getTokenValue(idToken);
     let newHeaders = requestHeaders;
+    newHeaders['Content-Type'] = 'application/json';
     newHeaders['authorization'] = 'Bearer ' + accessToken; // Override authorization header with new token
     return newHeaders
 }
