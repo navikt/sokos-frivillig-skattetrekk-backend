@@ -11,6 +11,7 @@ enum class FrivilligSkattetrekkMessageDetail(val message: String) {
     MAX_PROSENT_OVERSTEGET("Maksimalt prosent for frivillig skattetrekk er 50%"),
     MIN_BELOP("Beløpet må være større enn 0"),
     MIN_PROSENT("Prosentrekket kan ikke være mindre enn 0"),
+    OPPHØR_REGISTRERT("Opphør av frivillig skattetrekk er registrert"),
 }
 
 enum class FrivilligSkattetrekkType {
