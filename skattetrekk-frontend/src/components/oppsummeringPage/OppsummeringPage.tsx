@@ -96,7 +96,7 @@ export const OppsummeringPage = () => {
           <FormSummary.Answers>
               <FormSummary.Answer>
                   <FormSummary.Label>Frivillig skattetrekk</FormSummary.Label>
-                  <FormSummary.Value>{visProsentEllerBelop({sats:location.state.tilleggstrekkValue, satsType:location.state.tilleggstrekkType})}</FormSummary.Value>
+                  <FormSummary.Value>{visProsentEllerBelop({sats:location.state.tilleggstrekkValue, satsType:location.state.tilleggstrekkType, gyldigFraOgMed:null})}</FormSummary.Value>
               </FormSummary.Answer>
               <FormSummary.Answer>
                     <FormSummary.Label>Skattekort</FormSummary.Label>

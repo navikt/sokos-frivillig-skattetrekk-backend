@@ -12,6 +12,11 @@ type RegistrerteSkattetrekkProps = {
     isDecember: boolean;
 }
 
+export function formatDateLong(value: Date): string {
+    const date = new Date(value)
+    return date.toLocaleDateString('no-NO', { day: 'numeric', month: 'long'})
+}
+
 export function RegistrerteSkattetrekk(props: RegistrerteSkattetrekkProps) {
     return (
         <VStack gap="6">
@@ -23,8 +28,7 @@ export function RegistrerteSkattetrekk(props: RegistrerteSkattetrekkProps) {
                             Hvis du registrerte trekket i slutten av desember, kan det ta inntil midten av januar før trekket kommer med på utbetalingene dine.
                         </BodyLong> :
                         <BodyLong>
-                            {/*TODO PEB-1181 hent dato fra backend*/}
-                            Vi har registrert nytt frivillig skattetrekk på {visProsentEllerBelop(props.framtidigTilleggstrekk)} fra DATE
+                            Vi har registrert nytt frivillig skattetrekk på {visProsentEllerBelop(props.framtidigTilleggstrekk)} fra {formatDateLong(props.framtidigTilleggstrekk!.gyldigFraOgMed!)} og ut året.
                             Det kan ta inntil 14 dager før trekket kommer med på utbetalingene dine. Trekket gjelder ut året.
                         </BodyLong> }
 
