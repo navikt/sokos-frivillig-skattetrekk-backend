@@ -34,12 +34,12 @@ class HentSkattOgTrekkService(
             val skattetrekk = finnSkattetrekk(pid, forskuddsTrekkListe)
             val tillegstrekkVedtakListe = opprettTilleggstrekkVedtakListe(pid, tilleggsTrekkInfoListe)
 
-            return createSkattetrekkInitResponse(skattetrekk, tillegstrekkVedtakListe, emptyList())
+            return createSkattetrekkInitResponse(skattetrekk, tillegstrekkVedtakListe, mutableListOf())
         } catch (e: OppdragUtilgjengeligException) {
             return createSkattetrekkInitResponse(
                 null,
                 emptyList(),
-                listOf(FrivilligSkattetrekkMessage(
+                mutableListOf(FrivilligSkattetrekkMessage(
                     details = FrivilligSkattetrekkMessageDetail.OPPDRAG_UTILGJENGELIG,
                     type = FrivilligSkattetrekkType.INFO
                 )
@@ -47,17 +47,26 @@ class HentSkattOgTrekkService(
         }
     }
 
-    private fun createSkattetrekkInitResponse(skattetrekk: Skattetrekk?, tilleggstrekkListe: List<AndreTrekkResponse?>, meldinger: List<FrivilligSkattetrekkMessage>): FrivilligSkattetrekkInitResponse {
+    private fun createSkattetrekkInitResponse(skattetrekk: Skattetrekk?, tilleggstrekkListe: List<AndreTrekkResponse?>, meldinger: MutableList<FrivilligSkattetrekkMessage>): FrivilligSkattetrekkInitResponse {
 
         val forenkletSkattetrekk = determineForenkletSkattetrekk(skattetrekk)
         val currentTilleggstrekk = tilleggstrekkListe.find { it?.satsperiodeListe?.toList()?.findRunningSatsperiode() == true }
         val fremtidigeTrekk = tilleggstrekkListe.filter { it?.satsperiodeListe?.toList()?.hasNextSatsperiode() == true }
 
+        val nextTilleggstrekk = findNextTilleggstrekk(currentTilleggstrekk, fremtidigeTrekk)
+
+        if (nextTilleggstrekk?.sats == 0) {
+            meldinger.add(FrivilligSkattetrekkMessage(
+                details = FrivilligSkattetrekkMessageDetail.OPPHØR_REGISTRERT,
+                type = FrivilligSkattetrekkType.INFO
+            ))
+        }
+
         return FrivilligSkattetrekkInitResponse(
             messages = meldinger,
             data = FrivilligSkattetrekkData(
                 tilleggstrekk = currentTilleggstrekk?.mapToTrekkDTO(),
-                framtidigTilleggstrekk = findNextTilleggstrekk(currentTilleggstrekk, fremtidigeTrekk),
+                framtidigTilleggstrekk = nextTilleggstrekk,
                 skattetrekk = forenkletSkattetrekk
             )
         )
@@ -65,12 +74,17 @@ class HentSkattOgTrekkService(
 
     private fun findNextTilleggstrekk(currentTilleggstrekk: AndreTrekkResponse?, fremtidigeTrekk: List<AndreTrekkResponse?>): FremtidigTrekkDto? {
         val currentSatsperiodeTom = currentTilleggstrekk?.satsperiodeListe?.get(0)?.tom
-        val sisteFremtidigTrekkDto = fremtidigeTrekk.filter()
-        if (LocalDate.now().isBefore(currentSatsperiodeTom)) {
+        val ingenFremtidigeTrekk = fremtidigeTrekk.isEmpty()
+        val nestMaaned = LocalDate.now().plusMonths(1L).withDayOfMonth(1)
+        if (
+            currentSatsperiodeTom != null && // Sjekk at det finnes en gyldig satsperiode
+            (LocalDate.now() == currentSatsperiodeTom || LocalDate.now().isBefore(currentSatsperiodeTom))
+            && nestMaaned.isAfter(currentSatsperiodeTom) && ingenFremtidigeTrekk
+        ) {
             return FremtidigTrekkDto(
                 sats = 0,
-                satsType = SatsType.KRONER,
-                gyldigFraOgMed = null,
+                satsType = null,
+                gyldigFraOgMed = currentSatsperiodeTom.plusMonths(1L)?.withDayOfMonth(1) // Neste månedens første dag,
             )
         }
 
@@ -78,12 +92,12 @@ class HentSkattOgTrekkService(
     }
 
     private fun AndreTrekkResponse.mapToTrekkDTO(): TrekkDto = TrekkDto(
-        sats = this.satsperiodeListe?.first()?.sats?.toDouble(),
+        sats = this.satsperiodeListe?.first()?.sats?.toInt(),
         satsType = this.trekkalternativ?.kode?.let { if (it == TREKK_KODE_LOPP) SatsType.PROSENT else SatsType.KRONER }
     )
 
     private fun AndreTrekkResponse.mapToFremtidigTrekk(): FremtidigTrekkDto = FremtidigTrekkDto(
-        sats = this.satsperiodeListe?.first()?.sats?.toDouble(),
+        sats = this.satsperiodeListe?.first()?.sats?.toInt(),
         satsType = this.trekkalternativ?.kode?.let { if (it == TREKK_KODE_LOPP) SatsType.PROSENT else SatsType.KRONER },
         gyldigFraOgMed = this.satsperiodeListe?.sortedByDescending { it.fom }?.last()?.fom,
     )
