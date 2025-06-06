@@ -38,7 +38,6 @@ class BehandleTrekkServiceTest {
             ),
         )
         every { trekkClientMock.opphorAndreTrekk(eq(pid), any()) } returns Unit
-        every { geografiskLokasjonServiceMock.hentNavEnhet(pid) } returns "NAV Enhet"
         every { trekkClientMock.hentSkattOgTrekk(pid, trekkvedtakId) } returns lagHentSkattOgTrekkRespons(trekkvedtakId, listOf(
             lagSatsperiode(
                 fom = LocalDate.now().minusMonths(1L),
@@ -65,7 +64,6 @@ class BehandleTrekkServiceTest {
 
         every { trekkClientMock.finnTrekkListe(pid, any()) } returns emptyList()
         every { trekkClientMock.opprettAndreTrekk(eq(pid), any()) } returns OpprettAndreTrekkResponse(trekkvedtakId)
-        every { geografiskLokasjonServiceMock.hentNavEnhet(pid) } returns "NAV Enhet"
         every { trekkClientMock.hentSkattOgTrekk(pid, trekkvedtakId) } returns lagHentSkattOgTrekkRespons(trekkvedtakId, listOf(
             lagSatsperiode(
                 fom = LocalDate.now().minusMonths(1L),
@@ -103,7 +101,6 @@ class BehandleTrekkServiceTest {
             )
         )
         every { trekkClientMock.opphorAndreTrekk(eq(pid), any()) } returns Unit
-        every { geografiskLokasjonServiceMock.hentNavEnhet(pid) } returns "NAV Enhet"
         every { trekkClientMock.hentSkattOgTrekk(pid, any()) } returns lagHentSkattOgTrekkRespons(trekkvedtakId, listOf(
             lagSatsperiode(
                 fom = LocalDate.now().minusMonths(1L),
@@ -143,7 +140,6 @@ class BehandleTrekkServiceTest {
             )
         )
         every { trekkClientMock.opphorAndreTrekk(eq(pid), any()) } returns Unit
-        every { geografiskLokasjonServiceMock.hentNavEnhet(pid) } returns "NAV Enhet"
         every { trekkClientMock.hentSkattOgTrekk(pid, any()) } returns lagHentSkattOgTrekkRespons(trekkvedtakId, listOf(
             lagSatsperiode(
                 fom = LocalDate.now().minusMonths(1L),
@@ -183,7 +179,6 @@ class BehandleTrekkServiceTest {
         )
         every { trekkClientMock.opphorAndreTrekk(eq(pid), any()) } returns Unit
         every { trekkClientMock.opprettAndreTrekk(eq(pid), any()) } returns OpprettAndreTrekkResponse(3L)
-        every { geografiskLokasjonServiceMock.hentNavEnhet(pid) } returns "NAV Enhet"
         every { trekkClientMock.hentSkattOgTrekk(pid, trekkvedtakId2) } returns lagHentSkattOgTrekkRespons(trekkvedtakId, listOf(
             lagSatsperiode(
                 fom = LocalDate.now().minusMonths(1L),
@@ -208,7 +203,6 @@ class BehandleTrekkServiceTest {
     @Test
     fun `Opprett nytt frivillig skattetrekk for prosent`() {
 
-        every { geografiskLokasjonServiceMock.hentNavEnhet(pid) } returns "NAV Enhet"
         every { trekkClientMock.opprettAndreTrekk(eq(pid), any()) } returns OpprettAndreTrekkResponse(1L)
 
         val trekkVedtakId = behandleTrekkService.opprettTrekk(pid, 20, SatsType.PROSENT, LocalDate.parse("2025-01-01"))
@@ -222,7 +216,6 @@ class BehandleTrekkServiceTest {
     @Test
     fun `Opprett nytt frivillig skattetrekk for nok`() {
 
-        every { geografiskLokasjonServiceMock.hentNavEnhet(pid) } returns "NAV Enhet"
         every { trekkClientMock.opprettAndreTrekk(eq(pid), any()) } returns OpprettAndreTrekkResponse(1L)
 
         val trekkVedtakId = behandleTrekkService.opprettTrekk(pid, 20, SatsType.KRONER, LocalDate.parse("2025-01-01"))
@@ -247,7 +240,6 @@ class BehandleTrekkServiceTest {
     fun `Ikke opphør noe dersom det bare er tomme satsperioder`() {
         val trekkVedtakId = 1L
 
-        every { geografiskLokasjonServiceMock.hentNavEnhet(pid) } returns "NAV Enhet"
         every { trekkClientMock.hentSkattOgTrekk(pid, trekkVedtakId) } returns lagHentSkattOgTrekkRespons(trekkVedtakId, emptyList())
 
         behandleTrekkService.opphoerTrekk(pid, trekkVedtakId)
@@ -259,7 +251,6 @@ class BehandleTrekkServiceTest {
     fun `Opphør trekk med løpende satsperiode`() {
         val trekkVedtakId = 1L
 
-        every { geografiskLokasjonServiceMock.hentNavEnhet(pid) } returns "NAV Enhet"
         every { trekkClientMock.opphorAndreTrekk(eq(pid), any()) } returns Unit
 
         every { trekkClientMock.hentSkattOgTrekk(pid, trekkVedtakId) } returns lagHentSkattOgTrekkRespons(trekkVedtakId,
@@ -279,7 +270,6 @@ class BehandleTrekkServiceTest {
     fun `Opphør trekk med fremtidig satsperiode`() {
         val trekkVedtakId = 1L
 
-        every { geografiskLokasjonServiceMock.hentNavEnhet(pid) } returns "NAV Enhet"
         every { trekkClientMock.opphorAndreTrekk(eq(pid), any()) } returns Unit
 
         every { trekkClientMock.hentSkattOgTrekk(pid, trekkVedtakId) } returns lagHentSkattOgTrekkRespons(trekkVedtakId,
@@ -299,7 +289,6 @@ class BehandleTrekkServiceTest {
     fun `Opphør trekk med både løpende og fremtidig satsperiode`() {
         val trekkVedtakId = 1L
 
-        every { geografiskLokasjonServiceMock.hentNavEnhet(pid) } returns "NAV Enhet"
         every { trekkClientMock.opphorAndreTrekk(eq(pid), any()) } returns Unit
 
         every { trekkClientMock.hentSkattOgTrekk(pid, trekkVedtakId) } returns lagHentSkattOgTrekkRespons(trekkVedtakId,
@@ -329,8 +318,6 @@ class BehandleTrekkServiceTest {
     fun `Skal ikke opphøre noe dersom gammel satsperiode`() {
         val trekkVedtakId = 1L
 
-        every { geografiskLokasjonServiceMock.hentNavEnhet(pid) } returns "NAV Enhet"
-
         every { trekkClientMock.hentSkattOgTrekk(pid, trekkVedtakId) } returns lagHentSkattOgTrekkRespons(trekkVedtakId,
             listOf(
                 lagSatsperiode(
@@ -353,7 +340,6 @@ class BehandleTrekkServiceTest {
     fun `Skal opphøre dersom trekk inneholder satsperioder med mix av gamle, løpende og fremtidige`() {
         val trekkVedtakId = 1L
 
-        every { geografiskLokasjonServiceMock.hentNavEnhet(pid) } returns "NAV Enhet"
         every { trekkClientMock.opphorAndreTrekk(eq(pid), any()) } returns Unit
 
         every { trekkClientMock.hentSkattOgTrekk(pid, trekkVedtakId) } returns lagHentSkattOgTrekkRespons(trekkVedtakId,
@@ -399,7 +385,6 @@ class BehandleTrekkServiceTest {
             )
         )
 
-        every { geografiskLokasjonServiceMock.hentNavEnhet(pid) } returns "NAV Enhet"
         every { trekkClientMock.opphorAndreTrekk(eq(pid), any()) } returns Unit
         every { trekkClientMock.opprettAndreTrekk(eq(pid), any()) } returns OpprettAndreTrekkResponse(1L)
 
