@@ -46,7 +46,9 @@ class SkattetrekkControllerTest(
                 skattetrekk = ForenkletSkattetrekkDto(
                     tabellNr = null,
                     prosentsats = null
-                )
+                ),
+                maxBelop = 5000,
+                maxProsent = 50
             )
         )
     }
