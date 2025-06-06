@@ -12,9 +12,7 @@ export const OppsummeringPage = () => {
     const [isSending, setIsSending] = useState(false)
     const navigate = useNavigate()
     const location = useLocation()
-    window.history.state.usr = location
-
-    const pid = new URLSearchParams(document.location.search).get("pid")
+    const pid: string = window.history.state.pid;
 
     async function submitTilleggstrekk() {
         if (location.state.tilleggstrekkType !== null && location.state.tilleggstrekkValue !== null) {

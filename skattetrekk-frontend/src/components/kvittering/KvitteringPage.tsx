@@ -1,45 +1,25 @@
-import {Alert, BodyLong, BodyShort, Box, Heading, Link, List, Loader, VStack} from '@navikt/ds-react'
-import React, {useContext, useEffect, useState} from 'react'
+import {Alert, BodyLong, Heading, Link, List, VStack} from '@navikt/ds-react'
+import React, {useContext, useEffect} from 'react'
 import {numberFormatWithKr} from "@/common/Utils";
-import {fetchSkattetrekk, FrivilligSkattetrekkResponse, MessageType, SatsType} from "@/api/skattetrekkBackendClient";
+import {MessageType, SatsType} from "@/api/skattetrekkBackendClient";
 import {DataContext} from "@/state/DataContextProvider";
 import {PageLinks} from "@/routes";
-import {useLoaderData, useLocation, useNavigate} from "react-router-dom";
+import {useLocation, useNavigate} from "react-router-dom";
 
-export const KvitteringPage = (props: {
-}) => {
-    const [kvitteringInfo, setKvitteringInfo] = useState<FrivilligSkattetrekkResponse | null>(null)
-    const {sendResponse, setSendResponse} = useContext(DataContext)
-    const navigate = useNavigate()
+export const KvitteringPage = () => {
+    const {sendResponse} = useContext(DataContext)
     const location = useLocation()
-    window.history.state.usr = location
-
-    const loaderData = useLoaderData() as FrivilligSkattetrekkResponse | null;
+    const navigate = useNavigate()
+    const pid: string = window.history.state.pid;
 
 
     useEffect(() => {
-        if (sendResponse !== null){
-            setKvitteringInfo(sendResponse)
-        }
-        if (sendResponse === null) {
-            setKvitteringInfo(loaderData)
-        }
+    if(sendResponse === null) {
+        navigate(import.meta.env.BASE_URL + PageLinks.INDEX, {state: {pid: pid}})
+    }}, [sendResponse])
 
-    }, [sendResponse]);
-
-
-    if(kvitteringInfo === null) {
-        return (
-            <Box background="bg-subtle" padding="16" borderRadius="large">
-                <VStack align="center" gap="8">
-                    <Heading align="center" size={"large"} level="2">
-                        Vent mens vi venter på svar
-                    </Heading>
-                    <Loader size="3xlarge" />
-                    <BodyShort align="center">Dette kan ta opptil ett minutt.</BodyShort>
-                </VStack>
-            </Box>
-        )
+    if (sendResponse === null) {
+        return null
     }
 
 
@@ -61,9 +41,9 @@ export const KvitteringPage = (props: {
           <Alert variant="success">
               <VStack gap="3">
                   <Heading level="3" size="small">
-                      {kvitteringInfo.data.framtidigTilleggstrekk?.satsType === SatsType.PROSENT ?
-                          `Frivillig skattetrekk på ${kvitteringInfo.data.framtidigTilleggstrekk?.sats} % registrert` :
-                          `Frivillig skattetrekk på ${numberFormatWithKr(kvitteringInfo.data.framtidigTilleggstrekk?.sats ?? 0)} per måned registrert`}
+                      {sendResponse.data.framtidigTilleggstrekk?.satsType === SatsType.PROSENT ?
+                          `Frivillig skattetrekk på ${sendResponse.data.framtidigTilleggstrekk?.sats} % registrert` :
+                          `Frivillig skattetrekk på ${numberFormatWithKr(sendResponse.data.framtidigTilleggstrekk?.sats ?? 0)} per måned registrert`}
                   </Heading>
                   <BodyLong>
                       Skattetrekket gjelder ut året.
@@ -81,9 +61,9 @@ export const KvitteringPage = (props: {
 
           <div style={{borderBottom: '0.5px solid black', width: '100%'}}/>
 
-          <Link href={import.meta.env.VITE_MIN_SIDE_URL}>Gå til Min side</Link>
-          <Link onClick={() => navigate(import.meta.env.BASE_URL + PageLinks.INDEX, {state: {pid: location.state.pid}})}
-                target="_blank">Endre registrert frivillig skattetrekk</Link>
+          <Link href="https://www.nav.no/minside" target="_blank">Gå til Min side</Link>
+          <Link onClick={() => navigate(import.meta.env.BASE_URL + PageLinks.INDEX, {state: {pid: location.state.pid}})}>
+              Endre registrert frivillig skattetrekk</Link>
       </VStack>
   )
 }

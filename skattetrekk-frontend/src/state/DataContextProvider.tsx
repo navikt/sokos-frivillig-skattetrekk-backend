@@ -24,6 +24,8 @@ interface DataContextProviderProps {
     children?: React.ReactNode
 }
 
+const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
+
 function DataContextProvider(props: DataContextProviderProps) {
     const [shouldRefetch, setShouldRefetch] = useState(true)
     const [initiateResponse, setInitiateResponse] = useState(DataContextDefaultValue.initiateResponse)
@@ -33,6 +35,7 @@ function DataContextProvider(props: DataContextProviderProps) {
         async ()  => {
             setShouldRefetch(false)
             try {
+                await delay(1000)
                 const response = await fetchSkattetrekk()
                 setInitiateResponse(response)
             } catch (error) {
