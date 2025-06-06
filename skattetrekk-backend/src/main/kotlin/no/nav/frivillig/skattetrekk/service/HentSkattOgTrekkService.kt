@@ -3,7 +3,6 @@ package no.nav.frivillig.skattetrekk.service
 import no.nav.frivillig.skattetrekk.client.trekk.TrekkClient
 import no.nav.frivillig.skattetrekk.client.trekk.api.*
 import no.nav.frivillig.skattetrekk.client.trekk.api.Skattetrekk
-import no.nav.frivillig.skattetrekk.endpoint.ClientException
 import no.nav.frivillig.skattetrekk.endpoint.OppdragUtilgjengeligException
 import no.nav.frivillig.skattetrekk.endpoint.api.*
 import no.nav.frivillig.skattetrekk.util.isDateInPeriod
@@ -12,6 +11,7 @@ import org.springframework.stereotype.Service
 import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.util.*
+import kotlin.Double
 
 @Service
 class HentSkattOgTrekkService(
@@ -51,16 +51,30 @@ class HentSkattOgTrekkService(
 
         val forenkletSkattetrekk = determineForenkletSkattetrekk(skattetrekk)
         val currentTilleggstrekk = tilleggstrekkListe.find { it?.satsperiodeListe?.toList()?.findRunningSatsperiode() == true }
-        val nextTilleggstrekk = tilleggstrekkListe.findLast { it?.satsperiodeListe?.toList()?.hasNextSatsperiode() == true }
+        val fremtidigeTrekk = tilleggstrekkListe.filter { it?.satsperiodeListe?.toList()?.hasNextSatsperiode() == true }
 
         return FrivilligSkattetrekkInitResponse(
             messages = meldinger,
             data = FrivilligSkattetrekkData(
                 tilleggstrekk = currentTilleggstrekk?.mapToTrekkDTO(),
-                framtidigTilleggstrekk = nextTilleggstrekk?.mapToFremtidigTrekk(),
+                framtidigTilleggstrekk = findNextTilleggstrekk(currentTilleggstrekk, fremtidigeTrekk),
                 skattetrekk = forenkletSkattetrekk
             )
         )
+    }
+
+    private fun findNextTilleggstrekk(currentTilleggstrekk: AndreTrekkResponse?, fremtidigeTrekk: List<AndreTrekkResponse?>): FremtidigTrekkDto? {
+        val currentSatsperiodeTom = currentTilleggstrekk?.satsperiodeListe?.get(0)?.tom
+        val sisteFremtidigTrekkDto = fremtidigeTrekk.filter()
+        if (LocalDate.now().isBefore(currentSatsperiodeTom)) {
+            return FremtidigTrekkDto(
+                sats = 0,
+                satsType = SatsType.KRONER,
+                gyldigFraOgMed = null,
+            )
+        }
+
+        return fremtidigeTrekk.findLast { it?.satsperiodeListe?.toList()?.hasNextSatsperiode() == true }?.mapToFremtidigTrekk()
     }
 
     private fun AndreTrekkResponse.mapToTrekkDTO(): TrekkDto = TrekkDto(

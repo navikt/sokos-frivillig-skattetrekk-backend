@@ -15,12 +15,12 @@ data class FrivilligSkattetrekkData(
 )
 
 data class TrekkDto(
-    val sats: Double?,
+    val sats: Int?,
     val satsType: SatsType?
 )
 
 data class FremtidigTrekkDto(
-    val sats: Double?,
+    val sats: Int?,
     val satsType: SatsType?,
     val gyldigFraOgMed: LocalDate? = null,
 )
