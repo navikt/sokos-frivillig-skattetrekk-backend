@@ -3,6 +3,7 @@ import tokenx from "./tokenx.js";
 import dotenv from "dotenv"
 import path from "path";
 import {fileURLToPath} from "url";
+import * as bodyParser from "express";
 
 const basePath = "/utbetaling/skattetrekk";
 
@@ -18,6 +19,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const buildPath = path.resolve(__dirname, "../dist")
 app.use(basePath, express.static(buildPath));
+app.use(bodyParser.json())
 
 app.get(
      basePath + '/api/skattetrekk',
@@ -73,7 +75,7 @@ async function updateHeaders(requestHeaders) {
     const idToken = requestHeaders['authorization'].replace('Bearer', '').trim();
     let accessToken = await getTokenValue(idToken);
     let newHeaders = requestHeaders;
-    newHeaders['Content-Type'] = 'application/json';
+    newHeaders['content-type'] = 'application/json';
     newHeaders['authorization'] = 'Bearer ' + accessToken; // Override authorization header with new token
     return newHeaders
 }
