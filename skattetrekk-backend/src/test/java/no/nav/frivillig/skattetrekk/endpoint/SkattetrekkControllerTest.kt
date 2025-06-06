@@ -47,8 +47,8 @@ class SkattetrekkControllerTest(
                     tabellNr = null,
                     prosentsats = null
                 ),
-                maxBelop = 5000,
-                maxProsent = 50
+                maxBelop = 10000,
+                maxProsent = 100
             )
         )
     }

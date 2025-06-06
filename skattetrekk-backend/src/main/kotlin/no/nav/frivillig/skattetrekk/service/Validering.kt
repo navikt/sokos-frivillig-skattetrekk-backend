@@ -8,8 +8,8 @@ import no.nav.frivillig.skattetrekk.endpoint.api.FrivilligSkattetrekkType
 class Validering {
 
     companion object {
-        const val MAX_BELOP = 20000
-        const val MAX_PROSENT = 50
+        const val MAX_BELOP = 10000 // Konstanten er avklart av fag
+        const val MAX_PROSENT = 100 // Konstanten er avklart av fag
 
         fun valider(tilleggstrekk: Int, satsType: SatsType): List<FrivilligSkattetrekkMessage> {
             val valideringsListe = mutableListOf<FrivilligSkattetrekkMessage>()
