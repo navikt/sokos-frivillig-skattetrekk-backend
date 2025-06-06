@@ -18,6 +18,7 @@ class BehandleTrekkService(
 ) {
 
     private val log = LoggerFactory.getLogger(BehandleTrekkService::class.java)
+    private val ANSVARLIG_ENHET = "4819"
 
     fun behandleTrekk(pid: String, tilleggstrekk: Int, satsType: SatsType) {
 
@@ -42,14 +43,12 @@ class BehandleTrekkService(
             val trekkalternativKode = if (satsType == SatsType.KRONER)
                 TrekkalternativKode.LOPM else TrekkalternativKode.LOPP
 
-            val brukersNavEnhet = geografiskLokasjonService.hentNavEnhet(pid)
-
             log.info("Oppretter nytt frivillig skattetrekk")
             val trekkOpprettet = trekkClient.opprettAndreTrekk(
                 pid,
                 OpprettAndreTrekkRequest(
                     Kilde.PPO1.name,
-                    opprettNyttTrekkRequest(pid, tilleggstrekk, trekkalternativKode.name, brukersNavEnhet, gjelderFraOgMed)
+                    opprettNyttTrekkRequest(pid, tilleggstrekk, trekkalternativKode.name, ANSVARLIG_ENHET, gjelderFraOgMed)
                 ))
 
             return trekkOpprettet?.trekkvedtakId
