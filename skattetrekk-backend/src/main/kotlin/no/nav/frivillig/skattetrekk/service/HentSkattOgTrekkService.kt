@@ -67,7 +67,9 @@ class HentSkattOgTrekkService(
             data = FrivilligSkattetrekkData(
                 tilleggstrekk = currentTilleggstrekk?.mapToTrekkDTO(),
                 framtidigTilleggstrekk = nextTilleggstrekk,
-                skattetrekk = forenkletSkattetrekk
+                skattetrekk = forenkletSkattetrekk,
+                maxBelop = Validering.MAX_BELOP,
+                maxProsent = Validering.MAX_PROSENT,
             )
         )
     }

@@ -11,7 +11,9 @@ data class FrivilligSkattetrekkInitResponse(
 data class FrivilligSkattetrekkData(
     val tilleggstrekk: TrekkDto?,
     val framtidigTilleggstrekk: FremtidigTrekkDto?,
-    val skattetrekk: ForenkletSkattetrekkDto
+    val skattetrekk: ForenkletSkattetrekkDto,
+    val maxBelop: Int,
+    val maxProsent: Int
 )
 
 data class TrekkDto(
