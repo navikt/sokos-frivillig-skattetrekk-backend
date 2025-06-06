@@ -11,7 +11,6 @@ const browserRouter = createBrowserRouter(routes)
 
 export function App() {
 
-
     return (
         <div className="mainBody">
             <VStack gap="14" className="contentWrapper">
