@@ -19,12 +19,11 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const buildPath = path.resolve(__dirname, "../dist")
 app.use(basePath, express.static(buildPath));
-app.use(bodyParser.json())
+app.use(express.json());
 
 app.get(
      basePath + '/api/skattetrekk',
      async (req, res) => {
-
 
          const newHeaders = await updateHeaders(req.headers)
 
