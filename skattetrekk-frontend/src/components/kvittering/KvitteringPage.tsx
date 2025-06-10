@@ -81,7 +81,7 @@ export const KvitteringPage = (props: {
 
           <div style={{borderBottom: '0.5px solid black', width: '100%'}}/>
 
-          <Link href="https://www.nav.no/minside" target="_blank">Gå til Min side</Link>
+          <Link href={import.meta.env.VITE_MIN_SIDE_URL}>Gå til Min side</Link>
           <Link onClick={() => navigate(import.meta.env.BASE_URL + PageLinks.INDEX, {state: {pid: location.state.pid}})}
                 target="_blank">Endre registrert frivillig skattetrekk</Link>
       </VStack>

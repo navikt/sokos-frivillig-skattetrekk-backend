@@ -1,5 +1,6 @@
-import {createContext, useCallback, useEffect, useState} from 'react'
+import React, {createContext, useCallback, useEffect, useState} from 'react'
 import {fetchSkattetrekk, FrivilligSkattetrekkData, FrivilligSkattetrekkResponse} from "@/api/skattetrekkBackendClient";
+import {BodyShort, Box, Loader, VStack} from "@navikt/ds-react";
 
 interface DataContextValue {
     initiateResponse: FrivilligSkattetrekkResponse | null
@@ -57,7 +58,15 @@ function DataContextProvider(props: DataContextProviderProps) {
                 sendResponse,
                 setSendResponse
             }}>
-            {props.children}
+            {(initiateResponse === null) ?
+                (
+                    <Box background="bg-subtle" padding="16" borderRadius="large">
+                        <VStack align="center" gap="20">
+                            <Loader size="3xlarge" />
+                            <BodyShort align="center">{"Vent mens vi laster inn siden."}</BodyShort>
+                        </VStack>
+                    </Box>
+                ) : props.children}
         </DataContext.Provider>
     )
 }

@@ -40,6 +40,8 @@ export interface FrivilligSkattetrekkData {
     tilleggstrekk: TrekkDTO | null;
     framtidigTilleggstrekk: TrekkDTO | null;
     skattetrekk: ForenkletSkattetrekk | null;
+    maxBelop: number;
+    maxProsent: number;
 }
 
 export interface UpdateTilleggstrekkRequest {
@@ -93,7 +95,7 @@ export async function fetchSkattetrekk(): Promise<FrivilligSkattetrekkResponse> 
     )
 }
 
-export async function saveSkattetrekk(request: UpdateTilleggstrekkRequest): Promise<FrivilligSkattetrekkResponse> {
+export async function saveSkattetrekk(request: UpdateTilleggstrekkRequest) {
     const searchParams = new URLSearchParams(document.location.search)
     const pid = searchParams.get("pid")
 
@@ -117,17 +119,7 @@ export async function saveSkattetrekk(request: UpdateTilleggstrekkRequest): Prom
         }
     ).then(
         response => {
-            if (response.status >= 200 && response.status < 300) {
-                return response.json().then(data => {
-                    return data as FrivilligSkattetrekkResponse;
-                })
-            } else if (response.status == 400) {
-                return response.json().then(
-                    data => {
-                        return data.feilkode
-                    }
-                )
-            } else {
+            if (response.status >= 300 && response.status < 300) {
                 throw new Error("Fikk ikke 2xx respons fra server");
             }
         }

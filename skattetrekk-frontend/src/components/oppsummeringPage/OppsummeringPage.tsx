@@ -8,7 +8,7 @@ import {numberFormatWithKr, showPercentageOrTable, visProsentEllerBelop} from "@
 import {PageLinks} from "@/routes";
 
 export const OppsummeringPage = () => {
-    const {setSendResponse} = useContext(DataContext)
+    const {setSendResponse, initiateResponse} = useContext(DataContext)
     const [isSending, setIsSending] = useState(false)
     const navigate = useNavigate()
     const location = useLocation()
