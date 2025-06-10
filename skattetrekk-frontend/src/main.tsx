@@ -6,10 +6,8 @@ import {FormStateComponent} from "@/state/FormState";
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-      <DataContextProvider>
-          <FormStateComponent>
-            <App />
-          </FormStateComponent>
-      </DataContextProvider>
+      <FormStateComponent>
+        <App />
+      </FormStateComponent>
   </React.StrictMode>
 )

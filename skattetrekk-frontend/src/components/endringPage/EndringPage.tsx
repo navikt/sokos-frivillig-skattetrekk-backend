@@ -23,7 +23,7 @@ export const EndringPage = () => {
     const [selectorError, setSelectorError] = useState<string | null>(null)
     const [valueError, setValueError] = useState<string | null>(null)
     const navigate = useNavigate()
-    const pid = new URLSearchParams(document.location.search).get("pid")
+    const pid: string = window.history.state.pid;
 
     useEffect(() => {
         window.scrollTo(0, 0);
@@ -51,6 +51,7 @@ export const EndringPage = () => {
 
     const onChangeType = (val: SatsType) => {
         setType(val)
+        setShouldValidateForm(false)
         setValue(null)
         setSelectorError(null)
         setValueError(null)
@@ -71,12 +72,12 @@ export const EndringPage = () => {
             setValueError('Du kan ikke skrive bokstaver eller tegn')
         } else if (type === SatsType.PROSENT && numericValue === 0) {
             setValueError(`Du må oppgi et høyere beløp enn 0 %. Ønsker du å stoppe et frivilligskattetrekk? Gå tilbake og klikk på knappen “Stopp frivillig skattetrekk”.`)
-        } else if (type === SatsType.PROSENT && numericValue > 100) {
-            setValueError('Du kan maks oppgi 100 %')
+        } else if (type === SatsType.PROSENT && numericValue > initiateResponse!.data.maxProsent) {
+            setValueError(`Du kan maks oppgi ${initiateResponse!.data.maxProsent} %`)
         } else if (type === SatsType.KRONER && numericValue === 0) {
             setValueError(`Du må oppgi et høyere beløp enn 0 kr. Ønsker du å stoppe et frivilligskattetrekk? Gå tilbake og klikk på knappen “Stopp frivillig skattetrekk”.`)
-        } else if (type === SatsType.KRONER && numericValue > 99999) { //TODO PEB-1180 hent tall fra backend
-            setValueError(`Du kan maks oppgi ${numberFormatWithKr(99999)}. Vil du trekke et høyere beløp, kan du legge det inn som prosent`)
+        } else if (type === SatsType.KRONER && numericValue > initiateResponse!.data.maxBelop) {
+            setValueError(`Du kan maks oppgi ${numberFormatWithKr(initiateResponse!.data.maxBelop)}. Vil du trekke et høyere beløp, kan du legge det inn som prosent`)
         }
 
         else {
