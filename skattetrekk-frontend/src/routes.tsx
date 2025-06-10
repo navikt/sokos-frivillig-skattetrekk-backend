@@ -29,6 +29,7 @@ export const routes: RouteObject[] = [
             {
                 path: import.meta.env.BASE_URL,
                 element: <InitialPage/>,
+                loader: initSkattetrekkLoader,
                 errorElement: <Error/>
             },
             {
@@ -44,9 +45,13 @@ export const routes: RouteObject[] = [
             {
                 path: import.meta.env.BASE_URL + PageLinks.KVITTERING,
                 element: <KvitteringPage/>,
+                loader: initSkattetrekkLoader,
                 errorElement: <Error/>
             },
 
         ]
     }
 ]
+
+
+

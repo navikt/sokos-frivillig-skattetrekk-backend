@@ -40,8 +40,6 @@ export interface FrivilligSkattetrekkData {
     tilleggstrekk: TrekkDTO | null;
     framtidigTilleggstrekk: TrekkDTO | null;
     skattetrekk: ForenkletSkattetrekk | null;
-    maxBelop: number;
-    maxProsent: number;
 }
 
 export interface UpdateTilleggstrekkRequest {
