@@ -18,13 +18,13 @@ let client = await tokenx.client();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const buildPath = path.resolve(__dirname, "../dist")
-app.use(basePath, express.static(buildPath));
-app.use(bodyParser.json())
+app.use(`${basePath}/assets`, express.static(`${buildPath}/assets`));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 app.get(
      basePath + '/api/skattetrekk',
      async (req, res) => {
-
 
          const newHeaders = await updateHeaders(req.headers)
 
@@ -75,7 +75,6 @@ async function updateHeaders(requestHeaders) {
     const idToken = requestHeaders['authorization'].replace('Bearer', '').trim();
     let accessToken = await getTokenValue(idToken);
     let newHeaders = requestHeaders;
-    newHeaders['content-type'] = 'application/json';
     newHeaders['authorization'] = 'Bearer ' + accessToken; // Override authorization header with new token
     return newHeaders
 }
