@@ -19,19 +19,16 @@ class SkattetrekkController(
     fun getSkattetrekk(): FrivilligSkattetrekkInitResponse? = skattetrekkService.hentSkattetrekk(SecurityContextUtil.getPidFromContext())
 
     @PostMapping
-    fun behandleFrivilligSkattetrekk(@RequestBody request: BehandleRequest): FrivilligSkattetrekkInitResponse {
+    fun behandleFrivilligSkattetrekk(@RequestBody request: BehandleRequest) {
 
         val valideringsListe = Validering.valider(request.value, request.satsType)
-        if (valideringsListe.isNotEmpty()) {
-            return FrivilligSkattetrekkInitResponse(null, valideringsListe)
+        if (valideringsListe.isEmpty()) {
+            behandleTrekkService.behandleTrekk(
+                SecurityContextUtil.getPidFromContext(),
+                request.value,
+                request.satsType
+            )
         }
-
-        behandleTrekkService.behandleTrekk(
-            SecurityContextUtil.getPidFromContext(),
-            request.value,
-            request.satsType
-        )
-        return FrivilligSkattetrekkInitResponse(null, emptyList())
     }
 
     @ResponseStatus(value = SERVICE_UNAVAILABLE, reason = "Teknisk feil fra Oppdragssystemet, prøv igjen senere")
