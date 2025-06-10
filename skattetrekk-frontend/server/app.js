@@ -18,8 +18,9 @@ let client = await tokenx.client();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const buildPath = path.resolve(__dirname, "../dist")
-app.use(basePath, express.static(buildPath));
+app.use(`${basePath}/assets`, express.static(`${buildPath}/assets`));
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 app.get(
      basePath + '/api/skattetrekk',
