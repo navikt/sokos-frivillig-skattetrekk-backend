@@ -65,7 +65,7 @@ app.post(
         });
 
         const statuskode = response.status
-        res.status(statuskode).send(body)
+        res.status(statuskode).send()
     }
 );
 
