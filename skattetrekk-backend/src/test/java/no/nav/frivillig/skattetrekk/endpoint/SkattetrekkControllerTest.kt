@@ -32,7 +32,7 @@ class SkattetrekkControllerTest(
     fun `happy case`() {
         every { skattetrekkService.hentSkattetrekk("") } returns byggskattetrekk()
 
-        mockMvc.perform(get("/api/bankAccount?id=1"))
+        mockMvc.perform(get("/api/skattetrekk"))
             .andExpect(status().isOk)
             .andExpect(content().contentType(MediaType.APPLICATION_JSON));
     }
