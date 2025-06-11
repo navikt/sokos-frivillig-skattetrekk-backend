@@ -1,7 +1,7 @@
 package no.nav.frivillig.skattetrekk.endpoint.api
 
 data class FrivilligSkattetrekkMessage(
-    val details: FrivilligSkattetrekkMessageDetail? = null,
+    val code: FrivilligSkattetrekkMessageDetail? = null,
     val type: FrivilligSkattetrekkType,
 )
 

@@ -40,7 +40,7 @@ class HentSkattOgTrekkService(
                 null,
                 emptyList(),
                 mutableListOf(FrivilligSkattetrekkMessage(
-                    details = FrivilligSkattetrekkMessageDetail.OPPDRAG_UTILGJENGELIG,
+                    code = FrivilligSkattetrekkMessageDetail.OPPDRAG_UTILGJENGELIG,
                     type = FrivilligSkattetrekkType.INFO
                 )
             ))
@@ -57,7 +57,7 @@ class HentSkattOgTrekkService(
 
         if (nextTilleggstrekk?.sats == 0) {
             meldinger.add(FrivilligSkattetrekkMessage(
-                details = FrivilligSkattetrekkMessageDetail.OPPHØR_REGISTRERT,
+                code = FrivilligSkattetrekkMessageDetail.OPPHØR_REGISTRERT,
                 type = FrivilligSkattetrekkType.INFO
             ))
         }
