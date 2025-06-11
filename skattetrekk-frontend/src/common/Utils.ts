@@ -29,10 +29,14 @@ export function formatDateLong(value: Date): string {
 }
 
 export const parseInntekt = (s: string | null) => {
-  if (!s) return 0
+  if (s === null || s.length === 0) {
+    return 0
+  }
+
   if (s.includes('.')) {
     return NaN
   }
+
   return Number(s.replace(/\s+/g, ''))
 }
 

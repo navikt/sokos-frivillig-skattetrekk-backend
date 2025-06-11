@@ -1,29 +1,26 @@
 import {BodyLong, Button, Heading, HStack, Link, List, Radio, RadioGroup, TextField, VStack} from '@navikt/ds-react'
 import React, {useContext, useEffect, useState} from 'react'
-import {SatsType, saveSkattetrekk} from "@/api/skattetrekkBackendClient";
+import { SatsType } from "@/api/skattetrekkBackendClient";
 import {DataContext} from "@/state/DataContextProvider";
 import {numberFormatWithKr, parseInntekt} from "@/common/Utils";
 import {PageLinks} from "@/routes";
-import {FormStateContext} from "@/state/FormState";
-import {useNavigate} from "react-router-dom";
+import {SetLocationState, useLocationState} from "@/common/useLocationState";
 
 export const EndringPage = () => {
-    const {initiateResponse, setSendResponse} = useContext(DataContext)
-    const {isEligible, tilleggstrekkType, tilleggstrekkValue, setTilleggstrekkType, setTilleggstrekkValue, setIsEligible} = useContext(FormStateContext)
+    const {getResponse} = useContext(DataContext)
+    const {  tilleggstrekkType, tilleggstrekkValue, navigate } = useLocationState()
 
+    const [canContinue, setCanContinue] = useState<boolean | null>(tilleggstrekkType !== null ? true : null)
     const [type, setType] = useState<SatsType | null>(tilleggstrekkType)
-    const [value, setValue] = useState<string | null>(tilleggstrekkValue?.toString() ?? null)
+    const [value, setValue] = useState<string | null>(tilleggstrekkValue?.toString(10) ?? null)
 
     const [buttonIsLoading, setButtonIsLoading] = useState(false)
     const [pageState, setPageState] = useState<"initial" | "cannotProceed">("initial")
     const [shouldValidateForm, setShouldValidateForm] = useState(false)
 
-    const [canContinue, setCanContinue] = useState<boolean | null>(isEligible)
     const [canContinueError, setCanContinueError] = useState<string | null>(null)
-    const [selectorError, setSelectorError] = useState<string | null>(null)
+    const [typeError, setTypeError] = useState<string | null>(null)
     const [valueError, setValueError] = useState<string | null>(null)
-    const navigate = useNavigate()
-    const pid: string = window.history.state.pid;
 
     useEffect(() => {
         window.scrollTo(0, 0);
@@ -34,16 +31,11 @@ export const EndringPage = () => {
         if(validateInput()) {
             if (type !== null && value !== null) {
                 setButtonIsLoading(true)
-                setIsEligible(canContinue)
-                var tillleggstrekkValue = parseInntekt(value)
-                navigate(import.meta.env.BASE_URL + PageLinks.OPPSUMMERING, {
-                    state: {
-                        pid: pid,
-                        tilleggstrekkType: type,
-                        tilleggstrekkValue: tillleggstrekkValue,
-                        skattetrekk: initiateResponse?.data.skattetrekk!!
-                    }
-                })
+                const state: SetLocationState = { tilleggstrekkType: type, tilleggstrekkValue: parseInntekt(value) };
+                // Update the current histury entry with the state.
+                navigate(PageLinks.ENDRING, state, true)
+                // Navigate to the next page with the state.
+                navigate(PageLinks.OPPSUMMERING, state)
                 setButtonIsLoading(false)
             }
         }
@@ -51,9 +43,9 @@ export const EndringPage = () => {
 
     const onChangeType = (val: SatsType) => {
         setType(val)
-        setValue(null)
+        setValue("")
         setShouldValidateForm(false)
-        setSelectorError(null)
+        setTypeError(null)
         setValueError(null)
     }
 
@@ -62,22 +54,22 @@ export const EndringPage = () => {
 
         if(canContinue === null) {
             setCanContinueError("Du må svare på om du har en av pengestøttene på kulepunktlisten")
-        } else if (canContinue === false) {
+        } else if (!canContinue) {
             setPageState("cannotProceed")
         } else if (type === null) {
-            setSelectorError("Du må velge hvilken type frivillig skattetrekk du ønsker")
+            setTypeError("Du må velge hvilken type frivillig skattetrekk du ønsker")
         } else if (value === '' || value === null) {
             setValueError("Du må oppgi et beløp")
         } else if (isNaN(numericValue) || numericValue < 0) {
             setValueError('Du kan ikke skrive bokstaver eller tegn')
         } else if (type === SatsType.PROSENT && numericValue === 0) {
             setValueError(`Du må oppgi mer enn 0 %. For å stoppe et frivillig skattetrekk, gå tilbake og klikk på knappen Stopp frivillig skattetrekk.`)
-        } else if (type === SatsType.PROSENT && numericValue > initiateResponse!.data.maxProsent) {
-            setValueError(`Du kan maks oppgi ${initiateResponse!.data.maxProsent} %`)
+        } else if (type === SatsType.PROSENT && numericValue > getResponse!.data.maxProsent) {
+            setValueError(`Du kan maks oppgi ${getResponse!.data.maxProsent} %`)
         } else if (type === SatsType.KRONER && numericValue === 0) {
             setValueError(`Du må oppgi et høyere beløp enn 0 kr. For å stoppe et frivillig skattetrekk, gå tilbake og klikk på knappen Stopp frivillig skattetrekk.`)
-        } else if (type === SatsType.KRONER && numericValue > initiateResponse!.data.maxBelop) {
-            setValueError(`Du kan maks oppgi ${numberFormatWithKr(initiateResponse!.data.maxBelop)}. Vil du trekke et høyere beløp, kan du legge det inn som prosent`)
+        } else if (type === SatsType.KRONER && numericValue > getResponse!.data.maxBelop) {
+            setValueError(`Du kan maks oppgi ${numberFormatWithKr(getResponse!.data.maxBelop)}. Vil du trekke et høyere beløp, kan du legge det inn som prosent`)
         }
 
         else {
@@ -107,7 +99,7 @@ export const EndringPage = () => {
                         Barnepensjon
                     </Heading>
                     <BodyLong>
-                        Frivillig skatterekk på barnepensjon kan desverre ikke registreres i denne tjenesten. <Link>Her finner du informasjon om frivillig skattetrekk og barnepensjon.</Link>                      {/*    TOOD link?*/}
+                        Frivillig skatterekk på barnepensjon kan desverre ikke registreres i denne tjenesten. <Link href={import.meta.env.FRIVILLIG_SKATTETREKK_INFO_URL}>Her finner du informasjon om frivillig skattetrekk og barnepensjon.</Link>
                     </BodyLong>
                 </VStack>
 
@@ -115,7 +107,7 @@ export const EndringPage = () => {
                     <Button variant="secondary" size={"medium"} onClick={() => setPageState("initial")}>
                         Tilbake
                     </Button>
-                    <Button variant="tertiary" size={"medium"} onClick={() => navigate(import.meta.env.BASE_URL + PageLinks.INDEX, {state: {pid: pid}})}>
+                    <Button variant="tertiary" size={"medium"} onClick={() => navigate(PageLinks.INDEX)}>
                         Avbryt
                     </Button>
 
@@ -171,15 +163,13 @@ export const EndringPage = () => {
                               size={"medium"}
                               description="Skattetrekk per måned"
                               value={type}
-                              onChange={(v) => {
-                                  onChangeType(v);
-                              }}
+                              onChange={(v) => {onChangeType(v);}}
                               onBlur={() => {
                                   if (shouldValidateForm) {
                                       validateInput();
                                   }
                               }}
-                              error={selectorError}>
+                              error={typeError}>
                       <Radio value={SatsType.PROSENT} description="Trekkes fra alle utbetalinger">Prosent</Radio>
                       <Radio value={SatsType.KRONER} description= "Trekkes vanligvis fra månedens første utbetaling">Kroner per måned</Radio>
                   </RadioGroup>
@@ -193,9 +183,7 @@ export const EndringPage = () => {
                              error={valueError}
                              pattern="[\d\s]+"
                              value={value ?? ""}
-                             onChange={(v) => {
-                                 setValue(v.target.value)
-                             }}
+                             onChange={(v) => {setValue(v.target.value)}}
                              onBlur={() => {
                                  if (shouldValidateForm) {
                                      validateInput();
@@ -204,24 +192,18 @@ export const EndringPage = () => {
                              htmlSize={30}
                   />
               }
-
-
-
           <VStack gap={"4"}>
               <HStack gap="2">
-                  <Button variant="secondary" size={"medium"} onClick={() => navigate(import.meta.env.BASE_URL + PageLinks.INDEX, {state: {pid: pid}})}>
+                  <Button variant="secondary" size={"medium"} onClick={() => navigate(PageLinks.INDEX)}>
                       Tilbake
                   </Button>
                   <Button variant="primary" size={"medium"} loading={buttonIsLoading} type={"submit"}
                           onClick={onClickNext}> Neste </Button>
               </HStack>
             <HStack>
-                <Button variant="tertiary" size={"medium"} onClick={() => navigate(import.meta.env.BASE_URL + PageLinks.INDEX, {state: {pid: pid}})}> Avbryt </Button>
+                <Button variant="tertiary" size={"medium"} onClick={() => navigate(PageLinks.INDEX)}> Avbryt </Button>
             </HStack>
           </VStack>
-
-
-
       </VStack>
   )
 }

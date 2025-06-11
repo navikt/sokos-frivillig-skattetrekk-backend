@@ -1,46 +1,20 @@
-import {
-    Accordion,
-    Alert,
-    BodyLong,
-    BodyShort,
-    Box,
-    Button,
-    GuidePanel,
-    Heading,
-    HStack,
-    Link,
-    List,
-    Loader,
-    VStack
-} from "@navikt/ds-react";
-import React, {useContext, useEffect} from "react";
+import {Accordion, Alert, BodyLong, Button, GuidePanel, Heading, HStack, Link, List, VStack} from "@navikt/ds-react";
+import React, {useContext} from "react";
 import {RegistrerteSkattetrekk} from "@/components/initialPage/RegistrerteSkattetrekk";
-import {useNavigate} from "react-router-dom";
-import {MessageCode, SatsType, saveSkattetrekk} from "@/api/skattetrekkBackendClient";
+import {MessageCode} from "@/api/skattetrekkBackendClient";
 import {DataContext} from "@/state/DataContextProvider";
 import {PageLinks} from "@/routes";
 import {StopTilleggstrekkConfirmationModal} from "@/components/initialPage/StopTilleggstrekkConfirmationModal";
-import {resetFormState} from "@/state/FormState";
+import {useLocationState} from "@/common/useLocationState";
 
 export function InitialPage() {
-    const {initiateResponse} = useContext(DataContext)
-
-    const navigate = useNavigate()
-    const pid = new URLSearchParams(document.location.search).get("pid")
-
-    useEffect(() => {
-        resetFormState()
-    })
+    const {getResponse} = useContext(DataContext)
+    const { navigate } = useLocationState()
+    const pid = new URLSearchParams(document.location.search).get("pid") ?? undefined
 
     function onClickContinue() {
-        navigate(import.meta.env.BASE_URL + PageLinks.ENDRING, {
-            state: {
-                pid: pid
-            }
-        })
+        navigate(PageLinks.ENDRING, { pid, tilleggstrekkType: null, tilleggstrekkValue: null })
     }
-
-
 
     function isDecember() {
         const currentDate = new Date();
@@ -52,7 +26,7 @@ export function InitialPage() {
         return currentDate.getFullYear();
     }
 
-    if (initiateResponse?.messages?.find(message => message.code === MessageCode.SERVICE_UNAVAILABLE)) { //TODO code?
+    if (getResponse?.messages?.find(message => message.code === MessageCode.SERVICE_UNAVAILABLE)) { //TODO code?
         return (
             <VStack gap="6">
                 {guidePanel()}
@@ -90,12 +64,12 @@ export function InitialPage() {
             </VStack>
 
             <VStack gap="16">
-                {initiateResponse?.data &&
+                {getResponse?.data &&
                     <VStack gap={"4"}>
                         <Heading size={"medium"} level="2">Dine registrerte skattetrekk</Heading>
 
-                        <RegistrerteSkattetrekk skatteTrekk={initiateResponse.data.skattetrekk!} tilleggstrekk={initiateResponse.data.tilleggstrekk} framtidigTilleggstrekk={initiateResponse.data.framtidigTilleggstrekk} isDecember={isDecember()} />
-                        {initiateResponse.data.tilleggstrekk !== null && initiateResponse.data.framtidigTilleggstrekk?.sats !== 0 ?
+                        <RegistrerteSkattetrekk skatteTrekk={getResponse.data.skattetrekk!} tilleggstrekk={getResponse.data.tilleggstrekk} framtidigTilleggstrekk={getResponse.data.framtidigTilleggstrekk} isDecember={isDecember()} />
+                        {getResponse.data.tilleggstrekk !== null && getResponse.data.framtidigTilleggstrekk?.sats !== 0 ?
                             <StopTilleggstrekkConfirmationModal/>
                             : <></>
                         }
@@ -153,7 +127,7 @@ export function InitialPage() {
             </VStack>
 
             <HStack>
-                <Button variant="primary" onClick={onClickContinue}>{initiateResponse?.data?.tilleggstrekk ?
+                <Button variant="primary" onClick={onClickContinue}>{getResponse?.data?.tilleggstrekk ?
                     "Endre frivillig skattetrekk" : "Start registrering"}</Button>
             </HStack>
         </VStack>

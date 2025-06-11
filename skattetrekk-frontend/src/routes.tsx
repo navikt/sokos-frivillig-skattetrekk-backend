@@ -1,6 +1,5 @@
 import {InitialPage} from "@/components/initialPage/InitialPage";
 import {Outlet, RouteObject, useLocation} from "react-router-dom";
-import {initSkattetrekkLoader} from "@/loaders/initSkattetrekkLoader";
 import {Error} from "@/components/pageStatus/Error";
 import {KvitteringPage} from "@/components/kvittering/KvitteringPage";
 import {useEffect} from "react";

@@ -111,6 +111,8 @@ export async function saveSkattetrekk(request: UpdateTilleggstrekkRequest) {
         }
     }
 
+    console.log("Saving skattetrekk 1", request);
+
     return await fetch(BASE_URL+ "api/skattetrekk", {
             method: "POST",
             credentials: "include",
@@ -119,7 +121,9 @@ export async function saveSkattetrekk(request: UpdateTilleggstrekkRequest) {
         }
     ).then(
         response => {
-            if (response.status >= 300 && response.status < 300) {
+            console.log("Response status2");
+
+            if (response.status < 200 || response.status >= 300) {
                 throw new Error("Fikk ikke 2xx respons fra server");
             }
         }
