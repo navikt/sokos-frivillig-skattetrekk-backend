@@ -5,8 +5,10 @@ import io.mockk.mockk
 import io.mockk.verify
 import no.nav.frivillig.skattetrekk.client.trekk.TrekkClient
 import no.nav.frivillig.skattetrekk.client.trekk.api.*
+import no.nav.frivillig.skattetrekk.endpoint.ClientException
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 import java.math.BigDecimal
 import java.time.LocalDate
 import kotlin.test.assertEquals
@@ -242,7 +244,9 @@ class BehandleTrekkServiceTest {
 
         every { trekkClientMock.hentSkattOgTrekk(pid, trekkVedtakId) } returns lagHentSkattOgTrekkRespons(trekkVedtakId, emptyList())
 
-        behandleTrekkService.opphoerTrekk(pid, trekkVedtakId)
+        assertThrows<ClientException> {
+            behandleTrekkService.opphoerTrekk(pid, trekkVedtakId)
+        }
 
         verify(exactly = 0) { trekkClientMock.opphorAndreTrekk(eq(pid), any()) }
     }
@@ -326,8 +330,9 @@ class BehandleTrekkServiceTest {
                     sats = 100.0))
         )
 
-        behandleTrekkService.opphoerTrekk(pid, trekkVedtakId)
-
+        assertThrows<ClientException> {
+            behandleTrekkService.opphoerTrekk(pid, trekkVedtakId)
+        }
         verify(exactly = 0) {
             trekkClientMock.opphorAndreTrekk(
                 eq(pid),
