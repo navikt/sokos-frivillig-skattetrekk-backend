@@ -64,9 +64,8 @@ app.post(
             });
         });
 
-        const body = await response.json();
         const statuskode = response.status
-        res.status(statuskode).send(body)
+        res.status(statuskode).send()
     }
 );
 
