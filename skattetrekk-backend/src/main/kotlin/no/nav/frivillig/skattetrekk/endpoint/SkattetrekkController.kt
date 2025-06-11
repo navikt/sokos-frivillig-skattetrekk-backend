@@ -35,6 +35,10 @@ class SkattetrekkController(
     @ExceptionHandler(TekniskFeilFraOppdragException::class)
     fun tekniskFeilFraOppdrag() = Unit
 
+    @ResponseStatus(value = SERVICE_UNAVAILABLE, reason = "Oppdragsystemet er nede eller utilgjengelig")
+    @ExceptionHandler(OppdragUtilgjengeligException::class)
+    fun oppdragErNede() = Unit
+
     @ResponseStatus(value = SERVICE_UNAVAILABLE, reason = "Feil mot andre interne tjenester")
     @ExceptionHandler(ClientException::class)
     fun feilmotKlienter() = Unit

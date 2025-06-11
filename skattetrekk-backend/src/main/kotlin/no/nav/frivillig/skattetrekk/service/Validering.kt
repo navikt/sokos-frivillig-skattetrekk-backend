@@ -2,7 +2,7 @@ package no.nav.frivillig.skattetrekk.service
 
 import no.nav.frivillig.skattetrekk.client.trekk.api.SatsType
 import no.nav.frivillig.skattetrekk.endpoint.api.FrivilligSkattetrekkMessage
-import no.nav.frivillig.skattetrekk.endpoint.api.FrivilligSkattetrekkMessageDetail
+import no.nav.frivillig.skattetrekk.endpoint.api.FrivilligSkattetrekkMessageCode
 import no.nav.frivillig.skattetrekk.endpoint.api.FrivilligSkattetrekkType
 
 class Validering {
@@ -17,7 +17,7 @@ class Validering {
                 if (tilleggstrekk > MAX_BELOP) {
                     valideringsListe.add(
                         FrivilligSkattetrekkMessage(
-                            details = FrivilligSkattetrekkMessageDetail.MAX_BELOP_OVERSTEGET,
+                            code = FrivilligSkattetrekkMessageCode.MAX_BELOP_OVERSTEGET,
                             type = FrivilligSkattetrekkType.ERROR
                         )
                     )
@@ -25,7 +25,7 @@ class Validering {
                 if (tilleggstrekk < 0) {
                     valideringsListe.add(
                         FrivilligSkattetrekkMessage(
-                            details = FrivilligSkattetrekkMessageDetail.MIN_BELOP,
+                            code = FrivilligSkattetrekkMessageCode.MIN_BELOP,
                             type = FrivilligSkattetrekkType.ERROR
                         )
                     )
@@ -34,7 +34,7 @@ class Validering {
                 if (tilleggstrekk > MAX_PROSENT) {
                     valideringsListe.add(
                         FrivilligSkattetrekkMessage(
-                            details = FrivilligSkattetrekkMessageDetail.MAX_PROSENT_OVERSTEGET,
+                            code = FrivilligSkattetrekkMessageCode.MAX_PROSENT_OVERSTEGET,
                             type = FrivilligSkattetrekkType.ERROR
                         )
                     )
@@ -42,7 +42,7 @@ class Validering {
                 if (tilleggstrekk < 0) {
                     valideringsListe.add(
                         FrivilligSkattetrekkMessage(
-                            details = FrivilligSkattetrekkMessageDetail.MIN_PROSENT,
+                            code = FrivilligSkattetrekkMessageCode.MIN_PROSENT,
                             type = FrivilligSkattetrekkType.ERROR
                         )
                     )
