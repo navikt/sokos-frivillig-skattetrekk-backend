@@ -28,7 +28,13 @@ class BehandleTrekkService(
             finnTrekkListe.forEach { if (it.trekkvedtakId != null) opphoerTrekk(pid, it.trekkvedtakId) }
         } else if (finnTrekkListe.isNotEmpty() && tilleggstrekk > 0) {
             // finnTrekkListe.forEach { if (it.trekkvedtakId != null) oppdaterTrekk(pid, it.trekkvedtakId, tilleggstrekk, satsType) } // Denne fungerer ikke før øyeblikket
-            finnTrekkListe.forEach { if (it.trekkvedtakId != null) opphoerTrekk(pid, it.trekkvedtakId) }
+            try {
+                finnTrekkListe.forEach { if (it.trekkvedtakId != null) opphoerTrekk(pid, it.trekkvedtakId) }
+            } catch (e: ClientException) {
+                log.error("Kunne ikke oppdatere trekk, opphører eksisterende trekk istedenfor", e)
+                throw e;
+            }
+
             opprettTrekk(pid, tilleggstrekk, satsType, LocalDate.now().plusMonths(1L).withDayOfMonth(1))
         } else {
             opprettTrekk(pid, tilleggstrekk, satsType, LocalDate.now().withDayOfMonth(1))
@@ -104,6 +110,13 @@ class BehandleTrekkService(
         if (opphorDato != null) {
             log.info("Opphører løpende trekk")
             opphorTrekk(pid, trekkvedtakId, opphorDato)
+        } else {
+            throw ClientException(
+                message = "Kunne ikke utlede opphørsdato.",
+                cause = null,
+                system = "Oppdrag",
+                service = "BehandleTrekkService"
+            )
         }
     }
 
