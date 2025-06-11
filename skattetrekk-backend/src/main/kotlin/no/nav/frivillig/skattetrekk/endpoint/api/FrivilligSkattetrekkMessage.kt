@@ -1,11 +1,11 @@
 package no.nav.frivillig.skattetrekk.endpoint.api
 
 data class FrivilligSkattetrekkMessage(
-    val code: FrivilligSkattetrekkMessageDetail? = null,
+    val code: FrivilligSkattetrekkMessageCode? = null,
     val type: FrivilligSkattetrekkType,
 )
 
-enum class FrivilligSkattetrekkMessageDetail(val message: String) {
+enum class FrivilligSkattetrekkMessageCode(val message: String) {
     OPPDRAG_UTILGJENGELIG("Oppdragssystemet er nede eller utilgjengelig"),
     MAX_BELOP_OVERSTEGET("Maksimalt beløp for frivillig skattetrekk er 1000 kr"),
     MAX_PROSENT_OVERSTEGET("Maksimalt prosent for frivillig skattetrekk er 50%"),
