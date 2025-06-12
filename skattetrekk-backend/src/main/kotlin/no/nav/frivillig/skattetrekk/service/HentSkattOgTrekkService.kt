@@ -21,7 +21,6 @@ class HentSkattOgTrekkService(
     private val log = LoggerFactory.getLogger(HentSkattOgTrekkService::class.java)
 
     val TREKK_KODE_LOPP: String = "LOPP" // Prosenttrekk
-    val IsoDateFormatter = SimpleDateFormat("yyyy-MM-dd")
 
     fun hentSkattetrekk(pid: String): FrivilligSkattetrekkInitResponse? {
 
@@ -53,6 +52,7 @@ class HentSkattOgTrekkService(
         val currentTilleggstrekk = tilleggstrekkListe.find { it?.satsperiodeListe?.toList()?.findRunningSatsperiode() == true }
         val fremtidigeTrekk = tilleggstrekkListe.filter { it?.satsperiodeListe?.toList()?.hasNextSatsperiode() == true }
 
+        val currentTrekkDto = toThisTrekkDto(currentTilleggstrekk)
         val nextTilleggstrekk = findNextTilleggstrekk(currentTilleggstrekk, fremtidigeTrekk)
 
         if (nextTilleggstrekk?.sats == 0) {
@@ -65,7 +65,7 @@ class HentSkattOgTrekkService(
         return FrivilligSkattetrekkInitResponse(
             messages = meldinger,
             data = FrivilligSkattetrekkData(
-                tilleggstrekk = currentTilleggstrekk?.mapToTrekkDTO(),
+                tilleggstrekk = currentTrekkDto,
                 framtidigTilleggstrekk = nextTilleggstrekk,
                 skattetrekk = forenkletSkattetrekk,
                 maxBelop = Validering.MAX_BELOP,
@@ -74,8 +74,18 @@ class HentSkattOgTrekkService(
         )
     }
 
+    private fun toThisTrekkDto(currentTilleggstrekk: AndreTrekkResponse?): TrekkDto? {
+        val currentSatsperiode =
+            currentTilleggstrekk?.satsperiodeListe?.firstOrNull { isDateInPeriod(LocalDate.now(), it.fom, it.tom) }
+        return TrekkDto(
+            sats = currentSatsperiode?.sats?.toInt(),
+            satsType = currentTilleggstrekk?.trekkalternativ?.kode?.let { if (it == TREKK_KODE_LOPP) SatsType.PROSENT else SatsType.KRONER }
+        )
+    }
+
     private fun findNextTilleggstrekk(currentTilleggstrekk: AndreTrekkResponse?, fremtidigeTrekk: List<AndreTrekkResponse?>): FremtidigTrekkDto? {
-        val currentSatsperiodeTom = currentTilleggstrekk?.satsperiodeListe?.get(0)?.tom
+        val currentSatsperiodeTom =
+            currentTilleggstrekk?.satsperiodeListe?.firstOrNull { isDateInPeriod(LocalDate.now(), it.fom, it.tom) }?.tom
         val ingenFremtidigeTrekk = fremtidigeTrekk.isEmpty()
         val nestMaaned = LocalDate.now().plusMonths(1L).withDayOfMonth(1)
         if (
@@ -92,11 +102,6 @@ class HentSkattOgTrekkService(
 
         return fremtidigeTrekk.findLast { it?.satsperiodeListe?.toList()?.hasNextSatsperiode() == true }?.mapToFremtidigTrekk()
     }
-
-    private fun AndreTrekkResponse.mapToTrekkDTO(): TrekkDto = TrekkDto(
-        sats = this.satsperiodeListe?.first()?.sats?.toInt(),
-        satsType = this.trekkalternativ?.kode?.let { if (it == TREKK_KODE_LOPP) SatsType.PROSENT else SatsType.KRONER }
-    )
 
     private fun AndreTrekkResponse.mapToFremtidigTrekk(): FremtidigTrekkDto = FremtidigTrekkDto(
         sats = this.satsperiodeListe?.first()?.sats?.toInt(),
@@ -116,7 +121,7 @@ class HentSkattOgTrekkService(
         return ForenkletSkattetrekkDto( null, null)
     }
 
-    private fun List<Satsperiode>.findRunningSatsperiode() = this.find { isDateInPeriod(Date(), IsoDateFormatter.parse(it.fom.toString()), IsoDateFormatter.parse(it.tom.toString())) } != null
+    private fun List<Satsperiode>.findRunningSatsperiode() = this.find { isDateInPeriod(LocalDate.now(), it.fom, it.tom) } != null
     private fun List<Satsperiode>.hasNextSatsperiode() = this.find { isStartingFirstOfNextMonth(it) } != null
 
     private fun isStartingFirstOfNextMonth(satsperiode: Satsperiode): Boolean = if (satsperiode.erFeilregistrert == null || !satsperiode.erFeilregistrert) {

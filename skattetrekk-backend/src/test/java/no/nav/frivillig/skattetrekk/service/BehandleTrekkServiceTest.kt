@@ -435,7 +435,7 @@ class BehandleTrekkServiceTest {
             sats = 200.0
         )
 
-        val oppdaterteSatsperioderListe = behandleTrekkService.oppdaterSatsperioder(eksisterendeListe, nySatsperiode)
+        val oppdaterteSatsperioderListe = behandleTrekkService.oppdaterSatsperioder(LocalDate.now(), eksisterendeListe, nySatsperiode)
 
         assertEquals(4, oppdaterteSatsperioderListe.size)
         assertEquals(LocalDate.parse("2025-04-30"), oppdaterteSatsperioderListe[2].tom)
@@ -457,7 +457,7 @@ class BehandleTrekkServiceTest {
             sats = 200.0
         )
 
-        val oppdaterteSatsperioderListe = behandleTrekkService.oppdaterSatsperioder(eksisterendeListe, nySatsperiode)
+        val oppdaterteSatsperioderListe = behandleTrekkService.oppdaterSatsperioder(LocalDate.now(), eksisterendeListe, nySatsperiode)
 
         assertEquals(4, oppdaterteSatsperioderListe.size)
         assertEquals(LocalDate.parse("2025-04-30"), oppdaterteSatsperioderListe[2].tom)
@@ -479,7 +479,7 @@ class BehandleTrekkServiceTest {
             sats = 200.0
         )
 
-        val oppdaterteSatsperioderListe = behandleTrekkService.oppdaterSatsperioder(eksisterendeListe, nySatsperiode)
+        val oppdaterteSatsperioderListe = behandleTrekkService.oppdaterSatsperioder(LocalDate.now(), eksisterendeListe, nySatsperiode)
 
         assertEquals(4, oppdaterteSatsperioderListe.size)
         assertEquals(LocalDate.parse("2025-04-30"), oppdaterteSatsperioderListe[1].tom)
@@ -501,7 +501,7 @@ class BehandleTrekkServiceTest {
             sats = 3.0
         )
 
-        val oppdaterteSatsperioderListe = behandleTrekkService.oppdaterSatsperioder(eksisterendeListe, nySatsperiode)
+        val oppdaterteSatsperioderListe = behandleTrekkService.oppdaterSatsperioder(LocalDate.now(),eksisterendeListe, nySatsperiode)
 
         assertEquals(2, oppdaterteSatsperioderListe.size)
         assertEquals(LocalDate.parse("2025-05-01"), oppdaterteSatsperioderListe[1].fom)
@@ -534,10 +534,10 @@ class BehandleTrekkServiceTest {
             gyldigTom = null,
             ansvarligEnhetId = null,
             sporing = null,
-            fagomradeListe = listOf(Fagomrade(
-                trekkgruppeKode = "PENA",
-                fagomradeKode = "PENA",
-                erFeilregistrert = false
+            fagomradeListe = listOf(FagomradeResponse(
+                kode = "PENA",
+                dekode = "PENA",
+                sporing = null
             )),
             satsperiodeListe = satsperiodeListe
         )

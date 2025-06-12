@@ -1,7 +1,7 @@
 package no.nav.frivillig.skattetrekk.util
 
-import java.util.*
+import java.time.LocalDate
 
-fun isDateInPeriod(compDate: Date?, fomDate: Date?, tomDate: Date?): Boolean {
-    return (fomDate == null || compDate!!.compareTo(fomDate) >= 0) && (tomDate == null || compDate!!.compareTo(tomDate) <= 0) // todo I dont know if this is correct
+fun isDateInPeriod(compDate: LocalDate, fomDate: LocalDate?, tomDate: LocalDate?): Boolean {
+    return (fomDate == null || !compDate.isBefore(fomDate)) && (tomDate == null || !compDate.isAfter(tomDate))
 }

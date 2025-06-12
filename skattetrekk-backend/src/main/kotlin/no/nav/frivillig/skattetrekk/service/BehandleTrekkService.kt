@@ -27,7 +27,8 @@ class BehandleTrekkService(
         if (finnTrekkListe.isNotEmpty() && tilleggstrekk == 0) {
             finnTrekkListe.forEach { if (it.trekkvedtakId != null) opphoerTrekk(pid, it.trekkvedtakId) }
         } else if (finnTrekkListe.isNotEmpty() && tilleggstrekk > 0) {
-            // finnTrekkListe.forEach { if (it.trekkvedtakId != null) oppdaterTrekk(pid, it.trekkvedtakId, tilleggstrekk, satsType) } // Denne fungerer ikke før øyeblikket
+            finnTrekkListe.forEach { if (it.trekkvedtakId != null) oppdaterTrekk(pid, it.trekkvedtakId, tilleggstrekk, satsType) } // Denne fungerer ikke før øyeblikket
+            /*
             try {
                 finnTrekkListe.forEach { if (it.trekkvedtakId != null) opphoerTrekk(pid, it.trekkvedtakId) }
             } catch (e: ClientException) {
@@ -36,6 +37,7 @@ class BehandleTrekkService(
             }
 
             opprettTrekk(pid, tilleggstrekk, satsType, LocalDate.now().plusMonths(1L).withDayOfMonth(1))
+             */
         } else {
             opprettTrekk(pid, tilleggstrekk, satsType, LocalDate.now().withDayOfMonth(1))
         }
@@ -70,7 +72,7 @@ class BehandleTrekkService(
         if (andreTrekkResponse != null) {
             val sorterteSatsperioder = andreTrekkResponse.satsperiodeListe?.sortedBy { it.fom } ?: emptyList()
             val nySatsperiode = opprettStatsperiode(tilleggstrekk, LocalDate.now().plusMonths(1).withDayOfMonth(1))
-            val oppdaterteSatsperioder = oppdaterSatsperioder(sorterteSatsperioder, nySatsperiode)
+            val oppdaterteSatsperioder = oppdaterSatsperioder(LocalDate.now(), sorterteSatsperioder, nySatsperiode)
 
             val andreTrekkRequest = AndreTrekkRequest(
                 ansvarligEnhetId = andreTrekkResponse.ansvarligEnhetId!!,
@@ -85,7 +87,7 @@ class BehandleTrekkService(
                 kreditorRef = andreTrekkResponse.kreditorRef,
                 prioritetFom = andreTrekkResponse.prioritetFom,
                 satsperiodeListe = oppdaterteSatsperioder,
-                fagomradeListe = andreTrekkResponse.fagomradeListe,
+                fagomradeListe = andreTrekkResponse.fagomradeListe?.map { Fagomrade(null, it.kode, null) },
             )
 
             val oppdaterAndreTrekkRequest = OppdaterAndreTrekkRequest(
@@ -186,11 +188,11 @@ class BehandleTrekkService(
         )
     }
 
-    fun oppdaterSatsperioder(eksisterendeSatsperioder: List<Satsperiode>, nySatsperiode: Satsperiode): List<Satsperiode> {
+    fun oppdaterSatsperioder(today: LocalDate, eksisterendeSatsperioder: List<Satsperiode>, nySatsperiode: Satsperiode): List<Satsperiode> {
         val oppdaterSatsperioder = eksisterendeSatsperioder.toMutableList()
 
         eksisterendeSatsperioder.forEach {
-            if (isFremtidig(nySatsperiode.fom!!,it)) {
+            if (isFremtidig(today,it)) {
                 oppdaterSatsperioder.remove(it) // Fjerner fremtidig satsperiode
             } else if (it.tom == null || it.tom.isAfter(nySatsperiode.fom)) {
                 oppdaterSatsperioder.remove(it) // Fjerner løpende satsperiode, da den oppdateres med ny
