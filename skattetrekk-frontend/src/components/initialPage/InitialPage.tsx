@@ -26,7 +26,7 @@ export function InitialPage() {
         return currentDate.getFullYear();
     }
 
-    if (getResponse?.messages?.find(message => message.code === MessageCode.SERVICE_UNAVAILABLE)) { //TODO code?
+    if (getResponse?.messages?.find(message => message.code === MessageCode.OPPDRAG_UTILGJENGELIG)) {
         return (
             <VStack gap="6">
                 {guidePanel()}

@@ -27,8 +27,8 @@ export enum MessageType {
     INFO
 }
 
-export enum MessageCode { //TODO these codes are placeholders. Check with backend for real codes
-    SERVICE_UNAVAILABLE
+export enum MessageCode {
+    OPPDRAG_UTILGJENGELIG
 }
 
 export interface FrivilligSkattetrekkResponse {
