@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service
 import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.util.*
-import kotlin.Double
 
 @Service
 class HentSkattOgTrekkService(
@@ -66,7 +65,7 @@ class HentSkattOgTrekkService(
             messages = meldinger,
             data = FrivilligSkattetrekkData(
                 tilleggstrekk = currentTilleggstrekk?.mapToTrekkDTO(),
-                framtidigTilleggstrekk = nextTilleggstrekk,
+                fremtidigTilleggstrekk = nextTilleggstrekk,
                 skattetrekk = forenkletSkattetrekk,
                 maxBelop = Validering.MAX_BELOP,
                 maxProsent = Validering.MAX_PROSENT,
