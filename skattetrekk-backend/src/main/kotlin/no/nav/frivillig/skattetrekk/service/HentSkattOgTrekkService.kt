@@ -100,13 +100,13 @@ class HentSkattOgTrekkService(
             )
         }
 
-        return fremtidigeTrekk.findLast { it?.satsperiodeListe?.toList()?.hasNextSatsperiode() == true }?.mapToFremtidigTrekk()
+        return fremtidigeTrekk.find { it?.satsperiodeListe?.toList()?.hasNextSatsperiode() == true }?.mapToFremtidigTrekk(nesteMaaned)
     }
 
-    private fun AndreTrekkResponse.mapToFremtidigTrekk(): FremtidigTrekkDto = FremtidigTrekkDto(
-        sats = this.satsperiodeListe?.first()?.sats?.toInt(),
+    private fun AndreTrekkResponse.mapToFremtidigTrekk(nesteMaaned: LocalDate): FremtidigTrekkDto = FremtidigTrekkDto(
+        sats = this.satsperiodeListe?.find { isStartingFirstOfNextMonth(it) }?.sats?.toInt(),
         satsType = this.trekkalternativ?.kode?.let { if (it == TREKK_KODE_LOPP) SatsType.PROSENT else SatsType.KRONER },
-        gyldigFraOgMed = this.satsperiodeListe?.sortedByDescending { it.fom }?.last()?.fom,
+        gyldigFraOgMed = nesteMaaned
     )
 
 
