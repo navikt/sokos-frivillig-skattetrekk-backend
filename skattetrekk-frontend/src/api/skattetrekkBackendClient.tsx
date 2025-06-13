@@ -38,7 +38,7 @@ export interface FrivilligSkattetrekkResponse {
 
 export interface FrivilligSkattetrekkData {
     tilleggstrekk: TrekkDTO | null;
-    framtidigTilleggstrekk: TrekkDTO | null;
+    fremtidigTilleggstrekk: TrekkDTO | null;
     skattetrekk: ForenkletSkattetrekk | null;
     maxBelop: number;
     maxProsent: number;

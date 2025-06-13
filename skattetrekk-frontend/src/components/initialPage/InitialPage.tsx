@@ -68,8 +68,8 @@ export function InitialPage() {
                     <VStack gap={"4"}>
                         <Heading size={"medium"} level="2">Dine registrerte skattetrekk</Heading>
 
-                        <RegistrerteSkattetrekk skatteTrekk={getResponse.data.skattetrekk!} tilleggstrekk={getResponse.data.tilleggstrekk} framtidigTilleggstrekk={getResponse.data.framtidigTilleggstrekk} isDecember={isDecember()} />
-                        {getResponse.data.tilleggstrekk !== null && getResponse.data.framtidigTilleggstrekk?.sats !== 0 ?
+                        <RegistrerteSkattetrekk skatteTrekk={getResponse.data.skattetrekk!} tilleggstrekk={getResponse.data.tilleggstrekk} fremtidigTilleggstrekk={getResponse.data.fremtidigTilleggstrekk} isDecember={isDecember()} />
+                        {getResponse.data.tilleggstrekk !== null && getResponse.data.fremtidigTilleggstrekk?.sats !== 0 ?
                             <StopTilleggstrekkConfirmationModal/>
                             : <></>
                         }
