@@ -27,19 +27,26 @@ class BehandleTrekkService(
         if (finnTrekkListe.isNotEmpty() && tilleggstrekk == 0) {
             finnTrekkListe.forEach { if (it.trekkvedtakId != null) opphoerTrekk(pid, it.trekkvedtakId) }
         } else if (finnTrekkListe.isNotEmpty() && tilleggstrekk > 0) {
-            finnTrekkListe.forEach { if (it.trekkvedtakId != null) oppdaterTrekk(pid, it.trekkvedtakId, tilleggstrekk, satsType) } // Denne fungerer ikke før øyeblikket
-            /*
-            try {
-                finnTrekkListe.forEach { if (it.trekkvedtakId != null) opphoerTrekk(pid, it.trekkvedtakId) }
-            } catch (e: ClientException) {
-                log.error("Kunne ikke oppdatere trekk, opphører eksisterende trekk istedenfor", e)
-                throw e;
+            finnTrekkListe.forEach {
+                if (it.trekkvedtakId != null) {
+                    if (skalOppdatereSammeTrekkType(satsType, TrekkalternativKode.valueOf(it.trekkalternativ?.kode!!))) {
+                        oppdaterTrekk(pid, it.trekkvedtakId, tilleggstrekk, satsType)
+                    } else {
+                        log.info("Forskjellig trekktype medfører opphør eksisterende/fremtidig trekk og oppretter nytt trekk med nytt tilleggstrekk")
+                        opphoerTrekk(pid, it.trekkvedtakId)
+                        opprettTrekk(pid, tilleggstrekk, satsType, LocalDate.now().plusMonths(1L).withDayOfMonth(1))
+                    }
+                }
             }
-
-            opprettTrekk(pid, tilleggstrekk, satsType, LocalDate.now().plusMonths(1L).withDayOfMonth(1))
-             */
         } else {
             opprettTrekk(pid, tilleggstrekk, satsType, LocalDate.now().withDayOfMonth(1))
+        }
+    }
+
+    private fun skalOppdatereSammeTrekkType(satsType: SatsType, trekkalternativKode: TrekkalternativKode): Boolean {
+        return when (satsType) {
+            SatsType.KRONER -> trekkalternativKode == TrekkalternativKode.LOPM
+            SatsType.PROSENT -> trekkalternativKode == TrekkalternativKode.LOPP
         }
     }
 
@@ -108,9 +115,7 @@ class BehandleTrekkService(
         val fremtidigeSatsperioder = sorterteSatsperioder.filter { isFremtidig(LocalDate.now(), it) }
 
         val opphorDato = utledOpphorsdato(lopendeSatsperioder, fremtidigeSatsperioder)
-        // Opphør løpende trekk, om det finnes
         if (opphorDato != null) {
-            log.info("Opphører løpende trekk")
             opphorTrekk(pid, trekkvedtakId, opphorDato)
         } else {
             throw ClientException(
