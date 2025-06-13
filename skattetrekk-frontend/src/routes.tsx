@@ -1,6 +1,6 @@
 import {InitialPage} from "@/components/initialPage/InitialPage";
 import {Outlet, RouteObject, useLocation} from "react-router-dom";
-import {Error} from "@/components/pageStatus/Error";
+import {ErrorMessage} from "@/components/pageStatus/ErrorMessage";
 import {KvitteringPage} from "@/components/kvittering/KvitteringPage";
 import {useEffect} from "react";
 import {OppsummeringPage} from "@/components/oppsummeringPage/OppsummeringPage";
@@ -28,22 +28,22 @@ export const routes: RouteObject[] = [
             {
                 path: import.meta.env.BASE_URL,
                 element: <InitialPage/>,
-                errorElement: <Error/>
+                errorElement: <ErrorMessage/>
             },
             {
                 path: import.meta.env.BASE_URL + PageLinks.ENDRING,
                 element: <EndringPage/>,
-                errorElement: <Error/>
+                errorElement: <ErrorMessage/>
             },
             {
                 path: import.meta.env.BASE_URL + PageLinks.OPPSUMMERING,
                 element: <OppsummeringPage/>,
-                errorElement: <Error/>
+                errorElement: <ErrorMessage/>
             },
             {
                 path: import.meta.env.BASE_URL + PageLinks.KVITTERING,
                 element: <KvitteringPage/>,
-                errorElement: <Error/>
+                errorElement: <ErrorMessage/>
             },
 
         ]

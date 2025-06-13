@@ -38,7 +38,7 @@ export interface FrivilligSkattetrekkResponse {
 
 export interface FrivilligSkattetrekkData {
     tilleggstrekk: TrekkDTO | null;
-    framtidigTilleggstrekk: TrekkDTO | null;
+    fremtidigTilleggstrekk: TrekkDTO | null;
     skattetrekk: ForenkletSkattetrekk | null;
     maxBelop: number;
     maxProsent: number;
@@ -121,8 +121,6 @@ export async function saveSkattetrekk(request: UpdateTilleggstrekkRequest) {
         }
     ).then(
         response => {
-            console.log("Response status2");
-
             if (response.status < 200 || response.status >= 300) {
                 throw new Error("Fikk ikke 2xx respons fra server");
             }

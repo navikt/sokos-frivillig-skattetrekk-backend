@@ -27,7 +27,7 @@ app.get('/utbetaling/skattetrekk/api/skattetrekk', (req, res) => {
 
 app.post('/utbetaling/skattetrekk/api/skattetrekk', (req, res) => {
     console.log("Kjører send");
-    res.send()
+    res.status(503).send()
 })
 
 

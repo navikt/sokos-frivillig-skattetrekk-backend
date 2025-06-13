@@ -40,9 +40,9 @@ export const KvitteringPage = () => {
           <Alert variant="success">
               <VStack gap="3">
                   <Heading level="3" size="small">
-                      {getResponse.data.framtidigTilleggstrekk?.satsType === SatsType.PROSENT ?
-                          `Frivillig skattetrekk på ${getResponse.data.framtidigTilleggstrekk?.sats} % registrert` :
-                          `Frivillig skattetrekk på ${numberFormatWithKr(getResponse.data.framtidigTilleggstrekk?.sats ?? 0)} per måned registrert`}
+                      {getResponse.data.fremtidigTilleggstrekk?.satsType === SatsType.PROSENT ?
+                          `Frivillig skattetrekk på ${getResponse.data.fremtidigTilleggstrekk?.sats} % registrert` :
+                          `Frivillig skattetrekk på ${numberFormatWithKr(getResponse.data.fremtidigTilleggstrekk?.sats ?? 0)} per måned registrert`}
                   </Heading>
                   <BodyLong>
                       Skattetrekket gjelder ut året.
