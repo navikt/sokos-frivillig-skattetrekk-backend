@@ -87,11 +87,11 @@ class HentSkattOgTrekkService(
         val currentSatsperiodeTom =
             currentTilleggstrekk?.satsperiodeListe?.firstOrNull { isDateInPeriod(LocalDate.now(), it.fom, it.tom) }?.tom
         val ingenFremtidigeTrekk = fremtidigeTrekk.isEmpty()
-        val nestMaaned = LocalDate.now().plusMonths(1L).withDayOfMonth(1)
+        val nesteMaaned = LocalDate.now().plusMonths(1L).withDayOfMonth(1)
         if (
             currentSatsperiodeTom != null && // Sjekk at det finnes en gyldig satsperiode
             (LocalDate.now() == currentSatsperiodeTom || LocalDate.now().isBefore(currentSatsperiodeTom))
-            && nestMaaned.isAfter(currentSatsperiodeTom) && ingenFremtidigeTrekk
+            && nesteMaaned.isAfter(currentSatsperiodeTom) && ingenFremtidigeTrekk
         ) {
             return FremtidigTrekkDto(
                 sats = 0,
