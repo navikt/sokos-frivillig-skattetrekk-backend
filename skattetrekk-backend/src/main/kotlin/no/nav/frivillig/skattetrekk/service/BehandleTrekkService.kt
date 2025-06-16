@@ -105,19 +105,10 @@ class BehandleTrekkService(
         val lopendeSatsperioder = sorterteSatsperioder.filter { isLopende(it) }
         val fremtidigeSatsperioder = sorterteSatsperioder.filter { isFremtidig(LocalDate.now(), it) }
 
-        val opphorDato = utledOpphorsdato(lopendeSatsperioder, fremtidigeSatsperioder)
+        val opphorDato = LocalDate.now().plusMonths(1L).withDayOfMonth(1)
         // Opphør løpende trekk, om det finnes
-        if (opphorDato != null) {
-            log.info("Opphører løpende trekk")
-            opphorTrekk(pid, trekkvedtakId, opphorDato)
-        } else {
-            throw ClientException(
-                message = "Kunne ikke utlede opphørsdato.",
-                cause = null,
-                system = "Oppdrag",
-                service = "BehandleTrekkService"
-            )
-        }
+        log.info("Opphører løpende trekk")
+        opphorTrekk(pid, trekkvedtakId, opphorDato)
     }
 
     private fun skalOppretteNyttTrekk(tilleggstrekk: Int, andreTrekk: AndreTrekkResponse?): Boolean {
@@ -148,26 +139,6 @@ class BehandleTrekkService(
             ),
             satsperiodeListe = listOf(opprettStatsperiode(tilleggstrekk, trekkGjelderFraOgMed)),
         )
-
-    fun utledOpphorsdato(lopendeSatsperioder: List<Satsperiode>, fremtidigeSatsperioder: List<Satsperiode>): LocalDate? {
-
-        if (lopendeSatsperioder.isEmpty() && fremtidigeSatsperioder.isEmpty()) {
-            return null
-        }
-
-        val forsteDagNesteMaaned = LocalDate.now().plusMonths(1L).withDayOfMonth(1)
-
-        if(lopendeSatsperioder.isNotEmpty()) {
-            val aapenPeriodeFinnes = lopendeSatsperioder.find { it.tom == null || forsteDagNesteMaaned.isBefore(it.tom ) }
-            return if (aapenPeriodeFinnes != null) forsteDagNesteMaaned else null
-        }
-
-        if (fremtidigeSatsperioder.isNotEmpty()) {
-            return fremtidigeSatsperioder.map { it.fom }.sortedByDescending { it }.first()
-        }
-
-        return forsteDagNesteMaaned
-    }
 
     fun opprettStatsperiode(tilleggstrekk: Int, gjelderFom: LocalDate): Satsperiode {
         val sisteDagDetteAret = LocalDate.of(gjelderFom.year, 12, 31)
