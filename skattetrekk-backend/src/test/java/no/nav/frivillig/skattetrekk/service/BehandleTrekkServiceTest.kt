@@ -428,7 +428,7 @@ class BehandleTrekkServiceTest {
             sats = 200.0
         )
 
-        val oppdaterteSatsperioderListe = behandleTrekkService.oppdaterSatsperioder(eksisterendeListe, nySatsperiode)
+        val oppdaterteSatsperioderListe = behandleTrekkService.oppdaterSatsperioder(LocalDate.now(), eksisterendeListe, nySatsperiode)
 
         assertEquals(4, oppdaterteSatsperioderListe.size)
         assertEquals(LocalDate.parse("2025-04-30"), oppdaterteSatsperioderListe[2].tom)
@@ -450,7 +450,7 @@ class BehandleTrekkServiceTest {
             sats = 200.0
         )
 
-        val oppdaterteSatsperioderListe = behandleTrekkService.oppdaterSatsperioder(eksisterendeListe, nySatsperiode)
+        val oppdaterteSatsperioderListe = behandleTrekkService.oppdaterSatsperioder(LocalDate.now(), eksisterendeListe, nySatsperiode)
 
         assertEquals(4, oppdaterteSatsperioderListe.size)
         assertEquals(LocalDate.parse("2025-04-30"), oppdaterteSatsperioderListe[2].tom)
@@ -472,7 +472,7 @@ class BehandleTrekkServiceTest {
             sats = 200.0
         )
 
-        val oppdaterteSatsperioderListe = behandleTrekkService.oppdaterSatsperioder(eksisterendeListe, nySatsperiode)
+        val oppdaterteSatsperioderListe = behandleTrekkService.oppdaterSatsperioder(LocalDate.now(), eksisterendeListe, nySatsperiode)
 
         assertEquals(4, oppdaterteSatsperioderListe.size)
         assertEquals(LocalDate.parse("2025-04-30"), oppdaterteSatsperioderListe[1].tom)
@@ -489,16 +489,18 @@ class BehandleTrekkServiceTest {
         )
 
         val nySatsperiode = lagSatsperiode(
-            fom = LocalDate.parse("2025-05-01"),
+            fom = LocalDate.parse("2025-07-01"),
             tom = LocalDate.parse("2025-12-31"),
             sats = 3.0
         )
 
-        val oppdaterteSatsperioderListe = behandleTrekkService.oppdaterSatsperioder(eksisterendeListe, nySatsperiode)
+        val oppdaterteSatsperioderListe = behandleTrekkService.oppdaterSatsperioder(LocalDate.parse("2025-06-16"),eksisterendeListe, nySatsperiode)
 
-        assertEquals(2, oppdaterteSatsperioderListe.size)
-        assertEquals(LocalDate.parse("2025-05-01"), oppdaterteSatsperioderListe[1].fom)
-        assertEquals(LocalDate.parse("2025-12-31"), oppdaterteSatsperioderListe[1].tom)
+        assertEquals(3, oppdaterteSatsperioderListe.size)
+        assertEquals(LocalDate.parse("2025-06-01"), oppdaterteSatsperioderListe[1].fom)
+        assertEquals(LocalDate.parse("2025-06-30"), oppdaterteSatsperioderListe[1].tom)
+        assertEquals(LocalDate.parse("2025-07-01"), oppdaterteSatsperioderListe[2].fom)
+        assertEquals(LocalDate.parse("2025-12-31"), oppdaterteSatsperioderListe[2].tom)
         assertEquals(nySatsperiode, oppdaterteSatsperioderListe.last())
     }
 
@@ -527,10 +529,10 @@ class BehandleTrekkServiceTest {
             gyldigTom = null,
             ansvarligEnhetId = null,
             sporing = null,
-            fagomradeListe = listOf(Fagomrade(
-                trekkgruppeKode = "PENA",
-                fagomradeKode = "PENA",
-                erFeilregistrert = false
+            fagomradeListe = listOf(FagomradeResponse(
+                kode = "PENA",
+                dekode = "PENA",
+                sporing = null
             )),
             satsperiodeListe = satsperiodeListe
         )

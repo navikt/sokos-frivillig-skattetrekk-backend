@@ -26,6 +26,6 @@ data class AndreTrekkResponse(
     val gyldigTom: LocalDate?,
     val ansvarligEnhetId: String?,
     val sporing: Sporing?,
-    val fagomradeListe: List<Fagomrade>?,
+    val fagomradeListe: List<FagomradeResponse>?,
     val satsperiodeListe: List<Satsperiode>?,
 )
