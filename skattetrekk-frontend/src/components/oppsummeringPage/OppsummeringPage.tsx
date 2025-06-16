@@ -1,10 +1,21 @@
-import {BodyLong, BodyShort, Box, Button, FormSummary, Heading, HStack, Loader, VStack} from '@navikt/ds-react'
+import {
+    BodyLong,
+    BodyShort,
+    Box,
+    Button,
+    FormSummary,
+    Heading,
+    HStack,
+    Loader,
+    VStack
+} from '@navikt/ds-react'
 import React, {useContext, useEffect, useState} from 'react'
 import {FrivilligSkattetrekkResponse, SatsType, saveSkattetrekk} from "@/api/skattetrekkBackendClient";
 import {DataContext} from "@/state/DataContextProvider";
 import {numberFormatWithKr, showPercentageOrTable, visProsentEllerBelop} from "@/common/Utils";
 import {PageLinks} from "@/routes";
 import {useLocationState} from "@/common/useLocationState";
+import {ErrorMessage} from "@/components/pageStatus/ErrorMessage";
 
 export const OppsummeringPage = () => {
     const { getResponse } = useContext(DataContext)
@@ -32,6 +43,7 @@ interface Props {
 const InternalOppsummeringPage = ({tilleggstrekkValue, tilleggstrekkType, getResponse}: Props) => {
     const { navigate } = useLocationState()
     const [isSending, setIsSending] = useState(false)
+    const [isError, setIsError] = useState(false)
 
     async function submitTilleggstrekk() {
         try {
@@ -45,8 +57,13 @@ const InternalOppsummeringPage = ({tilleggstrekkValue, tilleggstrekkType, getRes
             navigate(PageLinks.KVITTERING, { tilleggstrekkType, tilleggstrekkValue, isSent: true })
         } catch (error) {
             setIsSending(false)
-            console.error("Error saving skattetrekk:", error)
+            setIsError(true)
+            console.error("ErrorMessage saving skattetrekk:", error)
         }
+    }
+
+    if( isError) {
+        return <ErrorMessage/>
     }
 
     function goToPreviousPage() {

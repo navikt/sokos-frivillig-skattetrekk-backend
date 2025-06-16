@@ -1,7 +1,7 @@
 import {Alert} from "@navikt/ds-react";
 import "./Error.css"
 
-export function Error() {
+export function ErrorMessage() {
 
     return (
         <>
