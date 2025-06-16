@@ -8,10 +8,8 @@ import no.nav.frivillig.skattetrekk.endpoint.api.*
 import no.nav.frivillig.skattetrekk.util.isDateInPeriod
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
-import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.util.*
-import kotlin.Double
 
 @Service
 class HentSkattOgTrekkService(
@@ -66,7 +64,7 @@ class HentSkattOgTrekkService(
             messages = meldinger,
             data = FrivilligSkattetrekkData(
                 tilleggstrekk = currentTrekkDto,
-                framtidigTilleggstrekk = nextTilleggstrekk,
+                fremtidigTilleggstrekk = nextTilleggstrekk,
                 skattetrekk = forenkletSkattetrekk,
                 maxBelop = Validering.MAX_BELOP,
                 maxProsent = Validering.MAX_PROSENT,

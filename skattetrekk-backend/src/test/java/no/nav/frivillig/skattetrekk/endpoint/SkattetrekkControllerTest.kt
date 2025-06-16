@@ -42,7 +42,7 @@ class SkattetrekkControllerTest(
             messages = emptyList(),
             data = FrivilligSkattetrekkData(
                 tilleggstrekk = null,
-                framtidigTilleggstrekk = null,
+                fremtidigTilleggstrekk = null,
                 skattetrekk = ForenkletSkattetrekkDto(
                     tabellNr = null,
                     prosentsats = null

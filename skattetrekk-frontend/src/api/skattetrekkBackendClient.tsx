@@ -27,8 +27,8 @@ export enum MessageType {
     INFO
 }
 
-export enum MessageCode { //TODO these codes are placeholders. Check with backend for real codes
-    SERVICE_UNAVAILABLE
+export enum MessageCode {
+    OPPDRAG_UTILGJENGELIG
 }
 
 export interface FrivilligSkattetrekkResponse {
@@ -38,7 +38,7 @@ export interface FrivilligSkattetrekkResponse {
 
 export interface FrivilligSkattetrekkData {
     tilleggstrekk: TrekkDTO | null;
-    framtidigTilleggstrekk: TrekkDTO | null;
+    fremtidigTilleggstrekk: TrekkDTO | null;
     skattetrekk: ForenkletSkattetrekk | null;
     maxBelop: number;
     maxProsent: number;
@@ -95,7 +95,7 @@ export async function fetchSkattetrekk(): Promise<FrivilligSkattetrekkResponse> 
     )
 }
 
-export async function saveSkattetrekk(request: UpdateTilleggstrekkRequest): Promise<FrivilligSkattetrekkResponse> {
+export async function saveSkattetrekk(request: UpdateTilleggstrekkRequest) {
     const searchParams = new URLSearchParams(document.location.search)
     const pid = searchParams.get("pid")
 
@@ -111,6 +111,8 @@ export async function saveSkattetrekk(request: UpdateTilleggstrekkRequest): Prom
         }
     }
 
+    console.log("Saving skattetrekk 1", request);
+
     return await fetch(BASE_URL+ "api/skattetrekk", {
             method: "POST",
             credentials: "include",
@@ -119,17 +121,7 @@ export async function saveSkattetrekk(request: UpdateTilleggstrekkRequest): Prom
         }
     ).then(
         response => {
-            if (response.status >= 200 && response.status < 300) {
-                return response.json().then(data => {
-                    return data as FrivilligSkattetrekkResponse;
-                })
-            } else if (response.status == 400) {
-                return response.json().then(
-                    data => {
-                        return data.feilkode
-                    }
-                )
-            } else {
+            if (response.status < 200 || response.status >= 300) {
                 throw new Error("Fikk ikke 2xx respons fra server");
             }
         }

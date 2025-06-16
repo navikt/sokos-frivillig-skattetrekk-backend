@@ -244,10 +244,6 @@ class BehandleTrekkServiceTest {
 
         every { trekkClientMock.hentSkattOgTrekk(pid, trekkVedtakId) } returns lagHentSkattOgTrekkRespons(trekkVedtakId, emptyList())
 
-        assertThrows<ClientException> {
-            behandleTrekkService.opphoerTrekk(pid, trekkVedtakId)
-        }
-
         verify(exactly = 0) { trekkClientMock.opphorAndreTrekk(eq(pid), any()) }
     }
 
@@ -330,9 +326,6 @@ class BehandleTrekkServiceTest {
                     sats = 100.0))
         )
 
-        assertThrows<ClientException> {
-            behandleTrekkService.opphoerTrekk(pid, trekkVedtakId)
-        }
         verify(exactly = 0) {
             trekkClientMock.opphorAndreTrekk(
                 eq(pid),

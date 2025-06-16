@@ -18,8 +18,6 @@ app.use(cors({
 }));
 
 let init = JSON.parse(fs.readFileSync('mock/skattetrekkInitResponse.json', 'utf8'));
-let send = JSON.parse(fs.readFileSync('mock/skattetrekkSendResponse.json', 'utf8'));
-
 
 app.get('/utbetaling/skattetrekk/api/skattetrekk', (req, res) => {
     console.log("Kjører initiate");
@@ -29,7 +27,7 @@ app.get('/utbetaling/skattetrekk/api/skattetrekk', (req, res) => {
 
 app.post('/utbetaling/skattetrekk/api/skattetrekk', (req, res) => {
     console.log("Kjører send");
-    res.send(send)
+    res.status(503).send()
 })
 
 

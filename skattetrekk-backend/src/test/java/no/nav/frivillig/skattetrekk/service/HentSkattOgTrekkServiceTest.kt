@@ -29,7 +29,7 @@ class HentSkattOgTrekkServiceTest {
         verify(exactly = 0) { trekkClientMock.hentSkattOgTrekk(any(), any()) }
         assertNotNull(result)
         assertNotNull(result.data?.skattetrekk)
-        assertNull(result.data?.framtidigTilleggstrekk)
+        assertNull(result.data?.fremtidigTilleggstrekk)
         assertNull(result.data?.tilleggstrekk)
     }
 
@@ -65,7 +65,7 @@ class HentSkattOgTrekkServiceTest {
 
         assertNotNull(result)
         assertNotNull(result.data?.skattetrekk)
-        assertNull(result.data?.framtidigTilleggstrekk)
+        assertNull(result.data?.fremtidigTilleggstrekk)
         assertNull(result.data?.tilleggstrekk)
     }
 

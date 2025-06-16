@@ -3,19 +3,15 @@ import {fetchSkattetrekk, FrivilligSkattetrekkData, FrivilligSkattetrekkResponse
 import {BodyShort, Box, Loader, VStack} from "@navikt/ds-react";
 
 interface DataContextValue {
-    initiateResponse: FrivilligSkattetrekkResponse | null
-    setInitiateResponse: (value: FrivilligSkattetrekkResponse) => void
-
-    sendResponse: FrivilligSkattetrekkResponse | null
-    setSendResponse: (value: FrivilligSkattetrekkResponse) => void
+    getResponse: FrivilligSkattetrekkResponse | null
+    setGetResponse: (value: FrivilligSkattetrekkResponse) => void
+    setShouldRefetch: (value: boolean) => void
 }
 
 const DataContextDefaultValue: DataContextValue = {
-    initiateResponse: null,
-    setInitiateResponse: () => undefined,
-
-    sendResponse: null,
-    setSendResponse: () => undefined,
+    getResponse: null,
+    setGetResponse: () => undefined,
+    setShouldRefetch: () => undefined,
 }
 
 export const DataContext = createContext(DataContextDefaultValue)
@@ -24,52 +20,58 @@ interface DataContextProviderProps {
     children?: React.ReactNode
 }
 
-const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
-
 function DataContextProvider(props: DataContextProviderProps) {
+    const [isFetching, setIsFetching] = useState(false)
     const [shouldRefetch, setShouldRefetch] = useState(true)
-    const [initiateResponse, setInitiateResponse] = useState(DataContextDefaultValue.initiateResponse)
-    const [sendResponse, setSendResponse] = useState(DataContextDefaultValue.sendResponse)
+    const [getResponse, setGetResponse] = useState(DataContextDefaultValue.getResponse)
 
     const refetch = useCallback(
         async ()  => {
+            setIsFetching(true)
             setShouldRefetch(false)
             try {
-                await delay(1000)
                 const response = await fetchSkattetrekk()
-                setInitiateResponse(response)
+                setGetResponse(response)
             } catch (error) {
                 setShouldRefetch(true) // Reset shouldRefetch to true since the refetch failed
+            } finally {
+                setIsFetching(false)
             }
-
         },
         [setShouldRefetch]
     )
 
     useEffect(() => {
         if (shouldRefetch) {
-            refetch() // Call refetch every time shouldRefetch is set to true.
+            refetch()
         }
     }, [refetch, shouldRefetch])
+
+    const showLoader = getResponse === null || isFetching;
 
     return (
         <DataContext.Provider
             value={{
-                initiateResponse,
-                setInitiateResponse,
-
-                sendResponse,
-                setSendResponse
+                getResponse,
+                setGetResponse,
+                setShouldRefetch,
             }}>
-            {(initiateResponse === null) ?
-                (
-                    <Box background="bg-subtle" padding="16" borderRadius="large">
-                        <VStack align="center" gap="20">
-                            <Loader size="3xlarge" />
-                            <BodyShort align="center">{"Vent mens vi laster inn siden."}</BodyShort>
-                        </VStack>
-                    </Box>
-                ) : props.children}
+            <Box position="relative" minHeight={showLoader ? "400px" : undefined}>
+                {props.children}
+
+                {(showLoader) ?
+                    (
+                        <Box position="absolute" left="0" right="0" top="0" bottom="0" background="bg-default" style={{ zIndex: 100 }}>
+                            <Box background="bg-subtle" padding="16" borderRadius="large">
+                                <VStack align="center" gap="20">
+                                    <Loader size="3xlarge" />
+                                    <BodyShort align="center">{"Vent mens vi laster inn siden."}</BodyShort>
+                                </VStack>
+                            </Box>
+                        </Box>
+
+                    ) : null}
+            </Box>
         </DataContext.Provider>
     )
 }

@@ -6,16 +6,16 @@ import {DataContext} from "@/state/DataContextProvider";
 export function StopTilleggstrekkConfirmationModal() {
     const [open, setOpen] = useState(false)
     const [isLoading, setIsLoading] = useState(false)
-    const {setInitiateResponse} = useContext(DataContext)
+    const {setShouldRefetch} = useContext(DataContext)
 
     async function onConfirm() {
         setIsLoading(true)
-        const response = await saveSkattetrekk(
+        saveSkattetrekk(
             {
                 value: 0,
                 satsType: SatsType.KRONER,
             })
-        setInitiateResponse(response)
+        setShouldRefetch(true)
         setIsLoading(false)
         setOpen(false)
     }

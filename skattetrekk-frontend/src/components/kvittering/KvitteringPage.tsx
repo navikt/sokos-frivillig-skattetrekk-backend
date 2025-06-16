@@ -4,26 +4,25 @@ import {numberFormatWithKr} from "@/common/Utils";
 import {MessageType, SatsType} from "@/api/skattetrekkBackendClient";
 import {DataContext} from "@/state/DataContextProvider";
 import {PageLinks} from "@/routes";
-import {useLocation, useNavigate} from "react-router-dom";
+import {useLocationState} from "@/common/useLocationState";
 
 export const KvitteringPage = () => {
-    const {sendResponse} = useContext(DataContext)
-    const location = useLocation()
-    const navigate = useNavigate()
-    const pid: string = window.history.state.pid;
-
+    const { setShouldRefetch, getResponse } = useContext(DataContext)
+    const { pid, navigate, isSent } = useLocationState()
 
     useEffect(() => {
-    if(sendResponse === null) {
-        navigate(import.meta.env.BASE_URL + PageLinks.INDEX, {state: {pid: pid}})
-    }}, [sendResponse])
+        if(!isSent) {
+            navigate(PageLinks.INDEX)
+        }
 
-    if (sendResponse === null) {
+        setShouldRefetch(true)
+    }, [isSent])
+
+    if (getResponse === null) {
         return null
     }
 
-
-    if (sendResponse?.messages?.some((msg: { type: MessageType }) => msg.type === MessageType.ERROR)) {
+    if (getResponse.messages?.some((msg: { type: MessageType }) => msg.type === MessageType.ERROR)) {
         return (
             <VStack gap="6" className="form-container">
                 <Alert variant="error">
@@ -41,9 +40,9 @@ export const KvitteringPage = () => {
           <Alert variant="success">
               <VStack gap="3">
                   <Heading level="3" size="small">
-                      {sendResponse.data.framtidigTilleggstrekk?.satsType === SatsType.PROSENT ?
-                          `Frivillig skattetrekk på ${sendResponse.data.framtidigTilleggstrekk?.sats} % registrert` :
-                          `Frivillig skattetrekk på ${numberFormatWithKr(sendResponse.data.framtidigTilleggstrekk?.sats ?? 0)} per måned registrert`}
+                      {getResponse.data.fremtidigTilleggstrekk?.satsType === SatsType.PROSENT ?
+                          `Frivillig skattetrekk på ${getResponse.data.fremtidigTilleggstrekk?.sats} % registrert` :
+                          `Frivillig skattetrekk på ${numberFormatWithKr(getResponse.data.fremtidigTilleggstrekk?.sats ?? 0)} per måned registrert`}
                   </Heading>
                   <BodyLong>
                       Skattetrekket gjelder ut året.
@@ -62,7 +61,7 @@ export const KvitteringPage = () => {
           <div style={{borderBottom: '0.5px solid black', width: '100%'}}/>
 
           <Link href="https://www.nav.no/minside" target="_blank">Gå til Min side</Link>
-          <Link onClick={() => navigate(import.meta.env.BASE_URL + PageLinks.INDEX, {state: {pid: location.state.pid}})}>
+          <Link onClick={() => navigate(PageLinks.INDEX,  { pid })}>
               Endre registrert frivillig skattetrekk</Link>
       </VStack>
   )
