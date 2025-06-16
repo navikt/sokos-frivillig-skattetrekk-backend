@@ -75,10 +75,10 @@ class HentSkattOgTrekkService(
     private fun toThisTrekkDto(currentTilleggstrekk: AndreTrekkResponse?): TrekkDto? {
         val currentSatsperiode =
             currentTilleggstrekk?.satsperiodeListe?.firstOrNull { isDateInPeriod(LocalDate.now(), it.fom, it.tom) }
-        return TrekkDto(
-            sats = currentSatsperiode?.sats?.toInt(),
-            satsType = currentTilleggstrekk?.trekkalternativ?.kode?.let { if (it == TREKK_KODE_LOPP) SatsType.PROSENT else SatsType.KRONER }
-        )
+        return  if (currentTilleggstrekk != null && currentSatsperiode != null) TrekkDto(
+            sats = currentSatsperiode.sats?.toInt(),
+            satsType = currentTilleggstrekk.trekkalternativ?.kode?.let { if (it == TREKK_KODE_LOPP) SatsType.PROSENT else SatsType.KRONER }
+        ) else null
     }
 
     private fun findNextTilleggstrekk(currentTilleggstrekk: AndreTrekkResponse?, fremtidigeTrekk: List<AndreTrekkResponse?>): FremtidigTrekkDto? {
