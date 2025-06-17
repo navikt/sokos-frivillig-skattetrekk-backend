@@ -5,7 +5,10 @@ import no.nav.frivillig.skattetrekk.client.trekk.api.*
 import no.nav.frivillig.skattetrekk.client.trekk.api.Skattetrekk
 import no.nav.frivillig.skattetrekk.endpoint.OppdragUtilgjengeligException
 import no.nav.frivillig.skattetrekk.endpoint.api.*
+import no.nav.frivillig.skattetrekk.security.SecurityContextUtil
+import no.nav.frivillig.skattetrekk.security.TokenService
 import no.nav.frivillig.skattetrekk.util.isDateInPeriod
+import no.nav.frivillig.skattetrekk.audit.Auditor
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import java.time.LocalDate
@@ -13,7 +16,9 @@ import java.util.*
 
 @Service
 class HentSkattOgTrekkService(
-    private val trekkClient: TrekkClient
+    private val trekkClient: TrekkClient,
+    private val tokenService: TokenService,
+    private val auditor: Auditor
 ) {
 
     private val log = LoggerFactory.getLogger(HentSkattOgTrekkService::class.java)
@@ -31,6 +36,9 @@ class HentSkattOgTrekkService(
             val skattetrekk = finnSkattetrekk(pid, forskuddsTrekkListe)
             val tillegstrekkVedtakListe = opprettTilleggstrekkVedtakListe(pid, tilleggsTrekkInfoListe)
 
+            if (SecurityContextUtil.isFullmakt()) {
+                auditor.auditFullmaktRead(tokenService.determineLoggedInUserId(), SecurityContextUtil.getPidFromContext())
+            }
             return createSkattetrekkInitResponse(skattetrekk, tillegstrekkVedtakListe, mutableListOf())
         } catch (e: OppdragUtilgjengeligException) {
             return createSkattetrekkInitResponse(

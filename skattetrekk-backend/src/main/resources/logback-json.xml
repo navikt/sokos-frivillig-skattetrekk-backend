@@ -13,4 +13,19 @@
         <appender-ref ref="JSON_CONSOLE"/>
     </root>
     <logger name="no.nav.frivillig.skattetrekk" level="INFO"/>
+
+    <!-- Sporbarhetslog -->
+    <appender name="auditLogger" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
+        <destination>audit.nais:6514</destination>
+        <writeBufferSize>128000</writeBufferSize>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>${HOSTNAME} ${NAIS_APP_NAME}: %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- Only audit logs goes to AuditLogger and not JSON_CONSOLE  -->
+    <logger name="AUDIT_LOGGER" level="info" additivity="false">
+        <appender-ref ref="auditLogger" />
+    </logger>
+
 </configuration>

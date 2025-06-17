@@ -13,4 +13,9 @@
 
     <logger name="no.nav.frivillig.skattetrekk" level="INFO"/>
 
+    <!-- audit logs goes to console when running locally -->
+    <logger name="AUDIT_LOGGER" level="info">
+        <appender-ref ref="CONSOLE_PLAIN" />
+    </logger>
+
 </configuration>
