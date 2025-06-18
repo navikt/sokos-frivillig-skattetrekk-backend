@@ -3,7 +3,6 @@ import tokenx from "./tokenx.js";
 import dotenv from "dotenv"
 import path from "path";
 import {fileURLToPath} from "url";
-import * as bodyParser from "express";
 
 const basePath = "/utbetaling/skattetrekk";
 

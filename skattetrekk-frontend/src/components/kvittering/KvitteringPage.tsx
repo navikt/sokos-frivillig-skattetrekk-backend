@@ -1,7 +1,7 @@
 import {Alert, BodyLong, Heading, Link, List, VStack} from '@navikt/ds-react'
 import React, {useContext, useEffect} from 'react'
 import {numberFormatWithKr} from "@/common/Utils";
-import {MessageType, SatsType} from "@/api/skattetrekkBackendClient";
+import {FrivilligSkattetrekkData, MessageType, SatsType} from "@/api/skattetrekkBackendClient";
 import {DataContext} from "@/state/DataContextProvider";
 import {PageLinks} from "@/routes";
 import {useLocationState} from "@/common/useLocationState";
@@ -22,6 +22,17 @@ export const KvitteringPage = () => {
         return null
     }
 
+    function visRiktigNyregistertTilleggstrekk(data: FrivilligSkattetrekkData) {
+
+        var registrertFrivilligSkattetrekk = !data.fremtidigTilleggstrekk ? data.tilleggstrekk : data.fremtidigTilleggstrekk
+
+        return(<>
+            {registrertFrivilligSkattetrekk?.satsType === SatsType.PROSENT ?
+                    `Frivillig skattetrekk på ${registrertFrivilligSkattetrekk?.sats} % registrert` :
+                    `Frivillig skattetrekk på ${numberFormatWithKr(registrertFrivilligSkattetrekk?.sats ?? 0)} per måned registrert`}
+        </>)
+    }
+
     if (getResponse.messages?.some((msg: { type: MessageType }) => msg.type === MessageType.ERROR)) {
         return (
             <VStack gap="6" className="form-container">
@@ -40,9 +51,7 @@ export const KvitteringPage = () => {
           <Alert variant="success">
               <VStack gap="3">
                   <Heading level="3" size="small">
-                      {getResponse.data.fremtidigTilleggstrekk?.satsType === SatsType.PROSENT ?
-                          `Frivillig skattetrekk på ${getResponse.data.fremtidigTilleggstrekk?.sats} % registrert` :
-                          `Frivillig skattetrekk på ${numberFormatWithKr(getResponse.data.fremtidigTilleggstrekk?.sats ?? 0)} per måned registrert`}
+                      {visRiktigNyregistertTilleggstrekk(getResponse.data)}
                   </Heading>
                   <BodyLong>
                       Skattetrekket gjelder ut året.
