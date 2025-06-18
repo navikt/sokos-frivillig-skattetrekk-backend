@@ -64,7 +64,7 @@ export const KvitteringPage = () => {
               <List.Item>Frivillig skattetrekk stoppes automatisk ved årsskiftet, du må derfor legge inn et nytt trekk
                   for hvert hvert år.</List.Item>
               <List.Item>Hvis det er mindre enn 14 dager før neste utbetaling, kan det være at trekket ikke kommer med
-                  før neste gang..</List.Item>
+                  før neste gang.</List.Item>
           </List>
 
           <div style={{borderBottom: '0.5px solid black', width: '100%'}}/>
