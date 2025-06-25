@@ -13,8 +13,7 @@ import java.time.LocalDate
 
 @Service
 class BehandleTrekkService(
-    private val trekkClient: TrekkClient,
-    private val geografiskLokasjonService: GeografiskLokasjonService
+    private val trekkClient: TrekkClient
 ) {
 
     private val log = LoggerFactory.getLogger(BehandleTrekkService::class.java)
@@ -28,6 +27,8 @@ class BehandleTrekkService(
             finnTrekkListe.forEach { if (it.trekkvedtakId != null) opphoerTrekk(pid, it.trekkvedtakId) }
         } else if (finnTrekkListe.isNotEmpty() && tilleggstrekk > 0) {
             finnTrekkListe.forEach {
+
+
                 if (it.trekkvedtakId != null) {
                     if (skalOppdatereSammeTrekkType(satsType, TrekkalternativKode.valueOf(it.trekkalternativ?.kode!!))) {
                         oppdaterTrekk(pid, it.trekkvedtakId, tilleggstrekk, satsType)
