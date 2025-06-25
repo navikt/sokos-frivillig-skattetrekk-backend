@@ -9,7 +9,6 @@ import no.nav.frivillig.skattetrekk.util.isDateInPeriod
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import java.time.LocalDate
-import java.util.*
 
 @Service
 class HentSkattOgTrekkService(
@@ -29,7 +28,7 @@ class HentSkattOgTrekkService(
 
             log.info("Henter skatt og trekk for forskuddsskatt og frivillig skattetrekk")
             val skattetrekk = finnSkattetrekk(pid, forskuddsTrekkListe)
-            val tillegstrekkVedtakListe = opprettTilleggstrekkVedtakListe(pid, tilleggsTrekkInfoListe)
+            val tillegstrekkVedtakListe = finnTilleggstrekkListe(pid, tilleggsTrekkInfoListe)
 
             return createSkattetrekkInitResponse(skattetrekk, tillegstrekkVedtakListe, mutableListOf())
         } catch (e: OppdragUtilgjengeligException) {
@@ -140,7 +139,7 @@ class HentSkattOgTrekkService(
         return skattetrekk
     }
 
-    private fun opprettTilleggstrekkVedtakListe(pid: String, tilleggsTrekkInfoListe: List<TrekkInfo>?) = tilleggsTrekkInfoListe
+    private fun finnTilleggstrekkListe(pid: String, tilleggsTrekkInfoListe: List<TrekkInfo>?) = tilleggsTrekkInfoListe
         ?.map {
             if (it.trekkvedtakId != null) trekkClient.hentSkattOgTrekk(pid, it.trekkvedtakId)?.andreTrekk else null
         } ?: emptyList()

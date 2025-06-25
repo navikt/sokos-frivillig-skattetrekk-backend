@@ -2,6 +2,7 @@ package no.nav.frivillig.skattetrekk.service
 
 import no.nav.frivillig.skattetrekk.client.trekk.TrekkClient
 import no.nav.frivillig.skattetrekk.client.trekk.api.*
+import no.nav.frivillig.skattetrekk.util.isDateInPeriod
 import no.nav.pensjon.pselv.consumer.behandletrekk.oppdragrestproxy.Kilde
 import no.nav.pensjon.pselv.consumer.behandletrekk.oppdragrestproxy.OppdaterAndreTrekkRequest
 import no.nav.pensjon.pselv.consumer.behandletrekk.oppdragrestproxy.OpphorAndreTrekkRequest
@@ -20,34 +21,42 @@ class BehandleTrekkService(
 
     fun behandleTrekk(pid: String, tilleggstrekk: Int, satsType: SatsType) {
 
-        val finnTrekkListe = trekkClient.finnTrekkListe(pid, TrekkTypeCode.FRIS).sortedByDescending { it.trekkperiodeFom }
-
-        if (finnTrekkListe.isNotEmpty() && tilleggstrekk == 0) {
-            finnTrekkListe.forEach { if (it.trekkvedtakId != null) opphoerTrekk(pid, it.trekkvedtakId) }
-        } else if (finnTrekkListe.isNotEmpty() && tilleggstrekk > 0) {
-            finnTrekkListe.forEach {
+        val frivilligeSkattetrekk = trekkClient.finnTrekkListe(pid, TrekkTypeCode.FRIS)
+        val lopendeTilleggstrekk = frivilligeSkattetrekk.findLopendeTrekk()
+        val nesteTilleggstrekk = frivilligeSkattetrekk.nesteTrekkPeriode()
 
 
-                if (it.trekkvedtakId != null) {
-                    if (skalOppdatereSammeTrekkType(satsType, TrekkalternativKode.valueOf(it.trekkalternativ?.kode!!))) {
-                        oppdaterTrekk(pid, it.trekkvedtakId, tilleggstrekk, satsType)
-                    } else {
-                        log.info("Forskjellig trekktype medfører opphør eksisterende/fremtidig trekk og oppretter nytt trekk med nytt tilleggstrekk")
-                        opphoerTrekk(pid, it.trekkvedtakId)
-                        opprettTrekk(pid, tilleggstrekk, satsType, LocalDate.now().plusMonths(1L).withDayOfMonth(1))
-                    }
-                }
-            }
-        } else {
+        if (tilleggstrekk == 0) {
+            lopendeTilleggstrekk?.let { opphoerTrekk(pid, it.trekkvedtakId!!) } // Opphør løpende trekk
+            nesteTilleggstrekk?.let { opphoerTrekk(pid, it.trekkvedtakId!!) } // Opphør fremtidig trekk
+        } else if (lopendeTilleggstrekk == null && nesteTilleggstrekk == null) {
             opprettTrekk(pid, tilleggstrekk, satsType, LocalDate.now().withDayOfMonth(1))
+        } else {
+            if (lopendeTilleggstrekk?.fortsetterNesteMaaned() == true) {
+                oppdaterTrekk(pid, lopendeTilleggstrekk.trekkvedtakId!!, tilleggstrekk, satsType)
+            } else {
+                nesteTilleggstrekk?.let { oppdaterTrekk(pid, it.trekkvedtakId!!, tilleggstrekk, satsType) }
+            }
         }
     }
+
+    private fun TrekkInfo.fortsetterNesteMaaned() = this.trekkperiodeTom?.isAfter(LocalDate.now().plusMonths(1L).withDayOfMonth(1)) == true
 
     private fun skalOppdatereSammeTrekkType(satsType: SatsType, trekkalternativKode: TrekkalternativKode): Boolean {
         return when (satsType) {
             SatsType.KRONER -> trekkalternativKode == TrekkalternativKode.LOPM
             SatsType.PROSENT -> trekkalternativKode == TrekkalternativKode.LOPP
         }
+    }
+
+    private fun List<TrekkInfo>.findLopendeTrekk() = this.find { isDateInPeriod(LocalDate.now(), it.trekkperiodeFom, it.trekkperiodeTom) }
+    private fun List<TrekkInfo>.nesteTrekkPeriode() = this.find { isStartingFirstOfNextMonth(it) }
+
+
+    private fun isStartingFirstOfNextMonth(trekkInfo: TrekkInfo): Boolean {
+        val fom = trekkInfo.trekkperiodeFom
+        val firstOfNextMonth = LocalDate.now().plusMonths(1L).withDayOfMonth(1)
+        return fom == firstOfNextMonth
     }
 
     fun opprettTrekk(pid: String, tilleggstrekk: Int, satsType: SatsType, gjelderFraOgMed: LocalDate): Long? {
