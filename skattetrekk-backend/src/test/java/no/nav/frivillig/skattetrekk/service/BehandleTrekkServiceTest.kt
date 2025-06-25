@@ -5,10 +5,8 @@ import io.mockk.mockk
 import io.mockk.verify
 import no.nav.frivillig.skattetrekk.client.trekk.TrekkClient
 import no.nav.frivillig.skattetrekk.client.trekk.api.*
-import no.nav.frivillig.skattetrekk.endpoint.ClientException
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
 import java.math.BigDecimal
 import java.time.LocalDate
 import kotlin.test.assertEquals
@@ -19,10 +17,8 @@ class BehandleTrekkServiceTest {
     private val pid = "12345678910"
     private val trekkClientMock = mockk<TrekkClient>()
     private val geografiskLokasjonServiceMock = mockk<GeografiskLokasjonService>()
-    private val hentSkattOgTrekkService = mockk<HentSkattOgTrekkService>()
     private val behandleTrekkService = BehandleTrekkService(
-        trekkClientMock,
-        geografiskLokasjonServiceMock
+        trekkClientMock
     )
 
     @Test

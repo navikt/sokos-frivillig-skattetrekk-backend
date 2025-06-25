@@ -2,7 +2,6 @@ package no.nav.frivillig.skattetrekk.service
 
 import no.nav.frivillig.skattetrekk.client.trekk.TrekkClient
 import no.nav.frivillig.skattetrekk.client.trekk.api.*
-import no.nav.frivillig.skattetrekk.endpoint.ClientException
 import no.nav.pensjon.pselv.consumer.behandletrekk.oppdragrestproxy.Kilde
 import no.nav.pensjon.pselv.consumer.behandletrekk.oppdragrestproxy.OppdaterAndreTrekkRequest
 import no.nav.pensjon.pselv.consumer.behandletrekk.oppdragrestproxy.OpphorAndreTrekkRequest
