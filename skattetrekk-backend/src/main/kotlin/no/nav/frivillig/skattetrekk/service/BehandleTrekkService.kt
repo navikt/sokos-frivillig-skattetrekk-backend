@@ -25,7 +25,6 @@ class BehandleTrekkService(
         val lopendeTilleggstrekk = frivilligeSkattetrekk.findLopendeTrekk()
         val nesteTilleggstrekk = frivilligeSkattetrekk.nesteTrekkPeriode()
 
-
         if (tilleggstrekk == 0) {
             lopendeTilleggstrekk?.let { opphoerTrekk(pid, it.trekkvedtakId!!) } // Opphør løpende trekk
             nesteTilleggstrekk?.let { opphoerTrekk(pid, it.trekkvedtakId!!) } // Opphør fremtidig trekk
