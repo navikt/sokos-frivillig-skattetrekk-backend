@@ -121,9 +121,6 @@ export const EndringPage = () => {
           <VStack gap={"6"}>
           <Heading level="2" size="medium">Dette kan du registrere frivillig skattetrekk på her:</Heading>
               <article>
-                  <BodyLong>
-                      Bare skattepliktige pengestøtter kan få frivillig skattetrekk.
-                  </BodyLong>
                   <List>
                         <List.Item>Arbeidsavklaringspenger (AAP)</List.Item>
                         <List.Item>Dagpenger</List.Item>
