@@ -32,14 +32,24 @@ class BehandleTrekkService(
             opprettTrekk(pid, tilleggstrekk, satsType, LocalDate.now().withDayOfMonth(1))
         } else {
             if (lopendeTilleggstrekk?.fortsetterNesteMaaned() == true) {
-                oppdaterTrekk(pid, lopendeTilleggstrekk.trekkvedtakId!!, tilleggstrekk, satsType)
+                // Kan ikke oppdatere et krone trekk med prosentrekk fordi da feiler oppdrag med følgende melding:
+                // Ukjent feilkode B725006F feil var Prosenttrekk kan ikke overstige 100%
+                if (skalOppdatereSammeTrekkType(satsType, TrekkalternativKode.valueOf(lopendeTilleggstrekk.trekkalternativ?.kode!!))) {
+                    oppdaterTrekk(pid, lopendeTilleggstrekk.trekkvedtakId!!, tilleggstrekk, satsType)
+                } else {
+                    opphoerTrekk(pid, lopendeTilleggstrekk.trekkvedtakId!!)
+                    opprettTrekk(pid, tilleggstrekk, satsType, LocalDate.now().plusMonths(1L).withDayOfMonth(1))
+                }
+
             } else {
-                nesteTilleggstrekk?.let { oppdaterTrekk(pid, it.trekkvedtakId!!, tilleggstrekk, satsType) }
+                if (nesteTilleggstrekk != null) {
+                    oppdaterTrekk(pid, nesteTilleggstrekk.trekkvedtakId!!, tilleggstrekk, satsType)
+                } else {
+                    opprettTrekk(pid, tilleggstrekk, satsType, LocalDate.now().plusMonths(1L).withDayOfMonth(1))
+                }
             }
         }
     }
-
-    private fun TrekkInfo.fortsetterNesteMaaned() = this.trekkperiodeTom?.isAfter(LocalDate.now().plusMonths(1L).withDayOfMonth(1)) == true
 
     private fun skalOppdatereSammeTrekkType(satsType: SatsType, trekkalternativKode: TrekkalternativKode): Boolean {
         return when (satsType) {
@@ -48,6 +58,7 @@ class BehandleTrekkService(
         }
     }
 
+    private fun TrekkInfo.fortsetterNesteMaaned() = this.trekkperiodeTom?.isAfter(LocalDate.now().plusMonths(1L).withDayOfMonth(1)) == true
     private fun List<TrekkInfo>.findLopendeTrekk() = this.find { isDateInPeriod(LocalDate.now(), it.trekkperiodeFom, it.trekkperiodeTom) }
     private fun List<TrekkInfo>.nesteTrekkPeriode() = this.find { isStartingFirstOfNextMonth(it) }
 
@@ -135,8 +146,8 @@ class BehandleTrekkService(
             return false
         }
 
-        val finnesIkkeLopende = andreTrekk?.satsperiodeListe?.find { isLopende(it) } == null
-        val finnesIkkeFremtidigTrekk = andreTrekk?.satsperiodeListe?.find { isFremtidig(LocalDate.now(), it) } == null
+        val finnesIkkeLopende = andreTrekk.satsperiodeListe?.find { isLopende(it) } == null
+        val finnesIkkeFremtidigTrekk = andreTrekk.satsperiodeListe?.find { isFremtidig(LocalDate.now(), it) } == null
 
         return finnesIkkeLopende || finnesIkkeFremtidigTrekk
     }
