@@ -110,7 +110,7 @@ class BehandleTrekkServiceTest {
 
         behandleTrekkService.behandleTrekk(pid,0, SatsType.KRONER)
 
-        verify(exactly = 2) { trekkClientMock.opphorAndreTrekk(eq(pid), any())}
+        verify(exactly = 1) { trekkClientMock.opphorAndreTrekk(eq(pid), any())}
         verify(exactly = 0) { trekkClientMock.opprettAndreTrekk(eq(pid), any()) }
 
     }
@@ -148,7 +148,7 @@ class BehandleTrekkServiceTest {
 
         behandleTrekkService.behandleTrekk(pid,0, SatsType.KRONER)
 
-        verify(exactly = 2) { trekkClientMock.opphorAndreTrekk(eq(pid), any())}
+        verify(exactly = 1) { trekkClientMock.opphorAndreTrekk(eq(pid), any())}
         verify(exactly = 0) { trekkClientMock.opprettAndreTrekk(eq(pid), any()) }
     }
 
