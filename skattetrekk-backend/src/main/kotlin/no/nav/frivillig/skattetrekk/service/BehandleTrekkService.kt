@@ -2,7 +2,7 @@ package no.nav.frivillig.skattetrekk.service
 
 import no.nav.frivillig.skattetrekk.client.trekk.TrekkClient
 import no.nav.frivillig.skattetrekk.client.trekk.api.*
-import no.nav.frivillig.skattetrekk.endpoint.ClientException
+import no.nav.frivillig.skattetrekk.util.isDateInPeriod
 import no.nav.pensjon.pselv.consumer.behandletrekk.oppdragrestproxy.Kilde
 import no.nav.pensjon.pselv.consumer.behandletrekk.oppdragrestproxy.OppdaterAndreTrekkRequest
 import no.nav.pensjon.pselv.consumer.behandletrekk.oppdragrestproxy.OpphorAndreTrekkRequest
@@ -13,8 +13,7 @@ import java.time.LocalDate
 
 @Service
 class BehandleTrekkService(
-    private val trekkClient: TrekkClient,
-    private val geografiskLokasjonService: GeografiskLokasjonService
+    private val trekkClient: TrekkClient
 ) {
 
     private val log = LoggerFactory.getLogger(BehandleTrekkService::class.java)
@@ -22,24 +21,33 @@ class BehandleTrekkService(
 
     fun behandleTrekk(pid: String, tilleggstrekk: Int, satsType: SatsType) {
 
-        val finnTrekkListe = trekkClient.finnTrekkListe(pid, TrekkTypeCode.FRIS).sortedByDescending { it.trekkperiodeFom }
+        val frivilligeSkattetrekk = trekkClient.finnTrekkListe(pid, TrekkTypeCode.FRIS)
+        val lopendeTilleggstrekk = frivilligeSkattetrekk.findLopendeTrekk()
+        val nesteTilleggstrekk = frivilligeSkattetrekk.nesteTrekkPeriode()
 
-        if (finnTrekkListe.isNotEmpty() && tilleggstrekk == 0) {
-            finnTrekkListe.forEach { if (it.trekkvedtakId != null) opphoerTrekk(pid, it.trekkvedtakId) }
-        } else if (finnTrekkListe.isNotEmpty() && tilleggstrekk > 0) {
-            finnTrekkListe.forEach {
-                if (it.trekkvedtakId != null) {
-                    if (skalOppdatereSammeTrekkType(satsType, TrekkalternativKode.valueOf(it.trekkalternativ?.kode!!))) {
-                        oppdaterTrekk(pid, it.trekkvedtakId, tilleggstrekk, satsType)
-                    } else {
-                        log.info("Forskjellig trekktype medfører opphør eksisterende/fremtidig trekk og oppretter nytt trekk med nytt tilleggstrekk")
-                        opphoerTrekk(pid, it.trekkvedtakId)
-                        opprettTrekk(pid, tilleggstrekk, satsType, LocalDate.now().plusMonths(1L).withDayOfMonth(1))
-                    }
+        if (tilleggstrekk == 0) {
+            lopendeTilleggstrekk?.let { opphoerTrekk(pid, it.trekkvedtakId!!) } // Opphør løpende trekk
+            nesteTilleggstrekk?.let { opphoerTrekk(pid, it.trekkvedtakId!!) } // Opphør fremtidig trekk
+        } else if (lopendeTilleggstrekk == null && nesteTilleggstrekk == null) {
+            opprettTrekk(pid, tilleggstrekk, satsType, LocalDate.now().withDayOfMonth(1))
+        } else {
+            if (lopendeTilleggstrekk?.fortsetterNesteMaaned() == true) {
+                // Kan ikke oppdatere et krone trekk med prosentrekk fordi da feiler oppdrag med følgende melding:
+                // Ukjent feilkode B725006F feil var Prosenttrekk kan ikke overstige 100%
+                if (skalOppdatereSammeTrekkType(satsType, TrekkalternativKode.valueOf(lopendeTilleggstrekk.trekkalternativ?.kode!!))) {
+                    oppdaterTrekk(pid, lopendeTilleggstrekk.trekkvedtakId!!, tilleggstrekk, satsType)
+                } else {
+                    opphoerTrekk(pid, lopendeTilleggstrekk.trekkvedtakId!!)
+                    opprettTrekk(pid, tilleggstrekk, satsType, LocalDate.now().plusMonths(1L).withDayOfMonth(1))
+                }
+
+            } else {
+                if (nesteTilleggstrekk != null) {
+                    oppdaterTrekk(pid, nesteTilleggstrekk.trekkvedtakId!!, tilleggstrekk, satsType)
+                } else {
+                    opprettTrekk(pid, tilleggstrekk, satsType, LocalDate.now().plusMonths(1L).withDayOfMonth(1))
                 }
             }
-        } else {
-            opprettTrekk(pid, tilleggstrekk, satsType, LocalDate.now().withDayOfMonth(1))
         }
     }
 
@@ -48,6 +56,17 @@ class BehandleTrekkService(
             SatsType.KRONER -> trekkalternativKode == TrekkalternativKode.LOPM
             SatsType.PROSENT -> trekkalternativKode == TrekkalternativKode.LOPP
         }
+    }
+
+    private fun TrekkInfo.fortsetterNesteMaaned() = this.trekkperiodeTom?.isAfter(LocalDate.now().plusMonths(1L).withDayOfMonth(1)) == true
+    private fun List<TrekkInfo>.findLopendeTrekk() = this.find { isDateInPeriod(LocalDate.now(), it.trekkperiodeFom, it.trekkperiodeTom) }
+    private fun List<TrekkInfo>.nesteTrekkPeriode() = this.find { isStartingFirstOfNextMonth(it) }
+
+
+    private fun isStartingFirstOfNextMonth(trekkInfo: TrekkInfo): Boolean {
+        val fom = trekkInfo.trekkperiodeFom
+        val firstOfNextMonth = LocalDate.now().plusMonths(1L).withDayOfMonth(1)
+        return fom == firstOfNextMonth
     }
 
     fun opprettTrekk(pid: String, tilleggstrekk: Int, satsType: SatsType, gjelderFraOgMed: LocalDate): Long? {
@@ -127,8 +146,8 @@ class BehandleTrekkService(
             return false
         }
 
-        val finnesIkkeLopende = andreTrekk?.satsperiodeListe?.find { isLopende(it) } == null
-        val finnesIkkeFremtidigTrekk = andreTrekk?.satsperiodeListe?.find { isFremtidig(LocalDate.now(), it) } == null
+        val finnesIkkeLopende = andreTrekk.satsperiodeListe?.find { isLopende(it) } == null
+        val finnesIkkeFremtidigTrekk = andreTrekk.satsperiodeListe?.find { isFremtidig(LocalDate.now(), it) } == null
 
         return finnesIkkeLopende || finnesIkkeFremtidigTrekk
     }
