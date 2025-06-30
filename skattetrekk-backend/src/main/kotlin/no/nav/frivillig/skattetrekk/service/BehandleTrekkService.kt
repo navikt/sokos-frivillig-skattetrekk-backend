@@ -28,7 +28,11 @@ class BehandleTrekkService(
         val nesteTilleggstrekk = frivilligeSkattetrekk.nesteTrekkPeriode()
 
         if (tilleggstrekk == 0) {
-            lopendeTilleggstrekk?.let { opphoerTrekk(pid, it.trekkvedtakId!!) } // Opphør løpende trekk
+            lopendeTilleggstrekk?.let {
+                if(it.fortsetterNesteMaaned()) {
+                    opphoerTrekk(pid, it.trekkvedtakId!!)
+                }
+            } // Opphør løpende trekk
             nesteTilleggstrekk?.let { opphoerTrekk(pid, it.trekkvedtakId!!) } // Opphør fremtidig trekk
         } else if (lopendeTilleggstrekk == null && nesteTilleggstrekk == null) {
             opprettTrekk(pid, tilleggstrekk, satsType, virkningsdato)
