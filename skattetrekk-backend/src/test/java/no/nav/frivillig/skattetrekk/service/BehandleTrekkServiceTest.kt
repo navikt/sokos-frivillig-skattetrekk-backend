@@ -31,15 +31,15 @@ class BehandleTrekkServiceTest {
                 trekkvedtakId = trekkvedtakId,
                 sats = BigDecimal.valueOf(20),
                 ansvarligEnhetId = "NAV Enhet",
-                fom = LocalDate.now().minusMonths(1L),
-                tom = null
+                fom = LocalDate.parse("2025-05-01"),
+                tom = LocalDate.parse("2025-12-31")
             ),
         )
         every { trekkClientMock.opphorAndreTrekk(eq(pid), any()) } returns Unit
         every { trekkClientMock.hentSkattOgTrekk(pid, trekkvedtakId) } returns lagHentSkattOgTrekkRespons(trekkvedtakId, listOf(
             lagSatsperiode(
-                fom = LocalDate.now().minusMonths(1L),
-                tom = LocalDate.now().plusMonths(3L),
+                fom = LocalDate.parse("2025-05-01"),
+                tom = LocalDate.parse("2025-12-31"),
                 sats = 100.0
             )
         ))
@@ -126,22 +126,22 @@ class BehandleTrekkServiceTest {
                 trekkvedtakId = trekkvedtakId2,
                 sats = BigDecimal.valueOf(20),
                 ansvarligEnhetId = "NAV Enhet",
-                fom = LocalDate.now().minusMonths(5L),
-                tom = LocalDate.now().minusMonths(3L)
+                fom = LocalDate.parse("2025-01-01"),
+                tom = LocalDate.parse("2025-03-01")
             ),
             lagTrekkInfo(
                 trekkvedtakId = trekkvedtakId,
                 sats = BigDecimal.valueOf(20),
                 ansvarligEnhetId = "NAV Enhet",
-                fom = LocalDate.now().minusMonths(1L),
-                tom = null
+                fom = LocalDate.parse("2025-05-01"),
+                tom = LocalDate.parse("2025-12-31")
             )
         )
         every { trekkClientMock.opphorAndreTrekk(eq(pid), any()) } returns Unit
         every { trekkClientMock.hentSkattOgTrekk(pid, any()) } returns lagHentSkattOgTrekkRespons(trekkvedtakId, listOf(
             lagSatsperiode(
-                fom = LocalDate.now().minusMonths(1L),
-                tom = LocalDate.now().plusMonths(3L),
+                fom = LocalDate.parse("2025-01-01"),
+                tom = LocalDate.parse("2025-03-01"),
                 sats = 100.0
             )
         ))

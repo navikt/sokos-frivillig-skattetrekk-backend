@@ -28,16 +28,20 @@ class BehandleTrekkService(
         val nesteTilleggstrekk = frivilligeSkattetrekk.nesteTrekkPeriode()
 
         if (tilleggstrekk == 0) {
+
+            // Opphør løpende trekk
             lopendeTilleggstrekk?.let {
-                if(it.fortsetterNesteMaaned()) {
+                if(it.fortsetterEtterVirkningsdato(virkningsdato)) {
                     opphoerTrekk(pid, it.trekkvedtakId!!)
                 }
-            } // Opphør løpende trekk
-            nesteTilleggstrekk?.let { opphoerTrekk(pid, it.trekkvedtakId!!) } // Opphør fremtidig trekk
+            }
+
+            // Opphør fremtidig trekk
+            nesteTilleggstrekk?.let { opphoerTrekk(pid, it.trekkvedtakId!!) }
         } else if (lopendeTilleggstrekk == null && nesteTilleggstrekk == null) {
             opprettTrekk(pid, tilleggstrekk, satsType, virkningsdato)
         } else {
-            if (lopendeTilleggstrekk?.fortsetterNesteMaaned() == true) {
+            if (lopendeTilleggstrekk?.fortsetterEtterVirkningsdato(virkningsdato) == true) {
                 // Kan ikke oppdatere et krone trekk med prosentrekk fordi da feiler oppdrag med følgende melding:
                 // Ukjent feilkode B725006F feil var Prosenttrekk kan ikke overstige 100%
                 if (skalOppdatereSammeTrekkType(satsType, TrekkalternativKode.valueOf(lopendeTilleggstrekk.trekkalternativ?.kode!!))) {
@@ -64,7 +68,7 @@ class BehandleTrekkService(
         }
     }
 
-    private fun TrekkInfo.fortsetterNesteMaaned() = this.trekkperiodeTom?.isAfter(LocalDate.now().plusMonths(1L).withDayOfMonth(1)) == true
+    private fun TrekkInfo.fortsetterEtterVirkningsdato(virkningsdato: LocalDate) = this.trekkperiodeTom?.isAfter(virkningsdato) == true
     private fun List<TrekkInfo>.findLopendeTrekk() = this.find { isDateInPeriod(LocalDate.now(), it.trekkperiodeFom, it.trekkperiodeTom) }
     private fun List<TrekkInfo>.nesteTrekkPeriode() = this.find { isStartingFirstOfNextMonth(it) }
 
