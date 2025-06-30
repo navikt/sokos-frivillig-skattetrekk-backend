@@ -21,6 +21,8 @@ class BehandleTrekkService(
 
     fun behandleTrekk(pid: String, tilleggstrekk: Int, satsType: SatsType) {
 
+        val virkningsdato = LocalDate.now().plusMonths(1L).withDayOfMonth(1)
+
         val frivilligeSkattetrekk = trekkClient.finnTrekkListe(pid, TrekkTypeCode.FRIS)
         val lopendeTilleggstrekk = frivilligeSkattetrekk.findLopendeTrekk()
         val nesteTilleggstrekk = frivilligeSkattetrekk.nesteTrekkPeriode()
@@ -29,7 +31,7 @@ class BehandleTrekkService(
             lopendeTilleggstrekk?.let { opphoerTrekk(pid, it.trekkvedtakId!!) } // Opphør løpende trekk
             nesteTilleggstrekk?.let { opphoerTrekk(pid, it.trekkvedtakId!!) } // Opphør fremtidig trekk
         } else if (lopendeTilleggstrekk == null && nesteTilleggstrekk == null) {
-            opprettTrekk(pid, tilleggstrekk, satsType, LocalDate.now().withDayOfMonth(1))
+            opprettTrekk(pid, tilleggstrekk, satsType, virkningsdato)
         } else {
             if (lopendeTilleggstrekk?.fortsetterNesteMaaned() == true) {
                 // Kan ikke oppdatere et krone trekk med prosentrekk fordi da feiler oppdrag med følgende melding:
@@ -38,14 +40,14 @@ class BehandleTrekkService(
                     oppdaterTrekk(pid, lopendeTilleggstrekk.trekkvedtakId!!, tilleggstrekk, satsType)
                 } else {
                     opphoerTrekk(pid, lopendeTilleggstrekk.trekkvedtakId!!)
-                    opprettTrekk(pid, tilleggstrekk, satsType, LocalDate.now().plusMonths(1L).withDayOfMonth(1))
+                    opprettTrekk(pid, tilleggstrekk, satsType, virkningsdato)
                 }
 
             } else {
                 if (nesteTilleggstrekk != null) {
                     oppdaterTrekk(pid, nesteTilleggstrekk.trekkvedtakId!!, tilleggstrekk, satsType)
                 } else {
-                    opprettTrekk(pid, tilleggstrekk, satsType, LocalDate.now().plusMonths(1L).withDayOfMonth(1))
+                    opprettTrekk(pid, tilleggstrekk, satsType, virkningsdato)
                 }
             }
         }
