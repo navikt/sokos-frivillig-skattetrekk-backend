@@ -38,7 +38,7 @@ class BehandleTrekkService(
 
             // Opphør fremtidig trekk
             nesteTilleggstrekk?.let { opphoerTrekk(pid, it.trekkvedtakId!!) }
-        } else if (lopendeTilleggstrekk == null && nesteTilleggstrekk == null) {
+        } else if ((lopendeTilleggstrekk == null && nesteTilleggstrekk == null) || (lopendeTilleggstrekk != null && !lopendeTilleggstrekk.fortsetterEtterVirkningsdato(virkningsdato) && nesteTilleggstrekk == null)) {
             opprettTrekk(pid, tilleggstrekk, satsType, virkningsdato)
         } else {
             if (lopendeTilleggstrekk?.fortsetterEtterVirkningsdato(virkningsdato) == true) {
