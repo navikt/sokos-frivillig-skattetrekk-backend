@@ -36,10 +36,7 @@ class TrekkClient(
             debitorSok = DebitorSok(
                 debitorOffnr = pid,
                 filter = DebitorFilter(
-                    trekktypeKode = trekkType.name
-                )
-            )
-        )
+                    trekktypeKode = trekkType.name)))
 
         try {
             return webClient
