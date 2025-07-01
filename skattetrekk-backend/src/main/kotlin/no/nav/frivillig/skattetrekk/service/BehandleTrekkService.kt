@@ -51,10 +51,10 @@ class BehandleTrekkService(
                     opprettTrekk(pid, tilleggstrekk, satsType, virkningsdato)
                 }
             } else {
-                if (skalOppdatereSammeTrekkType(satsType, TrekkalternativKode.valueOf(lopendeTilleggstrekk?.trekkalternativ?.kode!!))) {
-                    nesteTilleggstrekk?.let { oppdaterTrekk(pid, it.trekkvedtakId!!, tilleggstrekk, satsType) }
+                if (skalOppdatereSammeTrekkType(satsType, TrekkalternativKode.valueOf(nesteTilleggstrekk?.trekkalternativ?.kode!!))) {
+                    oppdaterTrekk(pid, nesteTilleggstrekk.trekkvedtakId!!, tilleggstrekk, satsType)
                 } else {
-                    nesteTilleggstrekk?.let { opphoerTrekk(pid, it.trekkvedtakId!!) }
+                    opphoerTrekk(pid, nesteTilleggstrekk.trekkvedtakId!!)
                     opprettTrekk(pid, tilleggstrekk, satsType, virkningsdato)
                 }
             }
