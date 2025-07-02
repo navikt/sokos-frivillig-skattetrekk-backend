@@ -69,7 +69,7 @@ export function InitialPage() {
                         <Heading size={"medium"} level="2">Dine registrerte skattetrekk</Heading>
 
                         <RegistrerteSkattetrekk skatteTrekk={getResponse.data.skattetrekk!} tilleggstrekk={getResponse.data.tilleggstrekk} fremtidigTilleggstrekk={getResponse.data.fremtidigTilleggstrekk} isDecember={isDecember()} />
-                        {getResponse.data.tilleggstrekk !== null && getResponse.data.fremtidigTilleggstrekk?.sats !== 0 ?
+                        {getResponse.data.tilleggstrekk !== null || getResponse.data.fremtidigTilleggstrekk?.sats !== 0 ?
                             <StopTilleggstrekkConfirmationModal/>
                             : <></>
                         }
