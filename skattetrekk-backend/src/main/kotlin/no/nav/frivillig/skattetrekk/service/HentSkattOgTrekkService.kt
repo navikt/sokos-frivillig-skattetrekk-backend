@@ -22,6 +22,7 @@ class HentSkattOgTrekkService(
     fun hentSkattetrekk(pid: String): FrivilligSkattetrekkInitResponse? {
 
         try {
+            throw OppdragUtilgjengeligException()
             log.info("Finner trekkliste for forskuddsskatt og frivillig skattetrekk")
             val forskuddsTrekkListe = trekkClient.finnTrekkListe(pid, TrekkTypeCode.FSKT)
             val tilleggsTrekkInfoListe = trekkClient.finnTrekkListe(pid, TrekkTypeCode.FRIS)
