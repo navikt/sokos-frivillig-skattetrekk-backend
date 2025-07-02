@@ -71,7 +71,7 @@ export function InitialPage() {
                         <RegistrerteSkattetrekk skatteTrekk={getResponse.data.skattetrekk!} tilleggstrekk={getResponse.data.tilleggstrekk} fremtidigTilleggstrekk={getResponse.data.fremtidigTilleggstrekk} isDecember={isDecember()} />
                         {
                             (getResponse.data.tilleggstrekk !== null && getResponse.data.fremtidigTilleggstrekk?.sats !== 0)
-                                || (getResponse.data.tilleggstrekk === null && getResponse.data.fremtidigTilleggstrekk?.sats !== 0)?
+                                || (getResponse.data.tilleggstrekk === null && getResponse.data.fremtidigTilleggstrekk !== null)?
                             <StopTilleggstrekkConfirmationModal/>
                             : <></>
                         }
