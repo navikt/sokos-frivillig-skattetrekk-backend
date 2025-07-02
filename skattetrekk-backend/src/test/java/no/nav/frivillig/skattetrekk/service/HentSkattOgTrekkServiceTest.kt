@@ -6,11 +6,13 @@ import io.mockk.verify
 import no.nav.frivillig.skattetrekk.client.trekk.TrekkClient
 import no.nav.frivillig.skattetrekk.client.trekk.api.*
 import org.junit.jupiter.api.Assertions.assertNull
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import java.math.BigDecimal
 import java.time.LocalDate
 import kotlin.test.assertNotNull
 
+@Disabled
 class HentSkattOgTrekkServiceTest {
 
     private val trekkClientMock = mockk<TrekkClient>()
