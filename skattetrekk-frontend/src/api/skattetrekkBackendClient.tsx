@@ -28,7 +28,7 @@ export enum MessageType {
 }
 
 export enum MessageCode {
-    OPPDRAG_UTILGJENGELIG
+    OPPDRAG_UTILGJENGELIG = "OPPDRAG_UTILGJENGELIG"
 }
 
 export interface FrivilligSkattetrekkResponse {
