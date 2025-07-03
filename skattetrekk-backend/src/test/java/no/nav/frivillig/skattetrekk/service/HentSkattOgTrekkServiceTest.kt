@@ -12,7 +12,6 @@ import java.math.BigDecimal
 import java.time.LocalDate
 import kotlin.test.assertNotNull
 
-@Disabled
 class HentSkattOgTrekkServiceTest {
 
     private val trekkClientMock = mockk<TrekkClient>()
