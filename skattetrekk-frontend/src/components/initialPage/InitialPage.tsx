@@ -139,8 +139,7 @@ export function InitialPage() {
         return (
             <GuidePanel poster>
                 <BodyLong>
-                    Nav trekker skatt på bakgrunn av ditt skattekort som Nav har mottatt fra Skatteetaten. Hvis du ønsker å trekke mer skatt av pengestøtten din fra Nav,
-                    kan du registrere et frivillig skattetrekk.
+                    Nav trekker skatt etter skattekortet vi har fått fra Skatteetaten. Hvis du ønsker å trekke mer skatt av pengene du får fra Nav, kan du registrere et frivillig skattetrekk.
                 </BodyLong>
             </GuidePanel>
         )
