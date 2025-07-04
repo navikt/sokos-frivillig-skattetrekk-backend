@@ -526,8 +526,8 @@ class BehandleTrekkServiceTest {
             ansvarligEnhetId = null,
             sporing = null,
             fagomradeListe = listOf(FagomradeResponse(
-                kode = "PENA",
-                dekode = "PENA",
+                kode = "FRIS",
+                dekode = "FRIS",
                 sporing = null
             )),
             satsperiodeListe = satsperiodeListe

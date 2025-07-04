@@ -170,7 +170,7 @@ class BehandleTrekkService(
             trekkalternativKode = trekkalternativKode,
             fagomradeListe = listOf(
                 Fagomrade(
-                    trekkgruppeKode = "PENA",
+                    trekkgruppeKode = "FRIS",
                     fagomradeKode = null,
                     erFeilregistrert = null
                 )
