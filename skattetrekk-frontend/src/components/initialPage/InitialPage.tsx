@@ -77,7 +77,7 @@ export function InitialPage() {
                         }
                     </VStack> }
 
-                <Heading size={"medium"} level="2">Om frivillig skattrekk</Heading>
+                <Heading size={"medium"} level="2">Om frivillig skatterekk</Heading>
                 <Accordion>
                     <Accordion.Item>
                         <Accordion.Header>Slik trekker Nav frivillig skattetrekk</Accordion.Header>
