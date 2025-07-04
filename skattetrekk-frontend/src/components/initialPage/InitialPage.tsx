@@ -85,7 +85,7 @@ export function InitialPage() {
                             <BodyLong spacing>Trekket du registrerer kommer i tillegg til det ordinære skattetrekket. Frivillig skattetrekk gjelder også ved utbetaling av feriepenger og
                                 for perioder hvor det ellers ikke blir trukket skatt. Det kan ikke trekkes frivillig skatt på skattefrie pengestøtter.
                                 Tilleggstrekket legges inn som et fast kronebeløp eller som et fast prosenttrekk per måned. </BodyLong>
-                            <Link href={import.meta.env.FRIVILLIG_SKATTETREKK_INFO_URL}>Les om frivillig skattetrekk</Link>
+                            <Link href={import.meta.env.VITE_FRIVILLIG_SKATTETREKK_INFO_URL}>Les om frivillig skattetrekk</Link>
 
                         </Accordion.Content>
                     </Accordion.Item>
