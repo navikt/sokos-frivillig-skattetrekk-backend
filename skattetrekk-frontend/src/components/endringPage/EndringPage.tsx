@@ -59,7 +59,7 @@ export const EndringPage = () => {
         } else if (type === null) {
             setTypeError("Du må velge hvilken type frivillig skattetrekk du ønsker")
         } else if (value === '' || value === null) {
-            setValueError("Du må oppgi et beløp")
+            setValueError("Du må oppgi et beløp eller en prosentsats")
         } else if (isNaN(numericValue) || numericValue < 0) {
             setValueError('Du kan ikke skrive bokstaver eller tegn')
         } else if (type === SatsType.PROSENT && numericValue === 0) {
