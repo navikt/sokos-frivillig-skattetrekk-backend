@@ -43,7 +43,7 @@ export function RegistrerteSkattetrekk(props: RegistrerteSkattetrekkProps) {
 
             <HGrid gap="4" columns="min-content 1fr">
                 <dt className="label">
-                    <strong>Frivillig tilleggstrekk:</strong>
+                    <strong>Frivillig skattetrekk:</strong>
                 </dt>
                 <dd className="data">{visProsentEllerBelop(props.tilleggstrekk)}</dd>
 
