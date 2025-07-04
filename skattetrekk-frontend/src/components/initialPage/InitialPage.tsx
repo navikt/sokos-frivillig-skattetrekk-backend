@@ -119,7 +119,7 @@ export function InitialPage() {
                                 <BodyLong>Frivillig skattetrekk registrert i denne tjenesten vil kun føre til trekk hvis du har utbetaling av pengestøttene i kulepunktlisten over.</BodyLong>
                                 <BodyLong> Noen pengestøtter kan ikke gis frivillig skattetrekk fordi de er
                                     skattefrie.</BodyLong>
-                                <BodyLong>Barnepensjon kan få frivillig skattetrekk, men det kan desverre ikke registreres i denne tjenesten. <Link href={import.meta.env.FRIVILLIG_SKATTETREKK_INFO_URL}>Les om hvordan registrere frivillig skattetrekk på barnepensjon. </Link>
+                                <BodyLong>Barnepensjon kan få frivillig skattetrekk, men det kan desverre ikke registreres i denne tjenesten. <Link href={import.meta.env.VITE_FRIVILLIG_SKATTETREKK_INFO_URL}>Les om hvordan registrere frivillig skattetrekk på barnepensjon. </Link>
                                 </BodyLong>
 
                             </VStack>
