@@ -154,7 +154,7 @@ export const EndringPage = () => {
 
           { canContinue &&
               <VStack gap="4">
-                  <Heading size={"medium"} level={"2"}>Legg til frivillig tilleggstrekk</Heading>
+                  <Heading size={"medium"} level={"2"}>Legg til frivillig skattetrekk</Heading>
                   <RadioGroup id="typeRadio"
                               legend="Hvordan skal skatten trekkes?"
                               size={"medium"}

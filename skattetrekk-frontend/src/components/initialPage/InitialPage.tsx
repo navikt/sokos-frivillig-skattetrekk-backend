@@ -77,14 +77,15 @@ export function InitialPage() {
                         }
                     </VStack> }
 
+                <Heading size={"medium"} level="2">Om frivillig skatterekk</Heading>
                 <Accordion>
                     <Accordion.Item>
                         <Accordion.Header>Slik trekker Nav frivillig skattetrekk</Accordion.Header>
                         <Accordion.Content>
                             <BodyLong spacing>Trekket du registrerer kommer i tillegg til det ordinære skattetrekket. Frivillig skattetrekk gjelder også ved utbetaling av feriepenger og
                                 for perioder hvor det ellers ikke blir trukket skatt. Det kan ikke trekkes frivillig skatt på skattefrie pengestøtter.
-                                Tilleggstrekket legges inn som et fast kronebeløp eller som et fast prosenttrekk per måned. </BodyLong>
-                            <Link href={import.meta.env.FRIVILLIG_SKATTETREKK_INFO_URL}>Les om frivillig skattetrekk</Link>
+                                Frivillig skattetrekk legges inn som et fast kronebeløp eller som et fast prosenttrekk per måned. </BodyLong>
+                            <Link href={import.meta.env.VITE_FRIVILLIG_SKATTETREKK_INFO_URL}>Les om frivillig skattetrekk</Link>
 
                         </Accordion.Content>
                     </Accordion.Item>
@@ -118,7 +119,7 @@ export function InitialPage() {
                                 <BodyLong>Frivillig skattetrekk registrert i denne tjenesten vil kun føre til trekk hvis du har utbetaling av pengestøttene i kulepunktlisten over.</BodyLong>
                                 <BodyLong> Noen pengestøtter kan ikke gis frivillig skattetrekk fordi de er
                                     skattefrie.</BodyLong>
-                                <BodyLong>Barnepensjon kan få frivillig skattetrekk, men det kan desverre ikke registreres i denne tjenesten. <Link href={import.meta.env.FRIVILLIG_SKATTETREKK_INFO_URL}>Les om hvordan registrere frivillig skattetrekk på barnepensjon. </Link>
+                                <BodyLong>Barnepensjon kan få frivillig skattetrekk, men det kan desverre ikke registreres i denne tjenesten. <Link href={import.meta.env.VITE_FRIVILLIG_SKATTETREKK_INFO_URL}>Les om hvordan registrere frivillig skattetrekk på barnepensjon. </Link>
                                 </BodyLong>
 
                             </VStack>
@@ -139,8 +140,7 @@ export function InitialPage() {
         return (
             <GuidePanel poster>
                 <BodyLong>
-                    Nav trekker skatt på bakgrunn av ditt skattekort som Nav har mottatt fra Skatteetaten. Hvis du ønsker å trekke mer skatt av pengestøtten din fra Nav,
-                    kan du registrere et frivillig skattetrekk.
+                    Nav trekker skatt etter skattekortet vi har fått fra Skatteetaten. Hvis du ønsker å trekke mer skatt av pengene du får fra Nav, kan du registrere et frivillig skattetrekk.
                 </BodyLong>
             </GuidePanel>
         )
