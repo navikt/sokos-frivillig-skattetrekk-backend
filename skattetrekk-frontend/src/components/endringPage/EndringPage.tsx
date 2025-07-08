@@ -53,7 +53,7 @@ export const EndringPage = () => {
         const numericValue = parseInntekt(value)
 
         if(canContinue === null) {
-            setCanContinueError("Du må svare på om du har en av pengestøttene på kulepunktlisten")
+            setCanContinueError("Du må svare på om du har en av pengestøttene i kulepunktlisten")
         } else if (!canContinue) {
             setPageState("cannotProceed")
         } else if (type === null) {
@@ -69,7 +69,7 @@ export const EndringPage = () => {
         } else if (type === SatsType.KRONER && numericValue === 0) {
             setValueError(`Du må oppgi et høyere beløp enn 0 kr. For å stoppe et frivillig skattetrekk, gå tilbake og klikk på knappen Stopp frivillig skattetrekk.`)
         } else if (type === SatsType.KRONER && numericValue > getResponse!.data.maxBelop) {
-            setValueError(`Du kan maks oppgi ${numberFormatWithKr(getResponse!.data.maxBelop)}. Vil du trekke et høyere beløp, kan du legge det inn som prosent`)
+            setValueError(`Du kan maks oppgi ${numberFormatWithKr(getResponse!.data.maxBelop)}. Vil du trekke et høyere beløp, kan du legge det inn som prosent.`)
         }
 
         else {
@@ -154,11 +154,10 @@ export const EndringPage = () => {
 
           { canContinue &&
               <VStack gap="4">
-                  <Heading size={"medium"} level={"2"}>Legg til frivillig skattetrekk</Heading>
+                  <Heading size={"medium"} level={"2"}>Ønsket frivillig skattetrekk</Heading>
                   <RadioGroup id="typeRadio"
                               legend="Hvordan skal skatten trekkes?"
                               size={"medium"}
-                              description="Skattetrekk per måned"
                               value={type}
                               onChange={(v) => {onChangeType(v);}}
                               onBlur={() => {

@@ -1,4 +1,4 @@
-import {Alert, BodyLong, Heading, Link, List, VStack} from '@navikt/ds-react'
+import {Alert, BodyLong, BodyShort, Heading, Link, VStack} from '@navikt/ds-react'
 import React, {useContext, useEffect} from 'react'
 import {numberFormatWithKr} from "@/common/Utils";
 import {FrivilligSkattetrekkData, MessageType, SatsType} from "@/api/skattetrekkBackendClient";
@@ -28,8 +28,8 @@ export const KvitteringPage = () => {
 
         return(<>
             {registrertFrivilligSkattetrekk?.satsType === SatsType.PROSENT ?
-                    `Frivillig skattetrekk på ${registrertFrivilligSkattetrekk?.sats} % registrert` :
-                    `Frivillig skattetrekk på ${numberFormatWithKr(registrertFrivilligSkattetrekk?.sats ?? 0)} per måned registrert`}
+                `Frivillig skattetrekk på ${registrertFrivilligSkattetrekk?.sats} % ble registrert` :
+                `Frivillig skattetrekk på ${numberFormatWithKr(registrertFrivilligSkattetrekk?.sats ?? 0)} per måned ble registrert`}
         </>)
     }
 
@@ -47,31 +47,30 @@ export const KvitteringPage = () => {
     }
 
   return (
-      <VStack gap="6" className="form-container">
+      <VStack gap="10" className="form-container">
           <Alert variant="success">
               <VStack gap="3">
-                  <Heading level="3" size="small">
+                  <Heading level="2" size="small">
                       {visRiktigNyregistertTilleggstrekk(getResponse.data)}
                   </Heading>
                   <BodyLong>
-                      Skattetrekket gjelder ut året.
+                      Skattetrekket gjelder fra og med neste måned, og ut året.
                   </BodyLong>
               </VStack>
           </Alert>
 
 
-          <List>
-              <List.Item>Frivillig skattetrekk stoppes automatisk ved årsskiftet, du må derfor legge inn et nytt trekk
-                  for hvert hvert år.</List.Item>
-              <List.Item>Hvis det er mindre enn 14 dager før neste utbetaling, kan det være at trekket ikke kommer med
-                  før neste gang.</List.Item>
-          </List>
+          <BodyShort>
+              Frivillig skattetrekk stopper automatisk ved årsskiftet, du må derfor legge inn et nytt trekk for hvert år.
+          </BodyShort>
 
           <div style={{borderBottom: '0.5px solid black', width: '100%'}}/>
 
+          <VStack gap="4">
           <Link href="https://www.nav.no/minside" target="_blank">Gå til Min side</Link>
           <Link onClick={() => navigate(PageLinks.INDEX,  { pid })}>
               Endre registrert frivillig skattetrekk</Link>
+          </VStack>
       </VStack>
   )
 }

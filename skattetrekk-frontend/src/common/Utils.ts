@@ -47,7 +47,7 @@ export function showPercentageOrTable(skattetrekk: ForenkletSkattetrekk) {
     return `${skattetrekk.prosentsats} %`
   }
 
-  return "Ingen"
+  return "Ikke registrert skattekort"
 }
 
 export function visProsentEllerBelop(tilleggstrekk: TrekkDTO | null) {

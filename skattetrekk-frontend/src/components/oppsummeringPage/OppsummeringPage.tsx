@@ -129,7 +129,7 @@ const InternalOppsummeringPage = ({tilleggstrekkValue, tilleggstrekkType, getRes
 
             <FormSummary>
                 <FormSummary.Header>
-                    <FormSummary.Heading level="2">Skattetrekk</FormSummary.Heading>
+                    <FormSummary.Heading level="3">Skattetrekk</FormSummary.Heading>
                     <FormSummary.EditLink onClick={goToPreviousPage} />
                 </FormSummary.Header>
 
@@ -140,7 +140,7 @@ const InternalOppsummeringPage = ({tilleggstrekkValue, tilleggstrekkType, getRes
                         <FormSummary.Value>{visProsentEllerBelop({sats:tilleggstrekkValue, satsType:tilleggstrekkType, gyldigFraOgMed:null})}</FormSummary.Value>
                     </FormSummary.Answer>
                     <FormSummary.Answer>
-                        <FormSummary.Label>Skattekort</FormSummary.Label>
+                        <FormSummary.Label>Trekk fra skattekortet</FormSummary.Label>
                         <FormSummary.Value>{getResponse?.data !== null ? showPercentageOrTable(getResponse!.data.skattetrekk!) : "Ingen"}</FormSummary.Value>
                     </FormSummary.Answer>
                     <FormSummary.Answer>

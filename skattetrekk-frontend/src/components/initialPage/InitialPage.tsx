@@ -31,7 +31,7 @@ export function InitialPage() {
             <VStack gap="6">
                 {guidePanel()}
                 <Alert variant="warning">
-                    <Heading spacing size="small" level="3">
+                    <Heading spacing size="small" level="2">
                         Tjenesten er ikke åpen nå
                     </Heading>
                     <BodyLong spacing>Av tekniske årsaker er registrering av frivillig skattetrekk i denne tjenesten kun
@@ -84,7 +84,7 @@ export function InitialPage() {
                         <Accordion.Content>
                             <BodyLong spacing>Trekket du registrerer kommer i tillegg til det ordinære skattetrekket. Frivillig skattetrekk gjelder også ved utbetaling av feriepenger og
                                 for perioder hvor det ellers ikke blir trukket skatt. Det kan ikke trekkes frivillig skatt på skattefrie pengestøtter.
-                                Frivillig skattetrekk legges inn som et fast kronebeløp eller som et fast prosenttrekk per måned. </BodyLong>
+                                Frivillig skattetrekk legges inn som et fast kronebeløp eller som et fast prosenttrekk per måned, og vil gjelde fra og med måneden etter at du har lagt det inn. </BodyLong>
                             <Link href={import.meta.env.VITE_FRIVILLIG_SKATTETREKK_INFO_URL}>Les om frivillig skattetrekk</Link>
 
                         </Accordion.Content>
@@ -92,13 +92,13 @@ export function InitialPage() {
                     <Accordion.Item>
                         <Accordion.Header>Så lenge varer frivillig skattetrekk</Accordion.Header>
                         <Accordion.Content>
-                            <BodyLong>Frivillig skattetrekk vil gjelde fra og med måneden etter at du har lagt det inn.
-                                Det stoppes automatisk ved årsskiftet. Du må legge inn nytt trekk for hvert nytt år.
-                                Tilleggstrekk lagt til i desember vil gjelde fra januar og ut neste år.</BodyLong>
+                            <BodyLong>Frivillig skattetrekk stoppes automatisk ved årsskiftet.
+                                Du må legge inn nytt trekk for hvert nytt år.
+                                Frivillig skattetrekk lagt til i desember vil gjelde fra januar og ut neste år.</BodyLong>
                         </Accordion.Content>
                     </Accordion.Item>
                     <Accordion.Item>
-                        <Accordion.Header>Utbetalinger som kan ha frivillig skattetrekk</Accordion.Header>
+                        <Accordion.Header>Pengestøtter som kan ha frivillig skattetrekk</Accordion.Header>
                         <Accordion.Content>
                             <VStack gap="4">
                                 <List>
