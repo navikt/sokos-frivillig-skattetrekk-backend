@@ -7,14 +7,14 @@ import {PageLinks} from "@/routes";
 import {useLocationState} from "@/common/useLocationState";
 
 export const KvitteringPage = () => {
-    const { setShouldRefetch, getResponse } = useContext(DataContext)
+    const { setShouldRefetch, getResponse, setLoaderOverride } = useContext(DataContext)
     const { pid, navigate, isSent } = useLocationState()
 
     useEffect(() => {
         if(!isSent) {
             navigate(PageLinks.INDEX)
         }
-
+        setLoaderOverride(true)
         setShouldRefetch(true)
     }, [isSent])
 

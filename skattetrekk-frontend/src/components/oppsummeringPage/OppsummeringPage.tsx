@@ -48,12 +48,12 @@ const InternalOppsummeringPage = ({tilleggstrekkValue, tilleggstrekkType, getRes
     async function submitTilleggstrekk() {
         try {
             setIsSending(true)
+
             await saveSkattetrekk(
                 {
                     value: tilleggstrekkValue,
                     satsType: tilleggstrekkType,
                 })
-            setIsSending(false)
             navigate(PageLinks.KVITTERING, { tilleggstrekkType, tilleggstrekkValue, isSent: true })
         } catch (error) {
             setIsSending(false)
@@ -62,7 +62,7 @@ const InternalOppsummeringPage = ({tilleggstrekkValue, tilleggstrekkType, getRes
         }
     }
 
-    if( isError) {
+    if(isError) {
         return <ErrorMessage/>
     }
 
@@ -149,7 +149,7 @@ const InternalOppsummeringPage = ({tilleggstrekkValue, tilleggstrekkType, getRes
                                 <BodyLong size="medium" style={{ fontSize: "1.1rem" }}>
                                     <strong>Skattetrekk til sammen med din endring</strong>
                                 </BodyLong>
-                                <BodyLong className="sum" size={"large"} style={{ fontSize: "1.5rem" }}>
+                                <BodyLong className="sum" size={"large"} style={{ fontSize: "1.3rem" }}>
                                     <strong>{sumStrekkString()}</strong>
                                 </BodyLong>
                             </VStack>
