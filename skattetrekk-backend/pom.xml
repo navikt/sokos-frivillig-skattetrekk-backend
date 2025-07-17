@@ -28,11 +28,11 @@
         <jackson.version>2.19.1</jackson.version>
         <logstash-logback-encoder.version>8.1</logstash-logback-encoder.version>
         <spring-boot-starter-security.version>3.5.3</spring-boot-starter-security.version>
-        <mockwebserver.version>5.0.0</mockwebserver.version>
+        <mockwebserver.version>5.1.0</mockwebserver.version>
 
         <!-- Test -->
         <mockk.version>1.14.4</mockk.version>
-        <junit-jupiter.version>5.13.2</junit-jupiter.version>
+        <junit-jupiter.version>5.13.3</junit-jupiter.version>
 
     </properties>
 

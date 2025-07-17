@@ -16,7 +16,7 @@
   },
   "dependencies": {
     "cors": "^2.8.5",
-    "dotenv": "^17.0.1",
+    "dotenv": "^17.2.0",
     "express": "^4.21.2",
     "jsonwebtoken": "^9.0.0",
     "node-jose": "^2.2.0",
@@ -30,7 +30,7 @@
     "@navikt/ds-react": "^7.14.2",
     "@navikt/nav-dekoratoren-moduler": "^3.2.2",
     "@types/express": "^5.0.1",
-    "@types/node": "^24.0.10",
+    "@types/node": "^24.0.12",
     "@types/react": "^19.1.8",
     "@types/react-dom": "^19.1.6",
     "@typescript-eslint/eslint-plugin": "^8.29.0",
@@ -44,10 +44,10 @@
     "stylelint-config-standard": "^38.0.0",
     "ts-node": "^10.9.1",
     "typescript": "^5.8.3",
-    "typescript-eslint": "^8.35.1",
+    "typescript-eslint": "^8.36.0",
     "vite": "^6.3.2",
-    "vite-plugin-eslint2": "^5.0.3",
-    "vite-plugin-stylelint": "^6.0.0",
+    "vite-plugin-eslint2": "^5.0.4",
+    "vite-plugin-stylelint": "^6.0.2",
     "vitest": "^3.2.4"
   }
 }
