@@ -63,7 +63,7 @@ export function InitialPage() {
                 }
             </VStack>
 
-            <VStack gap="16">
+            <VStack gap="4">
                 {getResponse?.data &&
                     <VStack gap={"4"}>
                         <Heading size={"medium"} level="2">Dine registrerte skattetrekk</Heading>
@@ -76,7 +76,7 @@ export function InitialPage() {
                             : <></>
                         }
                     </VStack> }
-
+                <VStack gap="4">
                 <Heading size={"medium"} level="2">Om frivillig skattetrekk</Heading>
                 <Accordion>
                     <Accordion.Item>
@@ -126,7 +126,7 @@ export function InitialPage() {
                         </Accordion.Content>
                     </Accordion.Item>
                 </Accordion>
-
+                </VStack>
             </VStack>
 
             <HStack>
