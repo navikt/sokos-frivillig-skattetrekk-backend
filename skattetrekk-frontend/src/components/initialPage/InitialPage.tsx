@@ -26,6 +26,14 @@ export function InitialPage() {
         return currentDate.getFullYear();
     }
 
+    function getButtonStartTekst(){
+        if (getResponse?.data?.tilleggstrekk == null || getResponse?.data?.fremtidigTilleggstrekk?.sats == 0) {
+            return "Start registrering";
+        }
+        return "Endre frivillig skattetrekk";
+    }
+
+
     if (getResponse?.messages?.find(message => message.code === MessageCode.OPPDRAG_UTILGJENGELIG)) {
         return (
             <VStack gap="6">
@@ -134,8 +142,7 @@ export function InitialPage() {
             </VStack>
 
             <HStack>
-                <Button variant="primary" onClick={onClickContinue}>{getResponse?.data?.tilleggstrekk ?
-                    "Endre frivillig skattetrekk" : "Start registrering"}</Button>
+                <Button variant="primary" onClick={onClickContinue}>{getButtonStartTekst()}</Button>
             </HStack>
         </VStack>
     )
