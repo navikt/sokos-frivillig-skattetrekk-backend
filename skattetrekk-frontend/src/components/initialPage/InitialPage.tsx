@@ -48,7 +48,9 @@ export function InitialPage() {
 
     return (
         <VStack gap="12">
-            <VStack gap="6">
+            <VStack gap="10">
+
+                <>
 
                 { guidePanel()}
 
@@ -61,9 +63,9 @@ export function InitialPage() {
                         </VStack>
                     </Alert>
                 }
-            </VStack>
+                </>
 
-            <VStack gap="4">
+                <>
                 {getResponse?.data &&
                     <VStack gap={"4"}>
                         <Heading size={"medium"} level="2">Dine registrerte skattetrekk</Heading>
@@ -76,9 +78,11 @@ export function InitialPage() {
                             : <></>
                         }
                     </VStack> }
-                <VStack gap="4">
+                </>
+
+                <div>
                 <Heading size={"medium"} level="2">Om frivillig skattetrekk</Heading>
-                <Accordion>
+                <Accordion style={{ margin: '1em 0' }}>
                     <Accordion.Item>
                         <Accordion.Header>Slik trekker Nav frivillig skattetrekk</Accordion.Header>
                         <Accordion.Content>
@@ -126,7 +130,7 @@ export function InitialPage() {
                         </Accordion.Content>
                     </Accordion.Item>
                 </Accordion>
-                </VStack>
+                </div>
             </VStack>
 
             <HStack>
