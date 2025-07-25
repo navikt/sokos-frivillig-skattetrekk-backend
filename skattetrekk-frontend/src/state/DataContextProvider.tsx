@@ -1,19 +1,21 @@
 import React, {createContext, useCallback, useEffect, useState} from 'react'
-import {fetchSkattetrekk, FrivilligSkattetrekkData, FrivilligSkattetrekkResponse} from "@/api/skattetrekkBackendClient";
-import {BodyShort, Box, Heading, Loader, VStack} from "@navikt/ds-react";
+import {fetchSkattetrekk, FrivilligSkattetrekkResponse} from "@/api/skattetrekkBackendClient";
+import {BodyShort, Box, Loader, VStack} from "@navikt/ds-react";
 
 interface DataContextValue {
     getResponse: FrivilligSkattetrekkResponse | null
     setGetResponse: (value: FrivilligSkattetrekkResponse) => void
     setShouldRefetch: (value: boolean) => void,
-    setLoaderOverride: (value: boolean) => void
+    setLoaderOverride: (value: boolean) => void,
+    getLoaderOverride: boolean
 }
 
 const DataContextDefaultValue: DataContextValue = {
     getResponse: null,
     setGetResponse: () => undefined,
     setShouldRefetch: () => undefined,
-    setLoaderOverride: () => undefined
+    setLoaderOverride: () => undefined,
+    getLoaderOverride: false
 }
 
 export const DataContext = createContext(DataContextDefaultValue)
@@ -39,6 +41,7 @@ function DataContextProvider(props: DataContextProviderProps) {
                 setShouldRefetch(true) // Reset shouldRefetch to true since the refetch failed
             } finally {
                 setIsFetching(false)
+                setLoaderOverride(false)
             }
         },
         [setShouldRefetch]
@@ -51,7 +54,6 @@ function DataContextProvider(props: DataContextProviderProps) {
     }, [refetch, shouldRefetch])
 
     const showLoader = (getResponse === null || isFetching) && !loaderOverride;
-    const showKvitteringsideLoader = (getResponse === null || isFetching) && loaderOverride;
 
     return (
         <DataContext.Provider
@@ -59,22 +61,11 @@ function DataContextProvider(props: DataContextProviderProps) {
                 getResponse,
                 setGetResponse,
                 setShouldRefetch,
-                setLoaderOverride
+                setLoaderOverride,
+                getLoaderOverride: loaderOverride
             }}>
             <Box position="relative" minHeight={showLoader ? "400px" : undefined}>
                 {props.children}
-
-                {(showKvitteringsideLoader) ? (
-                    <Box background="bg-subtle" padding="16" borderRadius="large">
-                        <VStack align="center" gap="8">
-                            <Heading align="center" size={"large"} level="2">
-                                Vent mens vi sender inn
-                            </Heading>
-                            <Loader size="3xlarge" />
-                            <BodyShort align="center">Dette kan ta opptil ett minutt.</BodyShort>
-                        </VStack>
-                    </Box>
-                ) : null }
 
                 {(showLoader) ?
                     (

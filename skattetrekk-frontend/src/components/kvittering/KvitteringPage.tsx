@@ -1,4 +1,4 @@
-import {Alert, BodyLong, BodyShort, Heading, Link, VStack} from '@navikt/ds-react'
+import {Alert, BodyLong, BodyShort, Box, Heading, Link, Loader, VStack} from '@navikt/ds-react'
 import React, {useContext, useEffect} from 'react'
 import {numberFormatWithKr} from "@/common/Utils";
 import {FrivilligSkattetrekkData, MessageType, SatsType} from "@/api/skattetrekkBackendClient";
@@ -7,7 +7,7 @@ import {PageLinks} from "@/routes";
 import {useLocationState} from "@/common/useLocationState";
 
 export const KvitteringPage = () => {
-    const { setShouldRefetch, getResponse, setLoaderOverride } = useContext(DataContext)
+    const { setShouldRefetch, getResponse, setLoaderOverride, getLoaderOverride} = useContext(DataContext)
     const { pid, navigate, isSent } = useLocationState()
 
     useEffect(() => {
@@ -32,6 +32,21 @@ export const KvitteringPage = () => {
                 `Frivillig skattetrekk på ${numberFormatWithKr(registrertFrivilligSkattetrekk?.sats ?? 0)} per måned ble registrert`}
         </>)
     }
+
+    if (getLoaderOverride){
+        return (
+            <Box background="bg-subtle" padding="16" borderRadius="large">
+                <VStack align="center" gap="8">
+                    <Heading align="center" size={"large"} level="2">
+                        Vent mens vi sender inn
+                    </Heading>
+                    <Loader size="3xlarge" />
+                    <BodyShort align="center">Dette kan ta opptil ett minutt.</BodyShort>
+                </VStack>
+            </Box>
+        )
+    }
+
 
     if (getResponse.messages?.some((msg: { type: MessageType }) => msg.type === MessageType.ERROR)) {
         return (
