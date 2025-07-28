@@ -86,6 +86,9 @@ const InternalOppsummeringPage = ({tilleggstrekkValue, tilleggstrekkType, getRes
         }
 
         if (tilleggstrekkType === SatsType.PROSENT && skattetrekk.prosentsats != null) {
+            if (skattetrekk.prosentsats + tilleggstrekkValue > 100){
+                return '100 %'
+            }
             return `${skattetrekk.prosentsats + tilleggstrekkValue} %`
         }
 
@@ -141,7 +144,7 @@ const InternalOppsummeringPage = ({tilleggstrekkValue, tilleggstrekkType, getRes
                     </FormSummary.Answer>
                     <FormSummary.Answer>
                         <FormSummary.Label>Trekk fra skattekortet</FormSummary.Label>
-                        <FormSummary.Value>{getResponse?.data !== null ? showPercentageOrTable(getResponse!.data.skattetrekk!) : "Ingen"}</FormSummary.Value>
+                        <FormSummary.Value>{getResponse?.data !== null ? showPercentageOrTable(getResponse!.data.skattetrekk!) : "Skattekort ikke funnet"}</FormSummary.Value>
                     </FormSummary.Answer>
                     <FormSummary.Answer>
                         <Box padding="4" background="surface-subtle" borderRadius="large">
