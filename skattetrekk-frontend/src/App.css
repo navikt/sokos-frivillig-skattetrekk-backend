@@ -57,3 +57,13 @@
 .representasjon-banner {
   margin-bottom: var(--a-spacing-9);
 }
+
+.microfrontend-container {
+  margin: 0 auto;
+}
+
+.content-wrapper {
+  max-width: var(--content-width);
+  width: 100%;
+  padding-inline: 12px;
+}
