@@ -78,6 +78,9 @@ class SetPidFilter(
 
     fun checkBorgerTilgang(httpMethod: String, navOnBehalfOfCookie: Cookie?) : AuthenticatedUserDetails {
         val requestingPid = tokenService.determineRequestingPid()
+
+        //TODO: Trenger vi egentlig å gå mot pensjon reprensentasjon?
+
         if (navOnBehalfOfCookie != null) {
             val fullmaktsgiverKryptertPid = navOnBehalfOfCookie.value
             val representasjonsforholdValidity = haandterFullmakt(fullmaktsgiverKryptertPid, requestingPid)
