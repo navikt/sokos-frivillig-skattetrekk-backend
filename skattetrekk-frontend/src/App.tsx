@@ -13,9 +13,7 @@ export function App() {
         <div className="mainBody">
             <VStack gap="14" className="contentWrapper">
                 <Heading size={"xlarge"} level={"1"}>Frivillig skattetrekk</Heading>
-                <DataContextProvider>
                     <RouterProvider router={browserRouter}/>
-                </DataContextProvider>
             </VStack>
         </div>
     )

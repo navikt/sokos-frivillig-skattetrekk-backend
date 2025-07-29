@@ -33,6 +33,27 @@ export function InitialPage() {
         return "Endre frivillig skattetrekk";
     }
 
+    if (document.cookie.includes("nav-obo")) {
+
+        return (
+            <VStack gap='6'>
+                {guidePanel()}
+                <Alert variant={"info"}>
+                    <Heading spacing size="small" level="2">
+                        Fullmektige kan desverre ikke bruke denne tjenesten
+                    </Heading>
+                    <BodyLong spacing>
+                        <Link href={'https://www.nav.no/frivillig-skattetrekk'}>
+                            Her finner du informasjon om hvordan du kan registrere frivillig skattetrekk på vegne av andre.
+                        </Link>
+                    </BodyLong>
+                </Alert>
+            </VStack>
+        )
+
+
+    }
+
 
     if (getResponse?.messages?.find(message => message.code === MessageCode.OPPDRAG_UTILGJENGELIG)) {
         return (
