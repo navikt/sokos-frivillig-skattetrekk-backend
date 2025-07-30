@@ -44,11 +44,12 @@ const InternalOppsummeringPage = ({tilleggstrekkValue, tilleggstrekkType, getRes
     const { navigate } = useLocationState()
     const [isSending, setIsSending] = useState(false)
     const [isError, setIsError] = useState(false)
+    const {setLoaderOverride} = useContext(DataContext)
 
     async function submitTilleggstrekk() {
         try {
             setIsSending(true)
-
+            setLoaderOverride(true)
             await saveSkattetrekk(
                 {
                     value: tilleggstrekkValue,
@@ -58,6 +59,7 @@ const InternalOppsummeringPage = ({tilleggstrekkValue, tilleggstrekkType, getRes
         } catch (error) {
             setIsSending(false)
             setIsError(true)
+            setLoaderOverride(false)
             console.error("ErrorMessage saving skattetrekk:", error)
         }
     }

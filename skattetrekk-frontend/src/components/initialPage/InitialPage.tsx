@@ -27,14 +27,13 @@ export function InitialPage() {
     }
 
     function getButtonStartTekst(){
-        if (getResponse?.data?.tilleggstrekk == null || getResponse?.data?.fremtidigTilleggstrekk?.sats == 0) {
+        if ((getResponse?.data?.tilleggstrekk == null && getResponse?.data.tilleggstrekk == null) || getResponse?.data?.fremtidigTilleggstrekk?.sats == 0) {
             return "Start registrering";
         }
         return "Endre frivillig skattetrekk";
     }
 
     if (document.cookie.includes("nav-obo")) {
-
         return (
             <VStack gap='6'>
                 {guidePanel()}
@@ -43,7 +42,7 @@ export function InitialPage() {
                         Fullmektige kan desverre ikke bruke denne tjenesten
                     </Heading>
                     <BodyLong spacing>
-                        <Link href={'https://www.nav.no/frivillig-skattetrekk'}>
+                        <Link href={import.meta.env.VITE_FRIVILLIG_SKATTETREKK_INFO_URL}>
                             Her finner du informasjon om hvordan du kan registrere frivillig skattetrekk på vegne av andre.
                         </Link>
                     </BodyLong>

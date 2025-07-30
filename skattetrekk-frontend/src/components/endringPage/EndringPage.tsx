@@ -99,7 +99,7 @@ export const EndringPage = () => {
                         Barnepensjon
                     </Heading>
                     <BodyLong>
-                        Frivillig skatterekk på barnepensjon kan desverre ikke registreres i denne tjenesten. <Link href={import.meta.env.FRIVILLIG_SKATTETREKK_INFO_URL}>Her finner du informasjon om frivillig skattetrekk og barnepensjon.</Link>
+                        Frivillig skatterekk på barnepensjon kan desverre ikke registreres i denne tjenesten. <Link href={import.meta.env.VITE_FRIVILLIG_SKATTETREKK_INFO_URL}>Her finner du informasjon om frivillig skattetrekk og barnepensjon.</Link>
                     </BodyLong>
                 </VStack>
 
