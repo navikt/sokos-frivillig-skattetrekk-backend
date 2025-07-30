@@ -60,6 +60,7 @@
 
 .microfrontend-container {
   margin: 0 auto;
-  max-width: 576px;
+  max-width: 600px;
+  padding-inline: 12px;
   width: 100%;
 }

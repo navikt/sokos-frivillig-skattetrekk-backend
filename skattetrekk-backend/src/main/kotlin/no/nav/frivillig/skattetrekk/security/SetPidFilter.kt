@@ -81,11 +81,14 @@ class SetPidFilter(
 
         //TODO: Trenger vi egentlig å gå mot pensjon reprensentasjon?
 
+        /*
         if (navOnBehalfOfCookie != null) {
             val fullmaktsgiverKryptertPid = navOnBehalfOfCookie.value
             val representasjonsforholdValidity = haandterFullmakt(fullmaktsgiverKryptertPid, requestingPid)
             return AuthenticatedUserDetails(representasjonsforholdValidity.fullmaktsgiverFnr, representasjonsforholdValidity.hasValidRepresentasjonsforhold)
         }
+
+        */
 
         return AuthenticatedUserDetails(requestingPid, false)
     }
