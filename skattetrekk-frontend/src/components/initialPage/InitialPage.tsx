@@ -27,7 +27,7 @@ export function InitialPage() {
     }
 
     function getButtonStartTekst(){
-        if ((getResponse?.data?.tilleggstrekk == null && getResponse?.data.tilleggstrekk == null) || getResponse?.data?.fremtidigTilleggstrekk?.sats == 0) {
+        if ((getResponse?.data?.tilleggstrekk == null && getResponse?.data?.fremtidigTilleggstrekk == null) || getResponse?.data?.fremtidigTilleggstrekk?.sats == 0) {
             return "Start registrering";
         }
         return "Endre frivillig skattetrekk";
@@ -39,7 +39,7 @@ export function InitialPage() {
                 {guidePanel()}
                 <Alert variant={"info"}>
                     <Heading spacing size="small" level="2">
-                        Fullmektige kan desverre ikke bruke denne tjenesten
+                        Fullmektige kan dessverre ikke bruke denne tjenesten
                     </Heading>
                     <BodyLong spacing>
                         <Link href={import.meta.env.VITE_FRIVILLIG_SKATTETREKK_INFO_URL}>

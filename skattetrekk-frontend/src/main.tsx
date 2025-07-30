@@ -7,7 +7,7 @@ import "./App.css";
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-      <DataContextProvider>
+
           <div className="microfrontend-container">
               <representasjon-banner
                   representasjonstyper="PENSJON_FULLSTENDIG,PENSJON_BEGRENSET,PENSJON_SKRIV,PENSJON_KOMMUNISER,PENSJON_LES,PENSJON_SAMHANDLER,PENSJON_SAMHANDLER_ADMIN,PENSJON_SUPERADMIN"
@@ -15,6 +15,5 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
               ></representasjon-banner>
           </div>
         <App />
-      </DataContextProvider>
   </React.StrictMode>
 )
