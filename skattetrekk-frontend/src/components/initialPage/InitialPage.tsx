@@ -33,7 +33,7 @@ export function InitialPage() {
         return "Endre frivillig skattetrekk";
     }
 
-    if (document.cookie.includes("nav-obo;")) {
+    if (document.cookie.includes("nav-obo=") ) {
         return (
             <VStack gap='6'>
                 {guidePanel()}
