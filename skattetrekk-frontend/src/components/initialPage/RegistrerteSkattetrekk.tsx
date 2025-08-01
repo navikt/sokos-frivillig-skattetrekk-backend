@@ -24,7 +24,7 @@ export function RegistrerteSkattetrekk(props: RegistrerteSkattetrekkProps) {
                 <Alert variant="info">
                     {props.isDecember ?
                         <BodyLong>
-                            Nytt frivillig skattetrekk på {visProsentEllerBelop(props.fremtidigTilleggstrekk)}vil gjelde fra januar neste år.
+                            Nytt frivillig skattetrekk på {visProsentEllerBelop(props.fremtidigTilleggstrekk)} vil gjelde fra januar neste år.
                             Hvis du registrerte trekket i slutten av desember, kan det ta inntil midten av januar før trekket kommer med på utbetalingene dine.
                         </BodyLong> :
                         <BodyLong>

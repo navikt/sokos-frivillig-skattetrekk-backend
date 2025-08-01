@@ -1,4 +1,4 @@
-import {Accordion, Alert, BodyLong, Button, GuidePanel, Heading, HStack, Link, List, VStack} from "@navikt/ds-react";
+import {Accordion, Alert, BodyLong, BodyShort, Button, GuidePanel, Heading, HStack, Link, List, VStack} from "@navikt/ds-react";
 import React, {useContext} from "react";
 import {RegistrerteSkattetrekk} from "@/components/initialPage/RegistrerteSkattetrekk";
 import {MessageCode} from "@/api/skattetrekkBackendClient";
@@ -33,7 +33,7 @@ export function InitialPage() {
         return "Endre frivillig skattetrekk";
     }
 
-    if (document.cookie.includes("nav-obo")) {
+    if (document.cookie.includes("nav-obo;")) {
         return (
             <VStack gap='6'>
                 {guidePanel()}
