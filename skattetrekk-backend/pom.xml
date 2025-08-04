@@ -32,7 +32,7 @@
 
         <!-- Test -->
         <mockk.version>1.14.4</mockk.version>
-        <junit-jupiter.version>5.13.3</junit-jupiter.version>
+        <junit-jupiter.version>5.13.4</junit-jupiter.version>
 
     </properties>
 
