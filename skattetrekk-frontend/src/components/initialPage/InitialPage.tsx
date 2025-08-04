@@ -49,10 +49,7 @@ export function InitialPage() {
                 </Alert>
             </VStack>
         )
-
-
     }
-
 
     if (getResponse?.messages?.find(message => message.code === MessageCode.OPPDRAG_UTILGJENGELIG)) {
         return (
