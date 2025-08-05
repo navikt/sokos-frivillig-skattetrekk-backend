@@ -10,7 +10,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
 
           <div className="microfrontend-container">
               <representasjon-banner
-                  representasjonstyper="PENSJON_FULLSTENDIG,PENSJON_BEGRENSET,PENSJON_SKRIV,PENSJON_KOMMUNISER,PENSJON_LES,PENSJON_SAMHANDLER,PENSJON_SAMHANDLER_ADMIN,PENSJON_SUPERADMIN"
+                  representasjonstyper=""
                   redirectTo={`${window.location.origin}/utbetaling/skattetrekk/`}
               ></representasjon-banner>
           </div>
