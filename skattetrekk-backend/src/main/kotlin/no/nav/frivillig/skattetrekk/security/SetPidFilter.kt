@@ -5,9 +5,6 @@ import jakarta.servlet.FilterChain
 import jakarta.servlet.http.Cookie
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
-import no.nav.frivillig.skattetrekk.client.fullmakt.FullmaktClient
-import no.nav.frivillig.skattetrekk.client.fullmakt.api.RepresentasjonsforholdValidity
-import no.nav.frivillig.skattetrekk.configuration.AppId
 import no.nav.frivillig.skattetrekk.endpoint.NoFullmaktPresentException
 import no.nav.frivillig.skattetrekk.endpoint.UnauthorizedException
 import org.slf4j.Logger
@@ -21,7 +18,6 @@ import java.time.LocalDateTime
 
 @Component
 class SetPidFilter(
-    private val fullmaktClient: FullmaktClient,
     private val tokenService: TokenService
 ): OncePerRequestFilter() {
 
@@ -78,32 +74,7 @@ class SetPidFilter(
 
     fun checkBorgerTilgang(httpMethod: String, navOnBehalfOfCookie: Cookie?) : AuthenticatedUserDetails {
         val requestingPid = tokenService.determineRequestingPid()
-        if (navOnBehalfOfCookie != null) {
-            val fullmaktsgiverKryptertPid = navOnBehalfOfCookie.value
-            val representasjonsforholdValidity = haandterFullmakt(fullmaktsgiverKryptertPid, requestingPid)
-            return AuthenticatedUserDetails(representasjonsforholdValidity.fullmaktsgiverFnr, representasjonsforholdValidity.hasValidRepresentasjonsforhold)
-        }
-
         return AuthenticatedUserDetails(requestingPid, false)
-    }
-
-    private fun haandterFullmakt(fullmaktsgiverPid: String, requestingPid: String): RepresentasjonsforholdValidity {
-        val harGyldigFullmakt = fullmaktClient.hasValidRepresentasjonsforhold(fullmaktsgiverPid, requestingPid)
-        if (!harGyldigFullmakt?.hasValidRepresentasjonsforhold!!) {
-            log.info("Fullmaktsforhold er ikke funnet. Nekter adgang")
-            throw NoFullmaktPresentException(AppId.PENSJON_FULLMAKT.name, "", "", null)
-        }
-
-        /*
-        TODO fix me
-        if(personService.hasAdressebeskyttelse(harGyldigFullmakt.fullmaktsgiverFnr)) {
-            log.info("Fullmaktsforhold for bruker med adressebeskyttelse. Nekter adgang")
-            throw NoFullmaktPresentException()
-        }
-
-         */
-
-        return harGyldigFullmakt
     }
 
 }

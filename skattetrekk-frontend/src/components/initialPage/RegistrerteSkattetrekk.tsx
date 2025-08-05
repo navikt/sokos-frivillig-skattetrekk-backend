@@ -24,13 +24,12 @@ export function RegistrerteSkattetrekk(props: RegistrerteSkattetrekkProps) {
                 <Alert variant="info">
                     {props.isDecember ?
                         <BodyLong>
-                            Nytt frivillig skattetrekk på {visProsentEllerBelop(props.fremtidigTilleggstrekk)}vil gjelde fra januar neste år.
+                            Nytt frivillig skattetrekk på {visProsentEllerBelop(props.fremtidigTilleggstrekk)} vil gjelde fra januar neste år.
                             Hvis du registrerte trekket i slutten av desember, kan det ta inntil midten av januar før trekket kommer med på utbetalingene dine.
                         </BodyLong> :
                         <BodyLong>
-                            Vi har registrert nytt frivillig skattetrekk på {visProsentEllerBelop(props.fremtidigTilleggstrekk)} fra {formatDateLong(props.fremtidigTilleggstrekk!.gyldigFraOgMed!)} og ut året.
-                            Det kan ta inntil 14 dager før trekket kommer med på utbetalingene dine. Trekket gjelder ut året.
-                        </BodyLong> }
+                            Nytt frivillig skattetrekk på {visProsentEllerBelop(props.fremtidigTilleggstrekk)} fra og med neste måned og ut året.
+                            </BodyLong> }
 
                 </Alert>
             }

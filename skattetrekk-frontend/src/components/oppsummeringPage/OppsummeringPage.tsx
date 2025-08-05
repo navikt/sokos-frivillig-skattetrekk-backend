@@ -44,25 +44,27 @@ const InternalOppsummeringPage = ({tilleggstrekkValue, tilleggstrekkType, getRes
     const { navigate } = useLocationState()
     const [isSending, setIsSending] = useState(false)
     const [isError, setIsError] = useState(false)
+    const {setLoaderOverride} = useContext(DataContext)
 
     async function submitTilleggstrekk() {
         try {
             setIsSending(true)
+            setLoaderOverride(true)
             await saveSkattetrekk(
                 {
                     value: tilleggstrekkValue,
                     satsType: tilleggstrekkType,
                 })
-            setIsSending(false)
             navigate(PageLinks.KVITTERING, { tilleggstrekkType, tilleggstrekkValue, isSent: true })
         } catch (error) {
             setIsSending(false)
             setIsError(true)
+            setLoaderOverride(false)
             console.error("ErrorMessage saving skattetrekk:", error)
         }
     }
 
-    if( isError) {
+    if(isError) {
         return <ErrorMessage/>
     }
 
@@ -86,6 +88,9 @@ const InternalOppsummeringPage = ({tilleggstrekkValue, tilleggstrekkType, getRes
         }
 
         if (tilleggstrekkType === SatsType.PROSENT && skattetrekk.prosentsats != null) {
+            if (skattetrekk.prosentsats + tilleggstrekkValue > 100){
+                return '100 %'
+            }
             return `${skattetrekk.prosentsats + tilleggstrekkValue} %`
         }
 
@@ -129,7 +134,7 @@ const InternalOppsummeringPage = ({tilleggstrekkValue, tilleggstrekkType, getRes
 
             <FormSummary>
                 <FormSummary.Header>
-                    <FormSummary.Heading level="2">Skattetrekk</FormSummary.Heading>
+                    <FormSummary.Heading level="3">Skattetrekk</FormSummary.Heading>
                     <FormSummary.EditLink onClick={goToPreviousPage} />
                 </FormSummary.Header>
 
@@ -140,8 +145,8 @@ const InternalOppsummeringPage = ({tilleggstrekkValue, tilleggstrekkType, getRes
                         <FormSummary.Value>{visProsentEllerBelop({sats:tilleggstrekkValue, satsType:tilleggstrekkType, gyldigFraOgMed:null})}</FormSummary.Value>
                     </FormSummary.Answer>
                     <FormSummary.Answer>
-                        <FormSummary.Label>Skattekort</FormSummary.Label>
-                        <FormSummary.Value>{getResponse?.data !== null ? showPercentageOrTable(getResponse!.data.skattetrekk!) : "Ingen"}</FormSummary.Value>
+                        <FormSummary.Label>Trekk fra skattekortet</FormSummary.Label>
+                        <FormSummary.Value>{getResponse?.data !== null ? showPercentageOrTable(getResponse!.data.skattetrekk!) : "Skattekort ikke funnet"}</FormSummary.Value>
                     </FormSummary.Answer>
                     <FormSummary.Answer>
                         <Box padding="4" background="surface-subtle" borderRadius="large">
@@ -149,7 +154,7 @@ const InternalOppsummeringPage = ({tilleggstrekkValue, tilleggstrekkType, getRes
                                 <BodyLong size="medium" style={{ fontSize: "1.1rem" }}>
                                     <strong>Skattetrekk til sammen med din endring</strong>
                                 </BodyLong>
-                                <BodyLong className="sum" size={"large"} style={{ fontSize: "1.5rem" }}>
+                                <BodyLong className="sum" size={"large"} style={{ fontSize: "1.3rem" }}>
                                     <strong>{sumStrekkString()}</strong>
                                 </BodyLong>
                             </VStack>

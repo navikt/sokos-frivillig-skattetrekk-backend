@@ -1,17 +1,21 @@
 import React, {createContext, useCallback, useEffect, useState} from 'react'
-import {fetchSkattetrekk, FrivilligSkattetrekkData, FrivilligSkattetrekkResponse} from "@/api/skattetrekkBackendClient";
+import {fetchSkattetrekk, FrivilligSkattetrekkResponse} from "@/api/skattetrekkBackendClient";
 import {BodyShort, Box, Loader, VStack} from "@navikt/ds-react";
 
 interface DataContextValue {
     getResponse: FrivilligSkattetrekkResponse | null
     setGetResponse: (value: FrivilligSkattetrekkResponse) => void
-    setShouldRefetch: (value: boolean) => void
+    setShouldRefetch: (value: boolean) => void,
+    setLoaderOverride: (value: boolean) => void,
+    getLoaderOverride: boolean
 }
 
 const DataContextDefaultValue: DataContextValue = {
     getResponse: null,
     setGetResponse: () => undefined,
     setShouldRefetch: () => undefined,
+    setLoaderOverride: () => undefined,
+    getLoaderOverride: false
 }
 
 export const DataContext = createContext(DataContextDefaultValue)
@@ -24,6 +28,7 @@ function DataContextProvider(props: DataContextProviderProps) {
     const [isFetching, setIsFetching] = useState(false)
     const [shouldRefetch, setShouldRefetch] = useState(true)
     const [getResponse, setGetResponse] = useState(DataContextDefaultValue.getResponse)
+    const [loaderOverride, setLoaderOverride] = useState(false)
 
     const refetch = useCallback(
         async ()  => {
@@ -36,6 +41,7 @@ function DataContextProvider(props: DataContextProviderProps) {
                 setShouldRefetch(true) // Reset shouldRefetch to true since the refetch failed
             } finally {
                 setIsFetching(false)
+                setLoaderOverride(false)
             }
         },
         [setShouldRefetch]
@@ -47,7 +53,7 @@ function DataContextProvider(props: DataContextProviderProps) {
         }
     }, [refetch, shouldRefetch])
 
-    const showLoader = getResponse === null || isFetching;
+    const showLoader = (getResponse === null || isFetching) && !loaderOverride;
 
     return (
         <DataContext.Provider
@@ -55,6 +61,8 @@ function DataContextProvider(props: DataContextProviderProps) {
                 getResponse,
                 setGetResponse,
                 setShouldRefetch,
+                setLoaderOverride,
+                getLoaderOverride: loaderOverride
             }}>
             <Box position="relative" minHeight={showLoader ? "400px" : undefined}>
                 {props.children}
@@ -69,7 +77,6 @@ function DataContextProvider(props: DataContextProviderProps) {
                                 </VStack>
                             </Box>
                         </Box>
-
                     ) : null}
             </Box>
         </DataContext.Provider>
