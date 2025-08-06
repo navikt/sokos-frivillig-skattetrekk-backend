@@ -137,8 +137,6 @@ const InternalOppsummeringPage = ({tilleggstrekkValue, tilleggstrekkType, getRes
                     <FormSummary.Heading level="3">Skattetrekk</FormSummary.Heading>
                     <FormSummary.EditLink onClick={goToPreviousPage} />
                 </FormSummary.Header>
-
-
                 <FormSummary.Answers>
                     <FormSummary.Answer>
                         <FormSummary.Label>Frivillig skattetrekk</FormSummary.Label>
@@ -149,16 +147,18 @@ const InternalOppsummeringPage = ({tilleggstrekkValue, tilleggstrekkType, getRes
                         <FormSummary.Value>{getResponse?.data !== null ? showPercentageOrTable(getResponse!.data.skattetrekk!) : "Skattekort ikke funnet"}</FormSummary.Value>
                     </FormSummary.Answer>
                     <FormSummary.Answer>
-                        <Box padding="4" background="surface-subtle" borderRadius="large">
-                            <VStack gap={{ xs: '2', sm: '1' }}>
-                                <BodyLong size="medium" style={{ fontSize: "1.1rem" }}>
-                                    <strong>Skattetrekk til sammen med din endring</strong>
-                                </BodyLong>
-                                <BodyLong className="sum" size={"large"} style={{ fontSize: "1.3rem" }}>
-                                    <strong>{sumStrekkString()}</strong>
-                                </BodyLong>
-                            </VStack>
-                        </Box>
+                        <FormSummary.Value>
+                            <FormSummary.Answers>
+                                <FormSummary.Answer>
+                                    <FormSummary.Label><BodyLong size="medium" style={{ fontSize: "1.1rem" }}>
+                                        <strong>Skattetrekk til sammen med din endring</strong>
+                                    </BodyLong></FormSummary.Label>
+                                    <FormSummary.Value><BodyLong className="sum" size={"large"} style={{ fontSize: "1.3rem" }}>
+                                        <strong>{sumStrekkString()}</strong>
+                                    </BodyLong></FormSummary.Value>
+                                </FormSummary.Answer>
+                            </FormSummary.Answers>
+                        </FormSummary.Value>
                     </FormSummary.Answer>
                 </FormSummary.Answers>
             </FormSummary>

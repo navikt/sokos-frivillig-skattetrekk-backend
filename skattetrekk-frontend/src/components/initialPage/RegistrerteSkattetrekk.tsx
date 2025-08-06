@@ -1,8 +1,8 @@
 import {Alert, BodyLong, HGrid, VStack} from "@navikt/ds-react";
-import {ForenkletSkattetrekk, MessageCode, TrekkDTO} from "@/api/skattetrekkBackendClient";
+import {ForenkletSkattetrekk, TrekkDTO} from "@/api/skattetrekkBackendClient";
 import "./RegistrerteSkattetrekk.css";
 import {showPercentageOrTable, visProsentEllerBelop} from "@/common/Utils";
-import React, {useEffect} from "react";
+import React from "react";
 
 
 type RegistrerteSkattetrekkProps = {
@@ -40,16 +40,15 @@ export function RegistrerteSkattetrekk(props: RegistrerteSkattetrekkProps) {
                 </Alert>
             }
 
-            <HGrid gap="4" columns="min-content 1fr">
-                <dt className="label">
-                    <strong>Frivillig skattetrekk:</strong>
-                </dt>
-                <dd className="data">{visProsentEllerBelop(props.tilleggstrekk)}</dd>
 
-                <dt className="label"><strong>Trekk fra skattekortet:</strong></dt>
-                <dd className="data">{showPercentageOrTable(props.skatteTrekk)}</dd>
-            </HGrid>
+                <dl style={{ display: "grid", gridTemplateColumns: "max-content 1fr", rowGap: "0.75em", columnGap: "1em", alignItems: "baseline", margin: 0 }}>
+                    <dt className="label">
+                        <strong>Frivillig skattetrekk:</strong>
+                    </dt>
+                    <dd className="data">{visProsentEllerBelop(props.tilleggstrekk)}</dd>
+
+                    <dt className="label"><strong>Trekk fra skattekortet:</strong></dt>
+                    <dd className="data">{showPercentageOrTable(props.skatteTrekk)}</dd>
+                </dl>
         </VStack>)
 }
-
-

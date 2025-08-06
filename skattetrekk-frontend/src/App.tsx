@@ -11,12 +11,16 @@ export function App() {
 
     return (
         <div className="mainBody">
+            <main>
             <VStack gap="14" className="contentWrapper">
-                <Heading size={"xlarge"} level={"1"}>Frivillig skattetrekk</Heading>
+                    <Heading size={"xlarge"} level={"1"}>Frivillig skattetrekk</Heading>
                 <DataContextProvider>
-                    <RouterProvider router={browserRouter}/>
+
+                        <RouterProvider router={browserRouter}/>
+
                 </DataContextProvider>
             </VStack>
+            </main>
         </div>
     )
 }

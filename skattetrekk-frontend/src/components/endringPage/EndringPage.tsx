@@ -22,6 +22,12 @@ export const EndringPage = () => {
     const [typeError, setTypeError] = useState<string | null>(null)
     const [valueError, setValueError] = useState<string | null>(null)
 
+    const typeRadioRef = React.useRef<HTMLFieldSetElement>(null)
+    const tilleggstrekkInputRef = React.useRef<HTMLInputElement>(null)
+
+    const radioRefFocus = () => setTimeout(() => { typeRadioRef.current?.focus() }, 0)
+    const tilleggstrekkRefFocus = () => setTimeout(() => { tilleggstrekkInputRef.current?.focus() }, 0)
+
     useEffect(() => {
         window.scrollTo(0, 0);
     }, [pageState]);
@@ -58,27 +64,32 @@ export const EndringPage = () => {
             setPageState("cannotProceed")
         } else if (type === null) {
             setTypeError("Du må velge hvilken type frivillig skattetrekk du ønsker")
+            radioRefFocus()
         } else if (value === '' || value === null) {
             setValueError("Du må oppgi et beløp eller en prosentsats")
+            tilleggstrekkRefFocus()
         } else if (isNaN(numericValue) || numericValue < 0) {
             setValueError('Du kan ikke skrive bokstaver eller tegn')
+            tilleggstrekkRefFocus()
         } else if (type === SatsType.PROSENT && numericValue === 0) {
             setValueError(`Du må oppgi mer enn 0 %. For å stoppe et frivillig skattetrekk, gå tilbake og klikk på knappen Stopp frivillig skattetrekk.`)
+            tilleggstrekkRefFocus()
         } else if (type === SatsType.PROSENT && numericValue > getResponse!.data.maxProsent) {
             setValueError(`Du kan maks oppgi ${getResponse!.data.maxProsent} %`)
+            tilleggstrekkRefFocus()
         } else if (type === SatsType.KRONER && numericValue === 0) {
             setValueError(`Du må oppgi et høyere beløp enn 0 kr. For å stoppe et frivillig skattetrekk, gå tilbake og klikk på knappen Stopp frivillig skattetrekk.`)
+            tilleggstrekkRefFocus()
         } else if (type === SatsType.KRONER && numericValue > getResponse!.data.maxBelop) {
             setValueError(`Du kan maks oppgi ${numberFormatWithKr(getResponse!.data.maxBelop)}. Vil du trekke et høyere beløp, kan du legge det inn som prosent.`)
+            tilleggstrekkRefFocus()
         }
-
         else {
             setCanContinueError(null)
             setValueError(null)
             setValueError(null)
             return true
         }
-
         return false
     }
 
@@ -159,6 +170,7 @@ export const EndringPage = () => {
                               legend="Hvordan skal skatten trekkes?"
                               size={"medium"}
                               value={type}
+                              ref={typeRadioRef}
                               onChange={(v) => {onChangeType(v);}}
                               onBlur={() => {
                                   if (shouldValidateForm) {
@@ -173,12 +185,13 @@ export const EndringPage = () => {
 
               {canContinue && type &&
                   <TextField id="tilleggstrekk_input"
-                             label={type === SatsType.PROSENT ? "Hvor mange prosent?" : "Hvor mange kroner?"}
+                             label={<span aria-hidden={valueError ? "true" : undefined}>{type === SatsType.PROSENT ? "Hvor mange prosent?" : "Hvor mange kroner?"}</span>}
                              style={{width: "160px"}}
                              inputMode="numeric"
                              error={valueError}
                              pattern="[\d\s]+"
                              value={value ?? ""}
+                             ref={tilleggstrekkInputRef}
                              onChange={(v) => {setValue(v.target.value)}}
                              onBlur={() => {
                                  if (shouldValidateForm) {
