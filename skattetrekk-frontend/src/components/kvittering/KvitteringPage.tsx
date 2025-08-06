@@ -82,9 +82,8 @@ export const KvitteringPage = () => {
           <div style={{borderBottom: '0.5px solid black', width: '100%'}}/>
 
           <VStack gap="4">
-          <Link href="https://www.nav.no/minside" target="_blank">Gå til Min side</Link>
-          <Link onClick={() => navigate(PageLinks.INDEX,  { pid })}>
-              Endre registrert frivillig skattetrekk</Link>
+          <Link href="https://www.nav.no/minside" target="_blank">Gå til Min side </Link>
+          <Link href="" onClick={() => navigate(PageLinks.INDEX,  { pid })}> Endre registrert frivillig skattetrekk</Link>
           </VStack>
       </VStack>
   )

@@ -135,7 +135,7 @@ const InternalOppsummeringPage = ({tilleggstrekkValue, tilleggstrekkType, getRes
             <FormSummary>
                 <FormSummary.Header>
                     <FormSummary.Heading level="3">Skattetrekk</FormSummary.Heading>
-                    <FormSummary.EditLink onClick={goToPreviousPage} />
+                    <FormSummary.EditLink href="" onClick={goToPreviousPage} />
                 </FormSummary.Header>
                 <FormSummary.Answers>
                     <FormSummary.Answer>
