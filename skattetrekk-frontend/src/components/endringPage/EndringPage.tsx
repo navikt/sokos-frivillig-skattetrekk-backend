@@ -129,6 +129,9 @@ export const EndringPage = () => {
 
   return (
       <VStack gap="12">
+
+          <BodyLong> Alle spørsmål må besvares. </BodyLong>
+
           <VStack gap={"6"}>
           <Heading level="2" size="medium">Dette kan du registrere frivillig skattetrekk på her:</Heading>
               <article>
