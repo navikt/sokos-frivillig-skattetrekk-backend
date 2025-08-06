@@ -1,6 +1,6 @@
 import {BodyLong, Button, Heading, HStack, Link, List, Radio, RadioGroup, TextField, VStack} from '@navikt/ds-react'
 import React, {useContext, useEffect, useState} from 'react'
-import { SatsType } from "@/api/skattetrekkBackendClient";
+import {SatsType} from "@/api/skattetrekkBackendClient";
 import {DataContext} from "@/state/DataContextProvider";
 import {numberFormatWithKr, parseInntekt} from "@/common/Utils";
 import {PageLinks} from "@/routes";
@@ -186,6 +186,7 @@ export const EndringPage = () => {
               {canContinue && type &&
                   <TextField id="tilleggstrekk_input"
                              label={<span aria-hidden={valueError ? "true" : undefined}>{type === SatsType.PROSENT ? "Hvor mange prosent?" : "Hvor mange kroner?"}</span>}
+                             description={type == SatsType.PROSENT ? "Eksempel: 10" : "Eksempel: 500"}
                              style={{width: "160px"}}
                              inputMode="numeric"
                              error={valueError}
