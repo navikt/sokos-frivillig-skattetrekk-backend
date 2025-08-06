@@ -153,7 +153,7 @@ const InternalOppsummeringPage = ({tilleggstrekkValue, tilleggstrekkType, getRes
                                     <FormSummary.Label><BodyLong size="medium" style={{ fontSize: "1.1rem" }}>
                                         <strong>Skattetrekk til sammen med din endring</strong>
                                     </BodyLong></FormSummary.Label>
-                                    <FormSummary.Value><BodyLong className="sum" size={"large"} style={{ fontSize: "1.3rem" }}>
+                                    <FormSummary.Value><BodyLong className="sum" size={"large"} style={{ lineHeight: "1.5", fontSize: "1.3rem" }}>
                                         <strong>{sumStrekkString()}</strong>
                                     </BodyLong></FormSummary.Value>
                                 </FormSummary.Answer>
