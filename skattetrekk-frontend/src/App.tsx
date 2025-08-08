@@ -11,12 +11,14 @@ export function App() {
 
     return (
         <div className="mainBody">
-            <VStack gap="14" className="contentWrapper">
+            <main id="maincontent" tabIndex={-1}>
+            <VStack gap="14" className="contentWrapper" >
                 <Heading size={"xlarge"} level={"1"}>Frivillig skattetrekk</Heading>
                 <DataContextProvider>
                     <RouterProvider router={browserRouter}/>
                 </DataContextProvider>
             </VStack>
+            </main>
         </div>
     )
 }
