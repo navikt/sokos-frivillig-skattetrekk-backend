@@ -140,7 +140,7 @@ const InternalOppsummeringPage = ({tilleggstrekkValue, tilleggstrekkType, getRes
                 <FormSummary.Answers>
                     <FormSummary.Answer>
                         <FormSummary.Label>Frivillig skattetrekk</FormSummary.Label>
-                        <FormSummary.Value>{visProsentEllerBelop({sats:tilleggstrekkValue, satsType:tilleggstrekkType, gyldigFraOgMed:null})}</FormSummary.Value>
+                        <FormSummary.Value>{visProsentEllerBelop({sats:tilleggstrekkValue, satsType:tilleggstrekkType, gyldigFraOgMed:null}, null)}</FormSummary.Value>
                     </FormSummary.Answer>
                     <FormSummary.Answer>
                         <FormSummary.Label>Trekk fra skattekortet</FormSummary.Label>

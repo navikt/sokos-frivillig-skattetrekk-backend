@@ -77,7 +77,7 @@ export function InitialPage() {
 
                 <>
 
-                { guidePanel()}
+                {guidePanel()}
 
                 {isDecember() &&
                     <Alert variant={"info"}>
@@ -127,7 +127,7 @@ export function InitialPage() {
                         </Accordion.Content>
                     </Accordion.Item>
                     <Accordion.Item>
-                        <Accordion.Header>Pengestøtter som kan ha frivillig skattetrekk</Accordion.Header>
+                        <Accordion.Header>Dette registrerer du frivillig skattetrekk på her</Accordion.Header>
                         <Accordion.Content>
                             <VStack gap="4">
                                 <List>
@@ -148,7 +148,7 @@ export function InitialPage() {
                                 <BodyLong>Frivillig skattetrekk registrert i denne tjenesten vil kun føre til trekk hvis du har utbetaling av pengestøttene i kulepunktlisten over.</BodyLong>
                                 <BodyLong> Noen pengestøtter kan ikke gis frivillig skattetrekk fordi de er
                                     skattefrie.</BodyLong>
-                                <BodyLong>Barnepensjon kan få frivillig skattetrekk, men det kan desverre ikke registreres i denne tjenesten. <Link href={import.meta.env.VITE_FRIVILLIG_SKATTETREKK_INFO_URL}>Les om hvordan registrere frivillig skattetrekk på barnepensjon. </Link>
+                                <BodyLong>Barnepensjon kan få frivillig skattetrekk, men det kan dessverre ikke registreres i denne tjenesten. <Link href={import.meta.env.VITE_FRIVILLIG_SKATTETREKK_INFO_URL}>Les om hvordan registrere frivillig skattetrekk på barnepensjon. </Link>
                                 </BodyLong>
 
                             </VStack>
