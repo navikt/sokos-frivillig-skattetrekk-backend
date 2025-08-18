@@ -41,7 +41,7 @@ export function RegistrerteSkattetrekk(props: RegistrerteSkattetrekkProps) {
             }
 
 
-                <dl style={{ display: "grid", gridTemplateColumns: "max-content 1fr", rowGap: "0.75em", columnGap: "1em", alignItems: "baseline", margin: 0 }}>
+                <dl id="registrerte-skattetrekk-dl">
                     <dt className="label">
                         <strong>Frivillig skattetrekk:</strong>
                     </dt>

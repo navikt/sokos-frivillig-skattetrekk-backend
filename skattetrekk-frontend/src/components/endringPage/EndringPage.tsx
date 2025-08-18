@@ -5,6 +5,7 @@ import {DataContext} from "@/state/DataContextProvider";
 import {numberFormatWithKr, parseInntekt} from "@/common/Utils";
 import {PageLinks} from "@/routes";
 import {SetLocationState, useLocationState} from "@/common/useLocationState";
+import './EndringPage.css'
 
 export const EndringPage = () => {
     const {getResponse} = useContext(DataContext)
@@ -196,7 +197,6 @@ export const EndringPage = () => {
                   <TextField id="tilleggstrekk_input"
                              label={<span aria-hidden={valueError ? "true" : undefined}>{type === SatsType.PROSENT ? "Hvor mange prosent?" : "Hvor mange kroner?"}</span>}
                              description={type == SatsType.PROSENT ? "Eksempel: 10" : "Eksempel: 500"}
-                             style={{width: "160px"}}
                              inputMode="numeric"
                              error={valueError}
                              pattern="[\d\s]+"

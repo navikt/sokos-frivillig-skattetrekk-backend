@@ -1,6 +1,7 @@
 import React, {createContext, useCallback, useEffect, useState} from 'react'
 import {fetchSkattetrekk, FrivilligSkattetrekkResponse} from "@/api/skattetrekkBackendClient";
 import {BodyShort, Box, Loader, VStack} from "@navikt/ds-react";
+import './DataContextProvider.css'
 
 interface DataContextValue {
     getResponse: FrivilligSkattetrekkResponse | null
@@ -69,7 +70,7 @@ function DataContextProvider(props: DataContextProviderProps) {
 
                 {(showLoader) ?
                     (
-                        <Box position="absolute" left="0" right="0" top="0" bottom="0" background="bg-default" style={{ zIndex: 100 }}>
+                        <Box id="data-context-overlay" position="absolute" left="0" right="0" top="0" bottom="0" background="bg-default">
                             <Box background="bg-subtle" padding="16" borderRadius="large">
                                 <VStack align="center" gap="20">
                                     <Loader size="3xlarge" />

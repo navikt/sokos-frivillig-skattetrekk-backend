@@ -6,6 +6,7 @@ import {DataContext} from "@/state/DataContextProvider";
 import {PageLinks} from "@/routes";
 import {StopTilleggstrekkConfirmationModal} from "@/components/initialPage/StopTilleggstrekkConfirmationModal";
 import {useLocationState} from "@/common/useLocationState";
+import './InitialPage.css'
 
 export function InitialPage() {
     const {getResponse} = useContext(DataContext)
@@ -107,7 +108,7 @@ export function InitialPage() {
 
                 <div>
                 <Heading size={"medium"} level="2">Om frivillig skattetrekk</Heading>
-                <Accordion style={{ margin: '1em 0' }}>
+                <Accordion id="initialpage-accordion">
                     <Accordion.Item>
                         <Accordion.Header>Slik trekker Nav frivillig skattetrekk</Accordion.Header>
                         <Accordion.Content>
