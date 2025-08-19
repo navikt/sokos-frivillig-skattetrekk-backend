@@ -1,7 +1,7 @@
 apiVersion: "nais.io/v1alpha1"
 kind: "Application"
 metadata:
-  name: skattetrekk-backend-q2
+  name: sokos-frivillig-skattetrekk-backend-q2
   namespace: okonomi
   labels:
     team: okonomi
@@ -9,8 +9,8 @@ spec:
   image: "{{{ image }}}"
   port: 8080
   ingresses:
-    - https://skattetrekk-backend-q2.intern.dev.nav.no
-    - https://skattetrekk-backend-q2.dev-fss-pub.nais.io
+    - https://sokos-frivillig-skattetrekk-backend-q2.intern.dev.nav.no
+    - https://sokos-frivillig-skattetrekk-backend-q2.dev-fss-pub.nais.io
   liveness:
     path: actuator/health/liveness
     initialDelay: 30
@@ -57,7 +57,7 @@ spec:
   accessPolicy:
     inbound:
       rules:
-        - application: skattetrekk-frontend-q2
+        - application: sokos-frivillig-skattetrekk-frontend-q2
           namespace: okonomi
           cluster: dev-gcp
         - application: tokenx-token-generator
@@ -68,8 +68,8 @@ spec:
           cluster: dev-gcp
     outbound:
       rules:
-        - application: oppdrag-rest-proxy-q2
-          namespace: teampensjon
+        - application: sokos-oppdrag-proxy-q2
+          namespace: okonomi
         - application: pensjon-representasjon-q2
           namespace: pensjon-person
 
@@ -89,11 +89,11 @@ spec:
     - name: FULLMAKT_AUDIENCE
       value: dev-fss:pensjon-person:pensjon-representasjon-q2
     - name: TREKK_URL
-      value: http://oppdrag-rest-proxy-q2.teampensjon.svc.nais.local
+      value: http://sokos-oppdrag-proxy-q2.okonomi.svc.nais.local
     - name: TREKK_SCOPE
-      value: api://dev-fss.teampensjon.oppdrag-rest-proxy-q2/.default
+      value: api://dev-fss.okonomi.sokos-oppdrag-proxy-q2/.default
     - name: TREKK_AUDIENCE
-      value: dev-fss:teampensjon:oppdrag-rest-proxy-q2
+      value: dev-fss:okonomi:sokos-oppdrag-proxy-q2
     - name: NORG2_URL
       value: https://norg2.intern.dev.nav.no/norg2/api/v1
     - name: NORG2_SCOPE
