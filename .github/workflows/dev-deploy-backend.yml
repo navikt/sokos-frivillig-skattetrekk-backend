@@ -43,6 +43,7 @@ jobs:
         with:
           team: okonomi
           dockerfile: ./sokos-frivillig-skattetrekk-backend/.docker/Dockerfile
+          image_suffix: backend
 
       - name: Deploy to dev-fss
         uses: nais/deploy/actions/deploy@v2
@@ -51,4 +52,3 @@ jobs:
           RESOURCE: ./sokos-frivillig-skattetrekk-backend/.nais/nais-q2.yml
           IMAGE: ${{ steps.docker-build-push.outputs.image }}
           TEAM: okonomi
-          image_suffix: backend

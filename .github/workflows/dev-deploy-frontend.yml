@@ -41,6 +41,7 @@ jobs:
         with:
           team: okonomi
           dockerfile: ./sokos-frivillig-skattetrekk-frontend/.docker/Dockerfile
+          image_suffix: frontend
 
       - name: Deploy to dev-gcp
         uses: nais/deploy/actions/deploy@v2
@@ -49,4 +50,3 @@ jobs:
           RESOURCE: sokos-frivillig-skattetrekk-frontend/.nais/nais-q2.yml
           IMAGE: ${{ steps.docker-build-push.outputs.image }}
           TEAM: okonomi
-          image_suffix: frontend
