@@ -6,7 +6,7 @@ updates:
       interval: daily
     open-pull-requests-limit: 10
   - package-ecosystem: npm
-    directory: "/skattetrekk-frontend/"
+    directory: "/sokos-frivillig-skattetrekk-frontend/"
     schedule:
       interval: daily
     open-pull-requests-limit: 10
