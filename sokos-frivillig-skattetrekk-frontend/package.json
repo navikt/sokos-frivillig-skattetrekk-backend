@@ -28,7 +28,7 @@
     "@navikt/aksel-icons": "^7.14.2",
     "@navikt/ds-css": "^7.14.2",
     "@navikt/ds-react": "^7.14.2",
-    "@navikt/nav-dekoratoren-moduler": "^3.2.2",
+    "@navikt/nav-dekoratoren-moduler": "^3.4.0",
     "@types/express": "^5.0.1",
     "@types/node": "^24.3.0",
     "@types/react": "^19.1.10",
