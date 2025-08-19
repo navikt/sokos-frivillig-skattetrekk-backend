@@ -64,11 +64,13 @@ spec:
   env:
     - name: "VITE_DECORATOR_URL"
       value: "https://dekoratoren.ekstern.dev.nav.no"
+
     - name: "SKATTETREKK_BACKEND_URL"
       value: "https://sokos-frivillig-skattetrekk-backend-q2.dev-fss-pub.nais.io"
     - name: "SKATTETREKK_BACKEND_SCOPE"
       value: "api://dev-fss.okonomi.sokos-frivillig-skattetrekk-backend-q2/.default"
     - name: "SKATTETREKK_BACKEND_AUDIENCE"
       value: "dev-fss:okonomi:sokos-frivillig-skattetrekk-backend-q2"
+
     - name: "REPRESENTASJON_BANNER_URL"
       value: "https://representasjon-banner-frontend-borger-q2.intern.dev.nav.no"

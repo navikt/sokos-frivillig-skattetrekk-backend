@@ -59,11 +59,13 @@ spec:
   env:
     - name: "VITE_DECORATOR_URL"
       value: "https://www.nav.no/dekoratoren"
+
     - name: "SKATTETREKK_BACKEND_URL"
       value: "https://sokos-frivillig-skattetrekk-backend.prod-fss-pub.nais.io"
     - name: "SKATTETREKK_BACKEND_SCOPE"
       value: "api://prod-fss.okonomi.sokos-frivillig-skattetrekk-backend/.default"
     - name: "SKATTETREKK_BACKEND_AUDIENCE"
       value: "prod-fss:okonomi:sokos-frivillig-skattetrekk-backend"
+
     - name: "REPRESENTASJON_BANNER_URL"
       value: "https://representasjon-banner-frontend-borger.intern.nav.no"

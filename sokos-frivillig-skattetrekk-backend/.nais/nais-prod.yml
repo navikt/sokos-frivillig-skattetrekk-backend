@@ -70,24 +70,28 @@ spec:
   env:
     - name: LOGGING_CONFIG
       value: classpath:logback-json.xml
+
     - name: PDL_URL
       value: http://pdl-api.pdl.svc.nais.local/graphql
     - name: PDL_SCOPE
       value: api://prod-fss.pdl.pdl-api/.default
     - name: PDL_AUDIENCE
       value: prod-fss:pdl:pdl-api
+
     - name: FULLMAKT_URL
       value: http://pensjon-representasjon.pensjon-person.svc.nais.local
     - name: FULLMAKT_SCOPE
       value: api://prod-fss.pensjon-person.pensjon-representasjon/.default
     - name: FULLMAKT_AUDIENCE
       value: prod-fss:pensjon-person:pensjon-representasjon
+
     - name: TREKK_URL
       value: http://oppdrag-rest-proxy.pensjondeployer.svc.nais.local
     - name: TREKK_SCOPE
       value: api://prod-fss.pensjondeployer.oppdrag-rest-proxy/.default
     - name: TREKK_AUDIENCE
       value: prod-fss:pensjondeployer:oppdrag-rest-proxy
+
     - name: NORG2_URL
       value: https://norg2.intern.nav.no/norg2/api/v1
     - name: NORG2_SCOPE
