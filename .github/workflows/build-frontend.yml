@@ -49,11 +49,3 @@ jobs:
         env:
           FARO_TELEMETRY_URL: 'https://telemetry.ekstern.dev.nav.no/collect'
           NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
-
-      - name: docker-build-push
-        uses: nais/docker-build-push@v0
-        id: docker-build-push
-        with:
-          team: okonomi
-          dockerfile: ./sokos-frivillig-skattetrekk-frontend/.docker/Dockerfile
-          image_suffix: skattetrekk-frontend
