@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./skattetrekk-frontend
+        working-directory: ./sokos-frivillig-skattetrekk-frontend
     permissions:
       contents: "read"
       checks: "write"
@@ -17,6 +17,7 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v5
+
       - name: Cache node modules
         id: cache-node
         uses: actions/cache@v4
@@ -30,6 +31,7 @@ jobs:
         run: npm ci
         env:
           NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
+
       - name: Build application
         run: npm run build
 
@@ -38,11 +40,12 @@ jobs:
         id: docker-build-push
         with:
           team: okonomi
-          dockerfile: ./skattetrekk-frontend/.docker/Dockerfile
+          dockerfile: ./sokos-frivillig-skattetrekk-frontend/.docker/Dockerfile
+
       - name: Deploy to dev-gcp
         uses: nais/deploy/actions/deploy@v2
         env:
           CLUSTER: dev-gcp
-          RESOURCE: skattetrekk-frontend/.nais/nais-q2.yml
+          RESOURCE: sokos-frivillig-skattetrekk-frontend/.nais/nais-q2.yml
           IMAGE: ${{ steps.docker-build-push.outputs.image }}
           TEAM: okonomi

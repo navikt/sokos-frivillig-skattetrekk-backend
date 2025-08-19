@@ -1,7 +1,7 @@
 apiVersion: "nais.io/v1alpha1"
 kind: "Application"
 metadata:
-  name: skattetrekk-frontend
+  name: sokos-frivillig-skattetrekk-frontend
   namespace: okonomi
   labels:
     team: okonomi
@@ -54,16 +54,16 @@ spec:
   accessPolicy:
     outbound:
       external:
-        - host: skattetrekk-backend.prod-fss-pub.nais.io
+        - host: sokos-frivillig-skattetrekk-backend.prod-fss-pub.nais.io
 
   env:
     - name: "VITE_DECORATOR_URL"
       value: "https://www.nav.no/dekoratoren"
     - name: "SKATTETREKK_BACKEND_URL"
-      value: "https://skattetrekk-backend.prod-fss-pub.nais.io"
+      value: "https://sokos-frivillig-skattetrekk-backend.prod-fss-pub.nais.io"
     - name: "SKATTETREKK_BACKEND_SCOPE"
-      value: "api://prod-fss.okonomi.skattetrekk-backend/.default"
+      value: "api://prod-fss.okonomi.sokos-frivillig-skattetrekk-backend/.default"
     - name: "SKATTETREKK_BACKEND_AUDIENCE"
-      value: "prod-fss:okonomi:skattetrekk-backend"
+      value: "prod-fss:okonomi:sokos-frivillig-skattetrekk-backend"
     - name: "REPRESENTASJON_BANNER_URL"
       value: "https://representasjon-banner-frontend-borger.intern.nav.no"

@@ -1,7 +1,7 @@
 apiVersion: "nais.io/v1alpha1"
 kind: "Application"
 metadata:
-  name: skattetrekk-frontend-q2
+  name: sokos-frivillig-skattetrekk-frontend-q2
   namespace: okonomi
   labels:
     team: okonomi
@@ -12,8 +12,8 @@ spec:
   image: "{{{ image }}}"
   port: 8080
   ingresses:
-    - https://skattetrekk-frontend-q2.intern.dev.nav.no
-    - https://skattetrekk-frontend-q2.ansatt.dev.nav.no
+    - https://sokos-frivillig-skattetrekk-frontend-q2.intern.dev.nav.no
+    - https://sokos-frivillig-skattetrekk-frontend-q2.ansatt.dev.nav.no
   replicas:
     min: 1
     max: 2
@@ -59,16 +59,16 @@ spec:
           namespace: aura
     outbound:
       external:
-        - host: skattetrekk-backend-q2.dev-fss-pub.nais.io
+        - host: sokos-frivillig-skattetrekk-backend-q2.dev-fss-pub.nais.io
 
   env:
     - name: "VITE_DECORATOR_URL"
       value: "https://dekoratoren.ekstern.dev.nav.no"
     - name: "SKATTETREKK_BACKEND_URL"
-      value: "https://skattetrekk-backend-q2.dev-fss-pub.nais.io"
+      value: "https://sokos-frivillig-skattetrekk-backend-q2.dev-fss-pub.nais.io"
     - name: "SKATTETREKK_BACKEND_SCOPE"
-      value: "api://dev-fss.okonomi.skattetrekk-backend-q2/.default"
+      value: "api://dev-fss.okonomi.sokos-frivillig-skattetrekk-backend-q2/.default"
     - name: "SKATTETREKK_BACKEND_AUDIENCE"
-      value: "dev-fss:okonomi:skattetrekk-backend-q2"
+      value: "dev-fss:okonomi:sokos-frivillig-skattetrekk-backend-q2"
     - name: "REPRESENTASJON_BANNER_URL"
       value: "https://representasjon-banner-frontend-borger-q2.intern.dev.nav.no"

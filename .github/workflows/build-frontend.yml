@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   push:
     paths:
-      - 'skattetrekk-frontend/**'
+      - '../../sokos-frivillig-skattetrekk-frontend/**'
 
 jobs:
   build-frontend-and-publish-docker:
@@ -55,5 +55,5 @@ jobs:
         id: docker-build-push
         with:
           team: okonomi
-          dockerfile: ./skattetrekk-frontend/.docker/Dockerfile
+          dockerfile: ./sokos-frivillig-skattetrekk-frontend/.docker/Dockerfile
           image_suffix: skattetrekk-frontend
