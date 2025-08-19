@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   push:
     paths:
-      - 'skattetrekk-backend/**'
+      - 'sokos-frivillig-skattetrekk-backend/**'
 
 jobs:
   build:

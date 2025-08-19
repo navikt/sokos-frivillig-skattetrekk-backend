@@ -5,11 +5,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>no.nav.frivillig-skattetrekk</groupId>
-    <artifactId>frivillig-skattetrekk</artifactId>
+    <artifactId>sokos-frivillig-skattetrekk</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <modules>
-        <module>skattetrekk-backend</module>
+        <module>sokos-frivillig-skattetrekk-backend</module>
     </modules>
 
     <properties>
