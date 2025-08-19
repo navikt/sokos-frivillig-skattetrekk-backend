@@ -22,7 +22,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.get(
-     basePath + '/api/skattetrekk',
+     basePath+'/api/skattetrekk',
      async (req, res) => {
 
          const newHeaders = await updateHeaders(req.headers)
