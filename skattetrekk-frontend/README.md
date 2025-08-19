@@ -1,27 +1,76 @@
-# React + TypeScript + Vite
+# Frivillig Skattetrekk
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+En webapplikasjon for å administrere frivillig skattetrekk på et utvalg pengestøtter fra NAV.
+Backend integrerer mot https://github.com/navikt/sokos-oppdrag-proxy som er inngang til utbetaling hvor forvaltning
+av frivillig skattetrekk skjer. Denne applikasjonen presenterer registrert data til bruker i selvbetjening og lar bruker
+endre ønsket trekk.
 
-Currently, two official plugins are available:
+### Forutsetninger
+- Node.js 18+ og npm
+- Java 21+ og Maven 3.8+
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+### Arkitektur
+- **Frontend**: React 19 + TypeScript + Vite med aksel designsystem komponenter
+- **Backend**: Spring Boot (Kotlin) med Maven
 
-## Expanding the ESLint configuration
+### Backend API-endepunkter
+- `GET /api/skattetrekk` - Hent skattetrekk og ytelsesinfo
+- `POST /api/skattetrekk` - Registrer/endre/stopp frivillig skattetrekk
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+### Miljøvariabler
+- `VITE_FRIVILLIG_SKATTETREKK_INFO_URL` - URL til informasjonsside
 
-- Configure the top-level `parserOptions` property like this:
+### Frontend-utvikling
 
-```js
-   parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-   },
+```bash
+cd skattetrekk-frontend
+
+# Installer avhengigheter og start med mock backend
+npm install
+npm run dev-local
+
+npm run dev                 # Frontend uten mock
+npm run build:production    # Produksjonsbygg
+npm run lint               # Linting
 ```
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+### Backend-utvikling
+
+```bash
+cd skattetrekk-backend
+
+mvn clean install    # Bygg
+mvn test             # Tester  
+mvn spring-boot:run  # Start
+```
+
+## Mock Server
+
+For frontend-utvikling uten å kjøre backend, brukes en mock server som simulerer API-endepunktene.
+
+### Konfigurasjon
+Mock serveren kjører på port 3000 og serverer testdata fra JSON-filer:
+
+- **Server**: `mock/server.cjs` - Express server med CORS-konfigurasjon
+- **Testdata**: `mock/skattetrekkInitResponse.json` - Eksempeldata for API-responser
+- **Starter automatisk**: Med `npm run dev-local` startes både frontend og mock samtidig
+
+### Tilpasse testdata
+Rediger `mock/skattetrekkInitResponse.json` for å teste ulike scenarier:
+
+```json
+{
+  "data": {
+    "tilleggstrekk": null,
+    "fremtidigTilleggstrekk": {
+      "sats": 50,
+      "satsType": "PROSENT",
+      "gyldigFraOgMed": "2023-10-08T00:00:00Z"
+    },
+    "skattetrekk": {"tabellNr": null, "prosentsats": 50},
+    "maxBelop": 5000,
+    "maxProsent": 50
+  },
+  "messages": []
+}
+```
