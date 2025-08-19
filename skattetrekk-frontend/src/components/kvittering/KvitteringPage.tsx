@@ -1,10 +1,11 @@
-import {Alert, BodyLong, BodyShort, Box, Heading, Link, Loader, VStack} from '@navikt/ds-react'
+import {Alert, BodyLong, Box, Heading, Link, Loader, VStack} from '@navikt/ds-react'
 import React, {useContext, useEffect} from 'react'
 import {numberFormatWithKr} from "@/common/Utils";
 import {FrivilligSkattetrekkData, MessageType, SatsType} from "@/api/skattetrekkBackendClient";
 import {DataContext} from "@/state/DataContextProvider";
 import {PageLinks} from "@/routes";
 import {useLocationState} from "@/common/useLocationState";
+import './KvitteringPage.css'
 
 export const KvitteringPage = () => {
     const { setShouldRefetch, getResponse, setLoaderOverride, getLoaderOverride} = useContext(DataContext)
@@ -79,7 +80,7 @@ export const KvitteringPage = () => {
               Frivillig skattetrekk stopper automatisk ved årsskiftet, du må derfor legge inn et nytt trekk for hvert år.
           </BodyLong>
 
-          <div style={{borderBottom: '0.5px solid black', width: '100%'}}/>
+          <div id="kvittering-divider"/>
 
           <VStack gap="4">
           <Link href="https://www.nav.no/minside" target="_blank">Gå til Min side </Link>

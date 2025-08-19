@@ -16,6 +16,7 @@ import {numberFormatWithKr, showPercentageOrTable, visProsentEllerBelop} from "@
 import {PageLinks} from "@/routes";
 import {useLocationState} from "@/common/useLocationState";
 import {ErrorMessage} from "@/components/pageStatus/ErrorMessage";
+import './OppsummeringPage.css'
 
 export const OppsummeringPage = () => {
     const { getResponse } = useContext(DataContext)
@@ -140,7 +141,7 @@ const InternalOppsummeringPage = ({tilleggstrekkValue, tilleggstrekkType, getRes
                 <FormSummary.Answers>
                     <FormSummary.Answer>
                         <FormSummary.Label>Frivillig skattetrekk</FormSummary.Label>
-                        <FormSummary.Value>{visProsentEllerBelop({sats:tilleggstrekkValue, satsType:tilleggstrekkType, gyldigFraOgMed:null})}</FormSummary.Value>
+                        <FormSummary.Value>{visProsentEllerBelop({sats:tilleggstrekkValue, satsType:tilleggstrekkType, gyldigFraOgMed:null}, null)}</FormSummary.Value>
                     </FormSummary.Answer>
                     <FormSummary.Answer>
                         <FormSummary.Label>Trekk fra skattekortet</FormSummary.Label>
@@ -150,10 +151,10 @@ const InternalOppsummeringPage = ({tilleggstrekkValue, tilleggstrekkType, getRes
                         <FormSummary.Value>
                             <FormSummary.Answers>
                                 <FormSummary.Answer>
-                                    <FormSummary.Label><BodyLong size="medium" style={{ fontSize: "1.1rem" }}>
+                                    <FormSummary.Label><BodyLong id="oppsummering-sammendrag-label" size="medium">
                                         <strong>Skattetrekk til sammen med din endring</strong>
                                     </BodyLong></FormSummary.Label>
-                                    <FormSummary.Value><BodyLong className="sum" size={"large"} style={{ lineHeight: "1.5", fontSize: "1.3rem" }}>
+                                    <FormSummary.Value><BodyLong id="oppsummering-sammendrag-verdi" className="sum" size={"large"}>
                                         <strong>{sumStrekkString()}</strong>
                                     </BodyLong></FormSummary.Value>
                                 </FormSummary.Answer>

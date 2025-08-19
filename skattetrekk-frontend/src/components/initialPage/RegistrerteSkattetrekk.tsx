@@ -24,11 +24,11 @@ export function RegistrerteSkattetrekk(props: RegistrerteSkattetrekkProps) {
                 <Alert variant="info">
                     {props.isDecember ?
                         <BodyLong>
-                            Nytt frivillig skattetrekk på {visProsentEllerBelop(props.fremtidigTilleggstrekk)} vil gjelde fra januar neste år.
+                            Nytt frivillig skattetrekk på {visProsentEllerBelop(props.fremtidigTilleggstrekk, null)} vil gjelde fra januar neste år.
                             Hvis du registrerte trekket i slutten av desember, kan det ta inntil midten av januar før trekket kommer med på utbetalingene dine.
                         </BodyLong> :
                         <BodyLong>
-                            Nytt frivillig skattetrekk på {visProsentEllerBelop(props.fremtidigTilleggstrekk)} fra og med neste måned og ut året.
+                            Nytt frivillig skattetrekk på {visProsentEllerBelop(props.fremtidigTilleggstrekk, null)} fra og med neste måned og ut året.
                             </BodyLong> }
 
                 </Alert>
@@ -41,11 +41,11 @@ export function RegistrerteSkattetrekk(props: RegistrerteSkattetrekkProps) {
             }
 
 
-                <dl style={{ display: "grid", gridTemplateColumns: "max-content 1fr", rowGap: "0.75em", columnGap: "1em", alignItems: "baseline", margin: 0 }}>
+                <dl id="registrerte-skattetrekk-dl">
                     <dt className="label">
                         <strong>Frivillig skattetrekk:</strong>
                     </dt>
-                    <dd className="data">{visProsentEllerBelop(props.tilleggstrekk)}</dd>
+                    <dd className="data">{visProsentEllerBelop(props.tilleggstrekk, props.fremtidigTilleggstrekk)}</dd>
 
                     <dt className="label"><strong>Trekk fra skattekortet:</strong></dt>
                     <dd className="data">{showPercentageOrTable(props.skatteTrekk)}</dd>

@@ -5,6 +5,7 @@ import {DataContext} from "@/state/DataContextProvider";
 import {numberFormatWithKr, parseInntekt} from "@/common/Utils";
 import {PageLinks} from "@/routes";
 import {SetLocationState, useLocationState} from "@/common/useLocationState";
+import './EndringPage.css'
 
 export const EndringPage = () => {
     const {getResponse} = useContext(DataContext)
@@ -98,19 +99,20 @@ export const EndringPage = () => {
             <VStack gap="8" className="form-container">
                 <Heading level="2" size="medium">Du kan ikke registrere frivillig skattetrekk i denne tjenesten</Heading>
                 <VStack>
-                    <Heading level="3" size="small">
-                        Ikke alle pengestøtter kan få frivillig skattetrekk
-                    </Heading>
-                    <BodyLong>
-                        Noen pengestøtter kan ikke få frivillig skattetrekk fordi de er skattefrie.
-                    </BodyLong>
+                  <Heading level="3" size="small">
+                    Ikke alle pengestøtter kan få frivillig skattetrekk
+                  </Heading>
+                  <BodyLong>
+                    Noen pengestøtter kan ikke få frivillig skattetrekk fordi de er skattefrie.
+                  </BodyLong>
                 </VStack>
                 <VStack>
                     <Heading level="3" size="small">
-                        Barnepensjon
+                      Barnepensjon
                     </Heading>
                     <BodyLong>
-                        Frivillig skatterekk på barnepensjon kan desverre ikke registreres i denne tjenesten. <Link href={import.meta.env.VITE_FRIVILLIG_SKATTETREKK_INFO_URL}>Her finner du informasjon om frivillig skattetrekk og barnepensjon.</Link>
+                      Frivillig skatterekk på barnepensjon kan dessverre ikke registreres i denne tjenesten.
+                      <Link href={import.meta.env.VITE_FRIVILLIG_SKATTETREKK_INFO_URL}>Her finner du informasjon om frivillig skattetrekk og barnepensjon.</Link>
                     </BodyLong>
                 </VStack>
 
@@ -133,26 +135,24 @@ export const EndringPage = () => {
           <BodyLong> Alle spørsmål må besvares. </BodyLong>
 
           <VStack gap={"6"}>
-          <Heading level="2" size="medium">Dette kan du registrere frivillig skattetrekk på her:</Heading>
-              <article>
-                  <List>
-                        <List.Item>Arbeidsavklaringspenger (AAP)</List.Item>
-                        <List.Item>Dagpenger</List.Item>
-                        <List.Item>Foreldre- og svangerskapspenger</List.Item>
-                        <List.Item>Omstillingsstønad</List.Item>
-                        <List.Item>Overgangsstønad til enslig mor eller far</List.Item>
-                        <List.Item>Pensjon fra Nav</List.Item>
-                        <List.Item>Pensjon fra Statens pensjonskasse (SPK)</List.Item>
-                        <List.Item>Pleie-, omsorg- og opplæringspenger</List.Item>
-                        <List.Item>Sykepenger</List.Item>
-                        <List.Item>Supplerende stønad alder</List.Item>
-                        <List.Item>Supplerende stønad uføre</List.Item>
-                        <List.Item>Uførepensjon fra Statens pensjonskasse (SPK)</List.Item>
-                        <List.Item>Uføretrygd</List.Item>
-                  </List>
-              </article>
-
-
+          <Heading level="2" size="medium">Dette registrerer du frivillig skattetrekk på her:</Heading>
+            <article>
+              <List>
+                <List.Item>Arbeidsavklaringspenger (AAP)</List.Item>
+                <List.Item>Dagpenger</List.Item>
+                <List.Item>Foreldre- og svangerskapspenger</List.Item>
+                <List.Item>Omstillingsstønad</List.Item>
+                <List.Item>Overgangsstønad til enslig mor eller far</List.Item>
+                <List.Item>Pensjon fra Nav</List.Item>
+                <List.Item>Pensjon fra Statens pensjonskasse (SPK)</List.Item>
+                <List.Item>Pleie-, omsorg- og opplæringspenger</List.Item>
+                <List.Item>Sykepenger</List.Item>
+                <List.Item>Supplerende stønad alder</List.Item>
+                <List.Item>Supplerende stønad uføre</List.Item>
+                <List.Item>Uførepensjon fra Statens pensjonskasse (SPK)</List.Item>
+                <List.Item>Uføretrygd</List.Item>
+              </List>
+            </article>
           </VStack>
 
           <RadioGroup
@@ -167,9 +167,16 @@ export const EndringPage = () => {
           </RadioGroup>
 
           { canContinue &&
-              <VStack gap="4">
-                  <Heading size={"medium"} level={"2"}>Ønsket frivillig skattetrekk</Heading>
-                  <RadioGroup id="typeRadio"
+              <VStack gap="6">
+                <div>
+                <Heading size={"medium"} level={"2"}>Ønsket frivillig skattetrekk</Heading>
+                  <BodyLong>
+                    Hvis du har flere skattepliktige pengestøtter, kan det bli trukket fra flere av pengestøttene.
+                  </BodyLong>
+                </div>
+
+
+                <RadioGroup id="typeRadio"
                               legend="Hvordan skal skatten trekkes?"
                               size={"medium"}
                               value={type}
@@ -190,7 +197,6 @@ export const EndringPage = () => {
                   <TextField id="tilleggstrekk_input"
                              label={<span aria-hidden={valueError ? "true" : undefined}>{type === SatsType.PROSENT ? "Hvor mange prosent?" : "Hvor mange kroner?"}</span>}
                              description={type == SatsType.PROSENT ? "Eksempel: 10" : "Eksempel: 500"}
-                             style={{width: "160px"}}
                              inputMode="numeric"
                              error={valueError}
                              pattern="[\d\s]+"

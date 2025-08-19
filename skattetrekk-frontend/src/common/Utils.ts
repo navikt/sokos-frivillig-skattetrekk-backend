@@ -50,7 +50,11 @@ export function showPercentageOrTable(skattetrekk: ForenkletSkattetrekk) {
   return "Ikke funnet"
 }
 
-export function visProsentEllerBelop(tilleggstrekk: TrekkDTO | null) {
+export function visProsentEllerBelop(tilleggstrekk: TrekkDTO | null, fremtidigTilleggstrekk: TrekkDTO | null) {
+  if (tilleggstrekk == null && fremtidigTilleggstrekk != null) {
+    return "Ikke løpende"
+  }
+
   if (tilleggstrekk == null) {
     return "Ingen"
   }

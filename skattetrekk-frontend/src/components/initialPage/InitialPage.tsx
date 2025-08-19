@@ -6,6 +6,7 @@ import {DataContext} from "@/state/DataContextProvider";
 import {PageLinks} from "@/routes";
 import {StopTilleggstrekkConfirmationModal} from "@/components/initialPage/StopTilleggstrekkConfirmationModal";
 import {useLocationState} from "@/common/useLocationState";
+import './InitialPage.css'
 
 export function InitialPage() {
     const {getResponse} = useContext(DataContext)
@@ -77,7 +78,7 @@ export function InitialPage() {
 
                 <>
 
-                { guidePanel()}
+                {guidePanel()}
 
                 {isDecember() &&
                     <Alert variant={"info"}>
@@ -107,7 +108,7 @@ export function InitialPage() {
 
                 <div>
                 <Heading size={"medium"} level="2">Om frivillig skattetrekk</Heading>
-                <Accordion style={{ margin: '1em 0' }}>
+                <Accordion id="initialpage-accordion">
                     <Accordion.Item>
                         <Accordion.Header>Slik trekker Nav frivillig skattetrekk</Accordion.Header>
                         <Accordion.Content>
@@ -127,7 +128,7 @@ export function InitialPage() {
                         </Accordion.Content>
                     </Accordion.Item>
                     <Accordion.Item>
-                        <Accordion.Header>Pengestøtter som kan ha frivillig skattetrekk</Accordion.Header>
+                        <Accordion.Header>Dette registrerer du frivillig skattetrekk på her</Accordion.Header>
                         <Accordion.Content>
                             <VStack gap="4">
                                 <List>
@@ -148,7 +149,7 @@ export function InitialPage() {
                                 <BodyLong>Frivillig skattetrekk registrert i denne tjenesten vil kun føre til trekk hvis du har utbetaling av pengestøttene i kulepunktlisten over.</BodyLong>
                                 <BodyLong> Noen pengestøtter kan ikke gis frivillig skattetrekk fordi de er
                                     skattefrie.</BodyLong>
-                                <BodyLong>Barnepensjon kan få frivillig skattetrekk, men det kan desverre ikke registreres i denne tjenesten. <Link href={import.meta.env.VITE_FRIVILLIG_SKATTETREKK_INFO_URL}>Les om hvordan registrere frivillig skattetrekk på barnepensjon. </Link>
+                                <BodyLong>Barnepensjon kan få frivillig skattetrekk, men det kan dessverre ikke registreres i denne tjenesten. <Link href={import.meta.env.VITE_FRIVILLIG_SKATTETREKK_INFO_URL}>Les om hvordan registrere frivillig skattetrekk på barnepensjon. </Link>
                                 </BodyLong>
 
                             </VStack>
