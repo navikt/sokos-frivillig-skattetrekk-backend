@@ -17,7 +17,7 @@
   "dependencies": {
     "cors": "^2.8.5",
     "dotenv": "^17.2.1",
-    "express": "^4.21.2",
+    "express": "^5.1.0",
     "jsonwebtoken": "^9.0.0",
     "node-jose": "^2.2.0",
     "openid-client": "5.7.0",
@@ -29,7 +29,7 @@
     "@navikt/ds-css": "^7.14.2",
     "@navikt/ds-react": "^7.14.2",
     "@navikt/nav-dekoratoren-moduler": "^3.2.2",
-    "@types/express": "^5.0.1",
+    "@types/express": "^5.0.3",
     "@types/node": "^24.3.0",
     "@types/react": "^19.1.10",
     "@types/react-dom": "^19.1.7",
