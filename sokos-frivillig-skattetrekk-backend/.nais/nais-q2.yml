@@ -84,23 +84,9 @@ spec:
     - name: PDL_AUDIENCE
       value: dev-fss:pdl:pdl-api
 
-    - name: FULLMAKT_URL
-      value: http://pensjon-representasjon-q2.pensjon-person.svc.nais.local
-    - name: FULLMAKT_SCOPE
-      value: api://dev-fss.pensjon-person.pensjon-representasjon-q2/.default
-    - name: FULLMAKT_AUDIENCE
-      value: dev-fss:pensjon-person:pensjon-representasjon-q2
-
     - name: TREKK_URL
       value: http://sokos-oppdrag-proxy-q2.okonomi.svc.nais.local
     - name: TREKK_SCOPE
       value: api://dev-fss.okonomi.sokos-oppdrag-proxy-q2/.default
     - name: TREKK_AUDIENCE
       value: dev-fss:okonomi:sokos-oppdrag-proxy-q2
-
-    - name: NORG2_URL
-      value: https://norg2.intern.dev.nav.no/norg2/api/v1
-    - name: NORG2_SCOPE
-      value: api://dev-gcp.org.norg2/.default
-    - name: NORG2_AUDIENCE
-      value: dev-gcp:org:norg2

@@ -16,7 +16,6 @@ class BehandleTrekkServiceTest {
 
     private val pid = "12345678910"
     private val trekkClientMock = mockk<TrekkClient>()
-    private val geografiskLokasjonServiceMock = mockk<GeografiskLokasjonService>()
     private val behandleTrekkService = BehandleTrekkService(
         trekkClientMock
     )
@@ -229,7 +228,6 @@ class BehandleTrekkServiceTest {
         val trekkvedtakId = behandleTrekkService.opprettTrekk(pid, 0, SatsType.KRONER, LocalDate.parse("2025-01-01"))
 
         verify(exactly = 0) { trekkClientMock.opprettAndreTrekk(eq(pid), any()) }
-        verify(exactly = 0) { geografiskLokasjonServiceMock.hentNavEnhet(pid) }
 
         assertNull(trekkvedtakId)
     }

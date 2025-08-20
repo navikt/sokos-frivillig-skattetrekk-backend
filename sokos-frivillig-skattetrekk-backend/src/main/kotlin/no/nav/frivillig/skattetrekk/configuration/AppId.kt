@@ -1,11 +1,9 @@
 package no.nav.frivillig.skattetrekk.configuration
 
 enum class AppId(
-    val supportsTokenX: Boolean,
-    val supportsFullmakt: Boolean
+    val supportsTokenX: Boolean
 ) {
-    PENSJON_FULLMAKT(false, false),
-    OPPDRAG_REST_PROXY(false, false),
-    PDL(true, false),
-    NORG2(false, false)
+    OPPDRAG_REST_PROXY(false),
+    PDL(true),
+    NORG2(false)
 }

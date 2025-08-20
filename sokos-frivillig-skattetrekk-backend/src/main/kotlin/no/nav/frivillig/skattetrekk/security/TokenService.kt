@@ -77,16 +77,6 @@ class TokenService(
          if (issuer == tokenXIssuer) {
 
             if (appId.supportsTokenX) {
-
-                val pidFromToken = jwt.getClaim<String>("pid")
-                val isFullmaktToken = pid != pidFromToken
-
-                if (isFullmaktToken) {
-                    return if (appId.supportsFullmakt)
-                        TokenType.TOKEN_X else
-                            throw IllegalStateException("Token type not supported for this appId")
-
-                }
                 return TokenType.TOKEN_X
             } else {
                 return TokenType.AZURE_AD_CLIENT_CREDENTIALS

@@ -90,7 +90,6 @@ class SetPidFilterTest {
 
         filter.doFilter(request, response, filterChain)
 
-        assertFalse(SecurityContextUtil.isFullmakt())
         assertEquals(pid, SecurityContextUtil.getPidFromContext())
     }
 
@@ -110,7 +109,6 @@ class SetPidFilterTest {
 
         filter.doFilter(request, response, filterChain)
 
-        assertFalse(SecurityContextUtil.isFullmakt())
         assertEquals(pid, SecurityContextUtil.getPidFromContext())
     }
 
