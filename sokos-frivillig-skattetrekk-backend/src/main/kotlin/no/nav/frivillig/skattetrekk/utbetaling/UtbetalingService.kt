@@ -4,13 +4,13 @@ import org.springframework.stereotype.Service
 
 @Service
 class UtbetalingService(
-    val utbetalingClient: UtbetalingClient
+    val utbetalingClient: UtbetalingClient,
 ) {
-
     fun harUtbetaling(fnr: String): Boolean {
-        val utbetaling = utbetalingClient
-            .fetchUtbetalinger(fnr)
-            .maxByOrNull { it.posteringsdato }
+        val utbetaling =
+            utbetalingClient
+                .fetchUtbetalinger(fnr)
+                .maxByOrNull { it.posteringsdato }
         return utbetaling != null
     }
 }

@@ -10,12 +10,11 @@ import org.springframework.web.filter.OncePerRequestFilter
 import java.util.UUID
 
 @Component
-class SetCallIdFilter: OncePerRequestFilter() {
-
+class SetCallIdFilter : OncePerRequestFilter() {
     override fun doFilterInternal(
         request: HttpServletRequest,
         response: HttpServletResponse,
-        filterChain: FilterChain
+        filterChain: FilterChain,
     ) {
         MDC.put(NAV_CALL_ID_NAME, UUID.randomUUID().toString())
         filterChain.doFilter(request, response)

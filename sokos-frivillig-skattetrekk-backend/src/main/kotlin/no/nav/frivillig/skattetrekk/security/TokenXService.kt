@@ -17,7 +17,8 @@ import org.springframework.stereotype.Service
 import org.springframework.util.LinkedMultiValueMap
 import org.springframework.web.reactive.function.client.WebClient
 import java.time.Instant
-import java.util.*
+import java.util.Date
+import java.util.UUID
 
 @Service
 class TokenXService(
@@ -26,7 +27,6 @@ class TokenXService(
     @Value("\${oauth2.tokenX.clientId}") private val clientId: String,
     @Qualifier("webClientProxy") private val webClient: WebClient,
 ) {
-
     companion object {
         internal const val PARAMS_GRANT_TYPE = "grant_type"
         internal const val GRANT_TYPE = "urn:ietf:params:oauth:grant-type:token-exchange"
@@ -48,44 +48,56 @@ class TokenXService(
     data class TokenXResponse(
         @JsonProperty(value = "access_token", required = true) val accessToken: String,
         @JsonProperty(value = "token_type", required = true) val tokenType: String,
-        @JsonProperty(value = "expires_in", required = true) val expiresIn: Int
+        @JsonProperty(value = "expires_in", required = true) val expiresIn: Int,
     )
 
-    fun exchangeIngressTokenToEgressToken(subjectToken: String, audience: String): String? =
-        webClient.post().uri(endpoint).contentType(MediaType.APPLICATION_FORM_URLENCODED)
-            .bodyValue(LinkedMultiValueMap<String, String>().apply {
-                add(PARAMS_GRANT_TYPE, GRANT_TYPE)
-                add(PARAMS_SUBJECT_TOKEN_TYPE, SUBJECT_TOKEN_TYPE)
-                add(PARAMS_SUBJECT_TOKEN, subjectToken)
-                add(PARAMS_AUDIENCE, audience)
-                add(PARAMS_CLIENT_ASSERTION, createAssertionToken())
-                add(PARAMS_CLIENT_ASSERTION_TYPE, CLIENT_ASSERTION_TYPE)
-            })
-            .retrieve()
+    fun exchangeIngressTokenToEgressToken(
+        subjectToken: String,
+        audience: String,
+    ): String? =
+        webClient
+            .post()
+            .uri(endpoint)
+            .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+            .bodyValue(
+                LinkedMultiValueMap<String, String>().apply {
+                    add(PARAMS_GRANT_TYPE, GRANT_TYPE)
+                    add(PARAMS_SUBJECT_TOKEN_TYPE, SUBJECT_TOKEN_TYPE)
+                    add(PARAMS_SUBJECT_TOKEN, subjectToken)
+                    add(PARAMS_AUDIENCE, audience)
+                    add(PARAMS_CLIENT_ASSERTION, createAssertionToken())
+                    add(PARAMS_CLIENT_ASSERTION_TYPE, CLIENT_ASSERTION_TYPE)
+                },
+            ).retrieve()
             .bodyToMono(TokenXResponse::class.java)
             .block()
             ?.accessToken
 
     private fun createAssertionToken(): String {
         val now = Date.from(Instant.now())
-        val jwt = JWTClaimsSet.Builder()
-            .subject(clientId)
-            .issuer(clientId)
-            .audience(endpoint)
-            .jwtID(UUID.randomUUID().toString())
-            .notBeforeTime(now)
-            .issueTime(now)
-            .expirationTime(Date.from(Instant.now().plusSeconds(30)))
-            .build()
+        val jwt =
+            JWTClaimsSet
+                .Builder()
+                .subject(clientId)
+                .issuer(clientId)
+                .audience(endpoint)
+                .jwtID(UUID.randomUUID().toString())
+                .notBeforeTime(now)
+                .issueTime(now)
+                .expirationTime(Date.from(Instant.now().plusSeconds(30)))
+                .build()
 
         val privateKey = RSAKey.parse(privateJwk)
 
-        val signedJwt = SignedJWT(
-            JWSHeader.Builder(JWSAlgorithm.RS256)
-                .keyID(ObjectMapper().readValue(privateJwk, TokenXJwkResponse::class.java).kid)
-                .type(JOSEObjectType.JWT).build(),
-            jwt
-        ).apply { sign(RSASSASigner(privateKey.toRSAPrivateKey())) }
+        val signedJwt =
+            SignedJWT(
+                JWSHeader
+                    .Builder(JWSAlgorithm.RS256)
+                    .keyID(ObjectMapper().readValue(privateJwk, TokenXJwkResponse::class.java).kid)
+                    .type(JOSEObjectType.JWT)
+                    .build(),
+                jwt,
+            ).apply { sign(RSASSASigner(privateKey.toRSAPrivateKey())) }
 
         return signedJwt.serialize()
     }

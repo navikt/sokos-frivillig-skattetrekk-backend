@@ -2,15 +2,14 @@ package no.nav.frivillig.skattetrekk.security
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import jakarta.servlet.FilterChain
-import jakarta.servlet.http.Cookie
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Disabled
-
 import org.junit.jupiter.api.Test
-import org.mockito.Mockito.*
+import org.mockito.Mockito.mock
+import org.mockito.Mockito.`when`
 import org.springframework.http.HttpStatus
 import org.springframework.mock.web.MockHttpServletResponse
 import org.springframework.security.core.context.SecurityContextHolder
@@ -29,7 +28,7 @@ class SetPidFilterTest {
     val request = mock(HttpServletRequest::class.java)
 
     @BeforeEach
-    fun setupContext(){
+    fun setupContext() {
         SecurityContextHolder.setContext(
             SecurityContextImpl(
                 JwtAuthenticationToken(
@@ -38,24 +37,23 @@ class SetPidFilterTest {
                         null,
                         null,
                         mapOf("test" to "test"),
-                        mapOf("test" to "test")
-                    )
-                )
-            )
+                        mapOf("test" to "test"),
+                    ),
+                ),
+            ),
         )
 
         `when`(request.requestURI).thenReturn("/mocked/endpoint")
     }
 
     @Test
-    fun `should resolve to FORBIDDEN with LOGIN_LEVEL_TOO_LOW when user has diskresjon and logged in with insufficient login level`(){
+    fun `should resolve to FORBIDDEN with LOGIN_LEVEL_TOO_LOW when user has diskresjon and logged in with insufficient login level`() {
         val pid = "00000000001"
         val path = "/random/endpoint"
 
         val request = mock(HttpServletRequest::class.java)
         val response = MockHttpServletResponse()
         val filterChain = mock(FilterChain::class.java)
-
 
         `when`(request.getHeader("Authorization")).thenReturn("Test")
         `when`(request.getHeader("pid")).thenReturn(pid)
@@ -111,5 +109,4 @@ class SetPidFilterTest {
 
         assertEquals(pid, SecurityContextUtil.getPidFromContext())
     }
-
 }

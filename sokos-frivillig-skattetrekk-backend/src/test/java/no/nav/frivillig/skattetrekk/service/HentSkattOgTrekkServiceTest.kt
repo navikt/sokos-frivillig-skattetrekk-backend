@@ -4,16 +4,21 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import no.nav.frivillig.skattetrekk.client.trekk.TrekkClient
-import no.nav.frivillig.skattetrekk.client.trekk.api.*
+import no.nav.frivillig.skattetrekk.client.trekk.api.AndreTrekkResponse
+import no.nav.frivillig.skattetrekk.client.trekk.api.Bruker
+import no.nav.frivillig.skattetrekk.client.trekk.api.HentSkattOgTrekkResponse
+import no.nav.frivillig.skattetrekk.client.trekk.api.Skattetrekk
+import no.nav.frivillig.skattetrekk.client.trekk.api.TrekkInfo
+import no.nav.frivillig.skattetrekk.client.trekk.api.Trekkalternativ
+import no.nav.frivillig.skattetrekk.client.trekk.api.Trekkstatus
+import no.nav.frivillig.skattetrekk.client.trekk.api.Trekktype
+import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Assertions.assertNull
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import java.math.BigDecimal
 import java.time.LocalDate
-import kotlin.test.assertNotNull
 
 class HentSkattOgTrekkServiceTest {
-
     private val trekkClientMock = mockk<TrekkClient>()
     private val hentSkattOgTrekkService = HentSkattOgTrekkService(trekkClientMock)
 
@@ -29,9 +34,9 @@ class HentSkattOgTrekkServiceTest {
         verify(exactly = 1) { trekkClientMock.finnTrekkListe(fnr, TrekkTypeCode.FSKT) }
         verify(exactly = 0) { trekkClientMock.hentSkattOgTrekk(any(), any()) }
         assertNotNull(result)
-        assertNotNull(result.data?.skattetrekk)
-        assertNull(result.data?.fremtidigTilleggstrekk)
-        assertNull(result.data?.tilleggstrekk)
+        assertNotNull(result?.data?.skattetrekk)
+        assertNull(result?.data?.fremtidigTilleggstrekk)
+        assertNull(result?.data?.tilleggstrekk)
     }
 
     @Test
@@ -39,24 +44,26 @@ class HentSkattOgTrekkServiceTest {
         val fnr = "12345678901"
         val trekkVedtakId = 1L
 
-        every { trekkClientMock.finnTrekkListe(fnr, TrekkTypeCode.FRIS) } returns listOf(
-            byggTrekkInfo(
-                fnr,
-                trekkVedtakId,
-                TrekkTypeCode.FRIS,
-                LocalDate.parse("2025-03-01"),
-                LocalDate.parse("2025-12-31"),
-                Trekkstatus("AKTIV", null),
-                null,
-                BigDecimal(1000)
+        every { trekkClientMock.finnTrekkListe(fnr, TrekkTypeCode.FRIS) } returns
+            listOf(
+                byggTrekkInfo(
+                    fnr,
+                    trekkVedtakId,
+                    TrekkTypeCode.FRIS,
+                    LocalDate.parse("2025-03-01"),
+                    LocalDate.parse("2025-12-31"),
+                    Trekkstatus("AKTIV", null),
+                    null,
+                    BigDecimal(1000),
+                ),
             )
-        )
         every { trekkClientMock.finnTrekkListe(fnr, TrekkTypeCode.FSKT) } returns emptyList()
 
-        every { trekkClientMock.hentSkattOgTrekk(fnr, trekkVedtakId) } returns byggHentSkattOgTrekkResponse(
-            skattetrekkTrekkVedtakId = trekkVedtakId,
-            frivilligSkattetrekkTrekkVedtakId = null
-        )
+        every { trekkClientMock.hentSkattOgTrekk(fnr, trekkVedtakId) } returns
+            byggHentSkattOgTrekkResponse(
+                skattetrekkTrekkVedtakId = trekkVedtakId,
+                frivilligSkattetrekkTrekkVedtakId = null,
+            )
 
         val result = hentSkattOgTrekkService.hentSkattetrekk(fnr)
 
@@ -65,9 +72,9 @@ class HentSkattOgTrekkServiceTest {
         verify(exactly = 1) { trekkClientMock.hentSkattOgTrekk(fnr, trekkVedtakId) }
 
         assertNotNull(result)
-        assertNotNull(result.data?.skattetrekk)
-        assertNull(result.data?.fremtidigTilleggstrekk)
-        assertNull(result.data?.tilleggstrekk)
+        assertNotNull(result?.data?.skattetrekk)
+        assertNull(result?.data?.fremtidigTilleggstrekk)
+        assertNull(result?.data?.tilleggstrekk)
     }
 
     private fun byggTrekkInfo(
@@ -78,23 +85,25 @@ class HentSkattOgTrekkServiceTest {
         tom: LocalDate,
         trekkstatus: Trekkstatus,
         trekkalternativ: Trekkalternativ?,
-        sats: BigDecimal?
+        sats: BigDecimal?,
     ) = TrekkInfo(
         trekkvedtakId = trekkVedtakId,
-        debitor = Bruker(
-            id = fnr,
-            navn = "Test Testesen",
-        ),
+        debitor =
+            Bruker(
+                id = fnr,
+                navn = "Test Testesen",
+            ),
         kreditor = null,
         kreditorRef = null,
         tssEksternId = null,
         belopSaldotrekk = null,
         belopTrukket = null,
         ansvarligEnhetId = null,
-        trekktype = Trekktype(
-            kode = trekkTypeCode.name,
-            dekode = null,
-        ),
+        trekktype =
+            Trekktype(
+                kode = trekkTypeCode.name,
+                dekode = null,
+            ),
         trekkperiodeFom = fom,
         trekkperiodeTom = tom,
         trekkstatus = trekkstatus,
@@ -106,7 +115,8 @@ class HentSkattOgTrekkServiceTest {
         skattetrekkTrekkVedtakId: Long?,
         frivilligSkattetrekkTrekkVedtakId: Long?,
     ) = HentSkattOgTrekkResponse(
-            skattetrekk = Skattetrekk(
+        skattetrekk =
+            Skattetrekk(
                 trekkvedtakId = skattetrekkTrekkVedtakId,
                 debitor = null,
                 trekktype = null,
@@ -122,9 +132,10 @@ class HentSkattOgTrekkServiceTest {
                 tabellIFaggruppe = null,
                 sporing = null,
             ),
-            andreTrekk = AndreTrekkResponse(
+        andreTrekk =
+            AndreTrekkResponse(
                 trekkvedtakId = frivilligSkattetrekkTrekkVedtakId,
-                debitor =  null,
+                debitor = null,
                 trekktype = null,
                 trekkstatus = null,
                 kreditor = null,
@@ -143,7 +154,6 @@ class HentSkattOgTrekkServiceTest {
                 sporing = null,
                 fagomradeListe = null,
                 satsperiodeListe = null,
-            )
-        )
-
+            ),
+    )
 }

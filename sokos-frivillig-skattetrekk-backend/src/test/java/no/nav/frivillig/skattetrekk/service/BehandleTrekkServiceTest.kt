@@ -4,72 +4,84 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import no.nav.frivillig.skattetrekk.client.trekk.TrekkClient
-import no.nav.frivillig.skattetrekk.client.trekk.api.*
+import no.nav.frivillig.skattetrekk.client.trekk.api.AndreTrekkResponse
+import no.nav.frivillig.skattetrekk.client.trekk.api.FagomradeResponse
+import no.nav.frivillig.skattetrekk.client.trekk.api.HentSkattOgTrekkResponse
+import no.nav.frivillig.skattetrekk.client.trekk.api.OpprettAndreTrekkResponse
+import no.nav.frivillig.skattetrekk.client.trekk.api.SatsType
+import no.nav.frivillig.skattetrekk.client.trekk.api.Satsperiode
+import no.nav.frivillig.skattetrekk.client.trekk.api.TrekkInfo
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import java.math.BigDecimal
 import java.time.LocalDate
-import kotlin.test.assertEquals
-import kotlin.test.assertNull
 
 class BehandleTrekkServiceTest {
-
     private val pid = "12345678910"
     private val trekkClientMock = mockk<TrekkClient>()
-    private val behandleTrekkService = BehandleTrekkService(
-        trekkClientMock
-    )
+    private val behandleTrekkService =
+        BehandleTrekkService(
+            trekkClientMock,
+        )
 
     @Test
     fun `Opphor trekk dersom ett løpende trekk via behandle trekk`() {
-
         val trekkvedtakId = 1L
 
-        every { trekkClientMock.finnTrekkListe(pid, any()) } returns listOf(
-            lagTrekkInfo(
-                trekkvedtakId = trekkvedtakId,
-                sats = BigDecimal.valueOf(20),
-                ansvarligEnhetId = "NAV Enhet",
-                fom = LocalDate.parse("2025-05-01"),
-                tom = LocalDate.parse("2025-12-31")
-            ),
-        )
-        every { trekkClientMock.opphorAndreTrekk(eq(pid), any()) } returns Unit
-        every { trekkClientMock.hentSkattOgTrekk(pid, trekkvedtakId) } returns lagHentSkattOgTrekkRespons(trekkvedtakId, listOf(
-            lagSatsperiode(
-                fom = LocalDate.parse("2025-05-01"),
-                tom = LocalDate.parse("2025-12-31"),
-                sats = 100.0
+        every { trekkClientMock.finnTrekkListe(pid, any()) } returns
+            listOf(
+                lagTrekkInfo(
+                    trekkvedtakId = trekkvedtakId,
+                    sats = BigDecimal.valueOf(20),
+                    ansvarligEnhetId = "NAV Enhet",
+                    fom = LocalDate.parse("2025-05-01"),
+                    tom = LocalDate.parse("2025-12-31"),
+                ),
             )
-        ))
+        every { trekkClientMock.opphorAndreTrekk(eq(pid), any()) } returns Unit
+        every { trekkClientMock.hentSkattOgTrekk(pid, trekkvedtakId) } returns
+            lagHentSkattOgTrekkRespons(
+                trekkvedtakId,
+                listOf(
+                    lagSatsperiode(
+                        fom = LocalDate.parse("2025-05-01"),
+                        tom = LocalDate.parse("2025-12-31"),
+                        sats = 100.0,
+                    ),
+                ),
+            )
 
-        behandleTrekkService.behandleTrekk(pid,0, SatsType.KRONER)
+        behandleTrekkService.behandleTrekk(pid, 0, SatsType.KRONER)
 
         verify(exactly = 1) {
             trekkClientMock.opphorAndreTrekk(
                 eq(pid),
-                any()
+                any(),
             )
         }
-
     }
 
     @Test
     fun `Opprett trekk dersom tom trekkliste via behandle trekk`() {
-
         val trekkvedtakId = 1L
 
         every { trekkClientMock.finnTrekkListe(pid, any()) } returns emptyList()
         every { trekkClientMock.opprettAndreTrekk(eq(pid), any()) } returns OpprettAndreTrekkResponse(trekkvedtakId)
-        every { trekkClientMock.hentSkattOgTrekk(pid, trekkvedtakId) } returns lagHentSkattOgTrekkRespons(trekkvedtakId, listOf(
-            lagSatsperiode(
-                fom = LocalDate.now().minusMonths(1L),
-                tom = LocalDate.now().plusMonths(3L),
-                sats = 100.0
+        every { trekkClientMock.hentSkattOgTrekk(pid, trekkvedtakId) } returns
+            lagHentSkattOgTrekkRespons(
+                trekkvedtakId,
+                listOf(
+                    lagSatsperiode(
+                        fom = LocalDate.now().minusMonths(1L),
+                        tom = LocalDate.now().plusMonths(3L),
+                        sats = 100.0,
+                    ),
+                ),
             )
-        ))
 
-        behandleTrekkService.behandleTrekk(pid,40, SatsType.PROSENT)
+        behandleTrekkService.behandleTrekk(pid, 40, SatsType.PROSENT)
 
         verify(exactly = 0) { trekkClientMock.opphorAndreTrekk(eq(pid), any()) }
         verify(exactly = 1) { trekkClientMock.opprettAndreTrekk(eq(pid), any()) }
@@ -77,121 +89,135 @@ class BehandleTrekkServiceTest {
 
     @Test
     fun `Opphor trekk dersom ett løpende trekk og ikke gjøre noe med ett lukket via behandle trekk`() {
-
         val trekkvedtakId = 1L
         val trekkvedtakId2 = 2L
 
-        every { trekkClientMock.finnTrekkListe(pid, any()) } returns listOf(
-            lagTrekkInfo(
-                trekkvedtakId = trekkvedtakId,
-                sats = BigDecimal.valueOf(20),
-                ansvarligEnhetId = "NAV Enhet",
-                fom = LocalDate.parse("2025-05-01"),
-                tom = LocalDate.parse("2025-05-30")
-            ),
-            lagTrekkInfo(
-                trekkvedtakId = trekkvedtakId2,
-                sats = BigDecimal.valueOf(20),
-                ansvarligEnhetId = "NAV Enhet",
-                fom = LocalDate.parse("2025-06-01"),
-                tom = LocalDate.parse("2025-12-31")
+        every { trekkClientMock.finnTrekkListe(pid, any()) } returns
+            listOf(
+                lagTrekkInfo(
+                    trekkvedtakId = trekkvedtakId,
+                    sats = BigDecimal.valueOf(20),
+                    ansvarligEnhetId = "NAV Enhet",
+                    fom = LocalDate.parse("2025-05-01"),
+                    tom = LocalDate.parse("2025-05-30"),
+                ),
+                lagTrekkInfo(
+                    trekkvedtakId = trekkvedtakId2,
+                    sats = BigDecimal.valueOf(20),
+                    ansvarligEnhetId = "NAV Enhet",
+                    fom = LocalDate.parse("2025-06-01"),
+                    tom = LocalDate.parse("2025-12-31"),
+                ),
             )
-        )
         every { trekkClientMock.opphorAndreTrekk(eq(pid), any()) } returns Unit
-        every { trekkClientMock.hentSkattOgTrekk(pid, any()) } returns lagHentSkattOgTrekkRespons(trekkvedtakId, listOf(
-            lagSatsperiode(
-                fom = LocalDate.parse("2025-06-01"),
-                tom = LocalDate.parse("2025-12-31"),
-                sats = 100.0
+        every { trekkClientMock.hentSkattOgTrekk(pid, any()) } returns
+            lagHentSkattOgTrekkRespons(
+                trekkvedtakId,
+                listOf(
+                    lagSatsperiode(
+                        fom = LocalDate.parse("2025-06-01"),
+                        tom = LocalDate.parse("2025-12-31"),
+                        sats = 100.0,
+                    ),
+                ),
             )
-        ))
 
+        behandleTrekkService.behandleTrekk(pid, 0, SatsType.KRONER)
 
-        behandleTrekkService.behandleTrekk(pid,0, SatsType.KRONER)
-
-        verify(exactly = 1) { trekkClientMock.opphorAndreTrekk(eq(pid), any())}
+        verify(exactly = 1) { trekkClientMock.opphorAndreTrekk(eq(pid), any()) }
         verify(exactly = 0) { trekkClientMock.opprettAndreTrekk(eq(pid), any()) }
-
     }
 
     @Test
     fun `Opphor trekk dersom for usortert med ett løpende trekk og ikke gjøre noe med ett lukket via behandle trekk`() {
-
         val trekkvedtakId = 1L
         val trekkvedtakId2 = 2L
 
-        every { trekkClientMock.finnTrekkListe(pid, any()) } returns listOf(
-            lagTrekkInfo(
-                trekkvedtakId = trekkvedtakId2,
-                sats = BigDecimal.valueOf(20),
-                ansvarligEnhetId = "NAV Enhet",
-                fom = LocalDate.parse("2025-01-01"),
-                tom = LocalDate.parse("2025-03-01")
-            ),
-            lagTrekkInfo(
-                trekkvedtakId = trekkvedtakId,
-                sats = BigDecimal.valueOf(20),
-                ansvarligEnhetId = "NAV Enhet",
-                fom = LocalDate.parse("2025-05-01"),
-                tom = LocalDate.parse("2025-12-31")
+        every { trekkClientMock.finnTrekkListe(pid, any()) } returns
+            listOf(
+                lagTrekkInfo(
+                    trekkvedtakId = trekkvedtakId2,
+                    sats = BigDecimal.valueOf(20),
+                    ansvarligEnhetId = "NAV Enhet",
+                    fom = LocalDate.parse("2025-01-01"),
+                    tom = LocalDate.parse("2025-03-01"),
+                ),
+                lagTrekkInfo(
+                    trekkvedtakId = trekkvedtakId,
+                    sats = BigDecimal.valueOf(20),
+                    ansvarligEnhetId = "NAV Enhet",
+                    fom = LocalDate.parse("2025-05-01"),
+                    tom = LocalDate.parse("2025-12-31"),
+                ),
             )
-        )
         every { trekkClientMock.opphorAndreTrekk(eq(pid), any()) } returns Unit
-        every { trekkClientMock.hentSkattOgTrekk(pid, any()) } returns lagHentSkattOgTrekkRespons(trekkvedtakId, listOf(
-            lagSatsperiode(
-                fom = LocalDate.parse("2025-01-01"),
-                tom = LocalDate.parse("2025-03-01"),
-                sats = 100.0
+        every { trekkClientMock.hentSkattOgTrekk(pid, any()) } returns
+            lagHentSkattOgTrekkRespons(
+                trekkvedtakId,
+                listOf(
+                    lagSatsperiode(
+                        fom = LocalDate.parse("2025-01-01"),
+                        tom = LocalDate.parse("2025-03-01"),
+                        sats = 100.0,
+                    ),
+                ),
             )
-        ))
 
-        behandleTrekkService.behandleTrekk(pid,0, SatsType.KRONER)
+        behandleTrekkService.behandleTrekk(pid, 0, SatsType.KRONER)
 
-        verify(exactly = 1) { trekkClientMock.opphorAndreTrekk(eq(pid), any())}
+        verify(exactly = 1) { trekkClientMock.opphorAndreTrekk(eq(pid), any()) }
         verify(exactly = 0) { trekkClientMock.opprettAndreTrekk(eq(pid), any()) }
     }
 
     @Disabled
     @Test
     fun `Oppdater trekk dersom for usortert med ett løpende trekk og ikke gjøre noe med ett lukket via behandle trekk`() {
-
         val trekkvedtakId = 1L
         val trekkvedtakId2 = 2L
 
-        every { trekkClientMock.finnTrekkListe(pid, any()) } returns listOf(
-            lagTrekkInfo(
-                trekkvedtakId = trekkvedtakId2,
-                sats = BigDecimal.valueOf(20),
-                ansvarligEnhetId = "NAV Enhet",
-                fom = LocalDate.now().minusMonths(5L),
-                tom = LocalDate.now().minusMonths(3L)
-            ),
-            lagTrekkInfo(
-                trekkvedtakId = trekkvedtakId,
-                sats = BigDecimal.valueOf(20),
-                ansvarligEnhetId = "NAV Enhet",
-                fom = LocalDate.now().minusMonths(1L),
-                tom = null
+        every { trekkClientMock.finnTrekkListe(pid, any()) } returns
+            listOf(
+                lagTrekkInfo(
+                    trekkvedtakId = trekkvedtakId2,
+                    sats = BigDecimal.valueOf(20),
+                    ansvarligEnhetId = "NAV Enhet",
+                    fom = LocalDate.now().minusMonths(5L),
+                    tom = LocalDate.now().minusMonths(3L),
+                ),
+                lagTrekkInfo(
+                    trekkvedtakId = trekkvedtakId,
+                    sats = BigDecimal.valueOf(20),
+                    ansvarligEnhetId = "NAV Enhet",
+                    fom = LocalDate.now().minusMonths(1L),
+                    tom = null,
+                ),
             )
-        )
         every { trekkClientMock.opphorAndreTrekk(eq(pid), any()) } returns Unit
         every { trekkClientMock.opprettAndreTrekk(eq(pid), any()) } returns OpprettAndreTrekkResponse(3L)
-        every { trekkClientMock.hentSkattOgTrekk(pid, trekkvedtakId2) } returns lagHentSkattOgTrekkRespons(trekkvedtakId, listOf(
-            lagSatsperiode(
-                fom = LocalDate.now().minusMonths(1L),
-                tom = LocalDate.now().minusMonths(2L),
-                sats = 100.0
+        every { trekkClientMock.hentSkattOgTrekk(pid, trekkvedtakId2) } returns
+            lagHentSkattOgTrekkRespons(
+                trekkvedtakId,
+                listOf(
+                    lagSatsperiode(
+                        fom = LocalDate.now().minusMonths(1L),
+                        tom = LocalDate.now().minusMonths(2L),
+                        sats = 100.0,
+                    ),
+                ),
             )
-        ))
-        every { trekkClientMock.hentSkattOgTrekk(pid, trekkvedtakId) } returns lagHentSkattOgTrekkRespons(trekkvedtakId, listOf(
-            lagSatsperiode(
-                fom = LocalDate.now().minusMonths(1L),
-                tom = LocalDate.now().plusMonths(3L),
-                sats = 100.0
+        every { trekkClientMock.hentSkattOgTrekk(pid, trekkvedtakId) } returns
+            lagHentSkattOgTrekkRespons(
+                trekkvedtakId,
+                listOf(
+                    lagSatsperiode(
+                        fom = LocalDate.now().minusMonths(1L),
+                        tom = LocalDate.now().plusMonths(3L),
+                        sats = 100.0,
+                    ),
+                ),
             )
-        ))
 
-        behandleTrekkService.behandleTrekk(pid,30, SatsType.PROSENT)
+        behandleTrekkService.behandleTrekk(pid, 30, SatsType.PROSENT)
 
         verify(exactly = 1) { trekkClientMock.opphorAndreTrekk(eq(pid), any()) }
         verify(exactly = 1) { trekkClientMock.opprettAndreTrekk(eq(pid), any()) }
@@ -199,7 +225,6 @@ class BehandleTrekkServiceTest {
 
     @Test
     fun `Opprett nytt frivillig skattetrekk for prosent`() {
-
         every { trekkClientMock.opprettAndreTrekk(eq(pid), any()) } returns OpprettAndreTrekkResponse(1L)
 
         val trekkVedtakId = behandleTrekkService.opprettTrekk(pid, 20, SatsType.PROSENT, LocalDate.parse("2025-01-01"))
@@ -207,24 +232,22 @@ class BehandleTrekkServiceTest {
         verify(exactly = 1) { trekkClientMock.opprettAndreTrekk(eq(pid), any()) }
         verify(exactly = 0) { trekkClientMock.opphorAndreTrekk(eq(pid), any()) }
 
-        assertEquals(1L,trekkVedtakId)
+        assertEquals(1L, trekkVedtakId)
     }
 
     @Test
     fun `Opprett nytt frivillig skattetrekk for nok`() {
-
         every { trekkClientMock.opprettAndreTrekk(eq(pid), any()) } returns OpprettAndreTrekkResponse(1L)
 
         val trekkVedtakId = behandleTrekkService.opprettTrekk(pid, 20, SatsType.KRONER, LocalDate.parse("2025-01-01"))
 
         verify(exactly = 1) { trekkClientMock.opprettAndreTrekk(eq(pid), any()) }
 
-        assertEquals(1L,trekkVedtakId)
+        assertEquals(1L, trekkVedtakId)
     }
 
     @Test
     fun `Ikke opprett nytt frivillig skattetrekk dersom tilleggstrekk er 0`() {
-
         val trekkvedtakId = behandleTrekkService.opprettTrekk(pid, 0, SatsType.KRONER, LocalDate.parse("2025-01-01"))
 
         verify(exactly = 0) { trekkClientMock.opprettAndreTrekk(eq(pid), any()) }
@@ -247,13 +270,17 @@ class BehandleTrekkServiceTest {
 
         every { trekkClientMock.opphorAndreTrekk(eq(pid), any()) } returns Unit
 
-        every { trekkClientMock.hentSkattOgTrekk(pid, trekkVedtakId) } returns lagHentSkattOgTrekkRespons(trekkVedtakId,
-            listOf(lagSatsperiode(
-                fom = LocalDate.now().minusMonths(1L),
-                tom = LocalDate.now().plusMonths(3L),
-                sats = 100.0
-            ))
-        )
+        every { trekkClientMock.hentSkattOgTrekk(pid, trekkVedtakId) } returns
+            lagHentSkattOgTrekkRespons(
+                trekkVedtakId,
+                listOf(
+                    lagSatsperiode(
+                        fom = LocalDate.now().minusMonths(1L),
+                        tom = LocalDate.now().plusMonths(3L),
+                        sats = 100.0,
+                    ),
+                ),
+            )
 
         behandleTrekkService.opphoerTrekk(pid, trekkVedtakId)
 
@@ -266,13 +293,17 @@ class BehandleTrekkServiceTest {
 
         every { trekkClientMock.opphorAndreTrekk(eq(pid), any()) } returns Unit
 
-        every { trekkClientMock.hentSkattOgTrekk(pid, trekkVedtakId) } returns lagHentSkattOgTrekkRespons(trekkVedtakId,
-            listOf(lagSatsperiode(
-                fom = LocalDate.now().plusMonths(1L),
-                tom = LocalDate.now().plusMonths(3L),
-                sats = 100.0
-            ))
-        )
+        every { trekkClientMock.hentSkattOgTrekk(pid, trekkVedtakId) } returns
+            lagHentSkattOgTrekkRespons(
+                trekkVedtakId,
+                listOf(
+                    lagSatsperiode(
+                        fom = LocalDate.now().plusMonths(1L),
+                        tom = LocalDate.now().plusMonths(3L),
+                        sats = 100.0,
+                    ),
+                ),
+            )
 
         behandleTrekkService.opphoerTrekk(pid, trekkVedtakId)
 
@@ -285,25 +316,29 @@ class BehandleTrekkServiceTest {
 
         every { trekkClientMock.opphorAndreTrekk(eq(pid), any()) } returns Unit
 
-        every { trekkClientMock.hentSkattOgTrekk(pid, trekkVedtakId) } returns lagHentSkattOgTrekkRespons(trekkVedtakId,
-            listOf(
-                lagSatsperiode(
-                    fom = LocalDate.now().minusMonths(1L),
-                    tom = LocalDate.now().plusMonths(3L),
-                    sats = 100.0),
-                lagSatsperiode(
-                    fom = LocalDate.now().plusMonths(1L),
-                    tom = LocalDate.now().plusMonths(3L),
-                    sats = 100.0
-                ))
-        )
+        every { trekkClientMock.hentSkattOgTrekk(pid, trekkVedtakId) } returns
+            lagHentSkattOgTrekkRespons(
+                trekkVedtakId,
+                listOf(
+                    lagSatsperiode(
+                        fom = LocalDate.now().minusMonths(1L),
+                        tom = LocalDate.now().plusMonths(3L),
+                        sats = 100.0,
+                    ),
+                    lagSatsperiode(
+                        fom = LocalDate.now().plusMonths(1L),
+                        tom = LocalDate.now().plusMonths(3L),
+                        sats = 100.0,
+                    ),
+                ),
+            )
 
         behandleTrekkService.opphoerTrekk(pid, trekkVedtakId)
 
         verify(exactly = 1) {
             trekkClientMock.opphorAndreTrekk(
                 eq(pid),
-                any()
+                any(),
             )
         }
     }
@@ -312,18 +347,22 @@ class BehandleTrekkServiceTest {
     fun `Skal ikke opphøre noe dersom gammel satsperiode`() {
         val trekkVedtakId = 1L
 
-        every { trekkClientMock.hentSkattOgTrekk(pid, trekkVedtakId) } returns lagHentSkattOgTrekkRespons(trekkVedtakId,
-            listOf(
-                lagSatsperiode(
-                    fom = LocalDate.now().minusMonths(10L),
-                    tom = LocalDate.now().minusMonths(2L),
-                    sats = 100.0))
-        )
+        every { trekkClientMock.hentSkattOgTrekk(pid, trekkVedtakId) } returns
+            lagHentSkattOgTrekkRespons(
+                trekkVedtakId,
+                listOf(
+                    lagSatsperiode(
+                        fom = LocalDate.now().minusMonths(10L),
+                        tom = LocalDate.now().minusMonths(2L),
+                        sats = 100.0,
+                    ),
+                ),
+            )
 
         verify(exactly = 0) {
             trekkClientMock.opphorAndreTrekk(
                 eq(pid),
-                any()
+                any(),
             )
         }
     }
@@ -334,29 +373,34 @@ class BehandleTrekkServiceTest {
 
         every { trekkClientMock.opphorAndreTrekk(eq(pid), any()) } returns Unit
 
-        every { trekkClientMock.hentSkattOgTrekk(pid, trekkVedtakId) } returns lagHentSkattOgTrekkRespons(trekkVedtakId,
-            listOf(
-                lagSatsperiode(
-                    fom = LocalDate.now().minusMonths(10L),
-                    tom = LocalDate.now().minusMonths(2L),
-                    sats = 100.0),
-                lagSatsperiode(
-                    fom = LocalDate.now().minusMonths(1L),
-                    tom = LocalDate.now().plusMonths(3L),
-                    sats = 100.0),
-                lagSatsperiode(
-                    fom = LocalDate.now().plusMonths(4L),
-                    tom = LocalDate.now().minusMonths(10L),
-                    sats = 100.0)
-                )
-        )
+        every { trekkClientMock.hentSkattOgTrekk(pid, trekkVedtakId) } returns
+            lagHentSkattOgTrekkRespons(
+                trekkVedtakId,
+                listOf(
+                    lagSatsperiode(
+                        fom = LocalDate.now().minusMonths(10L),
+                        tom = LocalDate.now().minusMonths(2L),
+                        sats = 100.0,
+                    ),
+                    lagSatsperiode(
+                        fom = LocalDate.now().minusMonths(1L),
+                        tom = LocalDate.now().plusMonths(3L),
+                        sats = 100.0,
+                    ),
+                    lagSatsperiode(
+                        fom = LocalDate.now().plusMonths(4L),
+                        tom = LocalDate.now().minusMonths(10L),
+                        sats = 100.0,
+                    ),
+                ),
+            )
 
         behandleTrekkService.opphoerTrekk(pid, trekkVedtakId)
 
         verify(exactly = 1) {
             trekkClientMock.opphorAndreTrekk(
                 eq(pid),
-                any()
+                any(),
             )
         }
     }
@@ -367,26 +411,31 @@ class BehandleTrekkServiceTest {
         val trekkVedtakId = 1L
         val tilleggstrekk = 20
 
-        val trekkListe = listOf(
-            lagTrekkInfo(
-                trekkvedtakId = trekkVedtakId,
-                sats = BigDecimal.valueOf(20),
-                ansvarligEnhetId = "NAV Enhet",
-                fom = LocalDate.now().minusMonths(1L),
-                tom = null
+        val trekkListe =
+            listOf(
+                lagTrekkInfo(
+                    trekkvedtakId = trekkVedtakId,
+                    sats = BigDecimal.valueOf(20),
+                    ansvarligEnhetId = "NAV Enhet",
+                    fom = LocalDate.now().minusMonths(1L),
+                    tom = null,
+                ),
             )
-        )
 
         every { trekkClientMock.opphorAndreTrekk(eq(pid), any()) } returns Unit
         every { trekkClientMock.opprettAndreTrekk(eq(pid), any()) } returns OpprettAndreTrekkResponse(1L)
 
-        every { trekkClientMock.hentSkattOgTrekk(pid, trekkVedtakId) } returns lagHentSkattOgTrekkRespons(trekkVedtakId,
-            listOf(lagSatsperiode(
-                fom = LocalDate.now().minusMonths(1L),
-                tom = LocalDate.now().plusMonths(3L),
-                sats = 100.0
-            ))
-        )
+        every { trekkClientMock.hentSkattOgTrekk(pid, trekkVedtakId) } returns
+            lagHentSkattOgTrekkRespons(
+                trekkVedtakId,
+                listOf(
+                    lagSatsperiode(
+                        fom = LocalDate.now().minusMonths(1L),
+                        tom = LocalDate.now().plusMonths(3L),
+                        sats = 100.0,
+                    ),
+                ),
+            )
 
         every { trekkClientMock.finnTrekkListe(pid, any()) } returns trekkListe
 
@@ -395,32 +444,33 @@ class BehandleTrekkServiceTest {
         verify(exactly = 1) {
             trekkClientMock.opphorAndreTrekk(
                 eq(pid),
-                any()
+                any(),
             )
         }
 
         verify(exactly = 1) {
             trekkClientMock.opprettAndreTrekk(
                 eq(pid),
-                any()
+                any(),
             )
         }
     }
 
     @Test
     fun `Skal lukke den siste åpne eksisterende satsperioden med dagen før starten på ny satsperiode`() {
+        val eksisterendeListe =
+            listOf(
+                lagSatsperiode(fom = LocalDate.parse("2025-01-01"), tom = LocalDate.parse("2025-02-28"), sats = 1.0),
+                lagSatsperiode(fom = LocalDate.parse("2025-03-01"), LocalDate.parse("2025-03-31"), sats = 2.0),
+                lagSatsperiode(fom = LocalDate.parse("2025-04-01"), LocalDate.parse("2025-12-31"), sats = 3.0),
+            )
 
-        val eksisterendeListe = listOf(
-            lagSatsperiode( fom = LocalDate.parse("2025-01-01"), tom = LocalDate.parse("2025-02-28"), sats = 1.0),
-            lagSatsperiode( fom = LocalDate.parse("2025-03-01"), LocalDate.parse("2025-03-31"), sats = 2.0),
-            lagSatsperiode( fom = LocalDate.parse("2025-04-01"), LocalDate.parse("2025-12-31"), sats = 3.0),
-        )
-
-        val nySatsperiode = lagSatsperiode(
-            fom = LocalDate.parse("2025-05-01"),
-            tom = LocalDate.parse("2025-12-31"),
-            sats = 200.0
-        )
+        val nySatsperiode =
+            lagSatsperiode(
+                fom = LocalDate.parse("2025-05-01"),
+                tom = LocalDate.parse("2025-12-31"),
+                sats = 200.0,
+            )
 
         val oppdaterteSatsperioderListe = behandleTrekkService.oppdaterSatsperioder(LocalDate.now(), eksisterendeListe, nySatsperiode)
 
@@ -431,18 +481,19 @@ class BehandleTrekkServiceTest {
 
     @Test
     fun `Skal lukke den siste åpne eksisterende satsperioden med null tom dato med dagen før starten på ny satsperiode`() {
+        val eksisterendeListe =
+            listOf(
+                lagSatsperiode(fom = LocalDate.parse("2025-01-01"), tom = LocalDate.parse("2025-02-28"), sats = 1.0),
+                lagSatsperiode(fom = LocalDate.parse("2025-03-01"), LocalDate.parse("2025-03-31"), sats = 2.0),
+                lagSatsperiode(fom = LocalDate.parse("2025-04-01"), null, sats = 3.0),
+            )
 
-        val eksisterendeListe = listOf(
-            lagSatsperiode( fom = LocalDate.parse("2025-01-01"), tom = LocalDate.parse("2025-02-28"), sats = 1.0),
-            lagSatsperiode( fom = LocalDate.parse("2025-03-01"), LocalDate.parse("2025-03-31"), sats = 2.0),
-            lagSatsperiode( fom = LocalDate.parse("2025-04-01"), null, sats = 3.0),
-        )
-
-        val nySatsperiode = lagSatsperiode(
-            fom = LocalDate.parse("2025-05-01"),
-            tom = LocalDate.parse("2025-12-31"),
-            sats = 200.0
-        )
+        val nySatsperiode =
+            lagSatsperiode(
+                fom = LocalDate.parse("2025-05-01"),
+                tom = LocalDate.parse("2025-12-31"),
+                sats = 200.0,
+            )
 
         val oppdaterteSatsperioderListe = behandleTrekkService.oppdaterSatsperioder(LocalDate.now(), eksisterendeListe, nySatsperiode)
 
@@ -453,18 +504,19 @@ class BehandleTrekkServiceTest {
 
     @Test
     fun `Skal lukke alle åpne eksisterende satsperioder med dagen før starten på ny satsperiode`() {
+        val eksisterendeListe =
+            listOf(
+                lagSatsperiode(fom = LocalDate.parse("2025-01-01"), tom = LocalDate.parse("2025-02-28"), sats = 1.0),
+                lagSatsperiode(fom = LocalDate.parse("2025-03-01"), LocalDate.parse("2025-12-31"), sats = 2.0),
+                lagSatsperiode(fom = LocalDate.parse("2025-04-01"), LocalDate.parse("2025-12-31"), sats = 3.0),
+            )
 
-        val eksisterendeListe = listOf(
-            lagSatsperiode( fom = LocalDate.parse("2025-01-01"), tom = LocalDate.parse("2025-02-28"), sats = 1.0),
-            lagSatsperiode( fom = LocalDate.parse("2025-03-01"), LocalDate.parse("2025-12-31"), sats = 2.0),
-            lagSatsperiode( fom = LocalDate.parse("2025-04-01"), LocalDate.parse("2025-12-31"), sats = 3.0),
-        )
-
-        val nySatsperiode = lagSatsperiode(
-            fom = LocalDate.parse("2025-05-01"),
-            tom = LocalDate.parse("2025-12-31"),
-            sats = 200.0
-        )
+        val nySatsperiode =
+            lagSatsperiode(
+                fom = LocalDate.parse("2025-05-01"),
+                tom = LocalDate.parse("2025-12-31"),
+                sats = 200.0,
+            )
 
         val oppdaterteSatsperioderListe = behandleTrekkService.oppdaterSatsperioder(LocalDate.now(), eksisterendeListe, nySatsperiode)
 
@@ -476,19 +528,25 @@ class BehandleTrekkServiceTest {
 
     @Test
     fun `Skal fjerne fremtidig satsperiode med dagen før starten på ny satsperiode`() {
+        val eksisterendeListe =
+            listOf(
+                lagSatsperiode(fom = LocalDate.parse("2025-01-01"), tom = LocalDate.parse("2025-02-28"), sats = 1.0),
+                lagSatsperiode(fom = LocalDate.parse("2025-06-01"), LocalDate.parse("2025-12-31"), sats = 4.0),
+            )
 
-        val eksisterendeListe = listOf(
-            lagSatsperiode( fom = LocalDate.parse("2025-01-01"), tom = LocalDate.parse("2025-02-28"), sats = 1.0),
-            lagSatsperiode( fom = LocalDate.parse("2025-06-01"), LocalDate.parse("2025-12-31"), sats = 4.0),
-        )
+        val nySatsperiode =
+            lagSatsperiode(
+                fom = LocalDate.parse("2025-07-01"),
+                tom = LocalDate.parse("2025-12-31"),
+                sats = 3.0,
+            )
 
-        val nySatsperiode = lagSatsperiode(
-            fom = LocalDate.parse("2025-07-01"),
-            tom = LocalDate.parse("2025-12-31"),
-            sats = 3.0
-        )
-
-        val oppdaterteSatsperioderListe = behandleTrekkService.oppdaterSatsperioder(LocalDate.parse("2025-06-16"),eksisterendeListe, nySatsperiode)
+        val oppdaterteSatsperioderListe =
+            behandleTrekkService.oppdaterSatsperioder(
+                LocalDate.parse("2025-06-16"),
+                eksisterendeListe,
+                nySatsperiode,
+            )
 
         assertEquals(3, oppdaterteSatsperioderListe.size)
         assertEquals(LocalDate.parse("2025-06-01"), oppdaterteSatsperioderListe[1].fom)
@@ -498,41 +556,56 @@ class BehandleTrekkServiceTest {
         assertEquals(nySatsperiode, oppdaterteSatsperioderListe.last())
     }
 
-    private fun lagSatsperiode(fom: LocalDate, tom: LocalDate?, sats: Double): Satsperiode {
-        return Satsperiode(fom, tom, BigDecimal.valueOf(sats), erFeilregistrert = false)
-    }
+    private fun lagSatsperiode(
+        fom: LocalDate,
+        tom: LocalDate?,
+        sats: Double,
+    ): Satsperiode = Satsperiode(fom, tom, BigDecimal.valueOf(sats), erFeilregistrert = false)
 
-    private fun lagHentSkattOgTrekkRespons(andreTrekkVedtakId: Long, satsperiodeListe: List<Satsperiode>) = HentSkattOgTrekkResponse(
+    private fun lagHentSkattOgTrekkRespons(
+        andreTrekkVedtakId: Long,
+        satsperiodeListe: List<Satsperiode>,
+    ) = HentSkattOgTrekkResponse(
         skattetrekk = null,
-        andreTrekk = AndreTrekkResponse(
-            trekkvedtakId = andreTrekkVedtakId,
-            debitor = null,
-            trekktype  = null,
-            trekkstatus = null,
-            kreditor = null,
-            kreditorAvdelingsnr = null,
-            kreditorRef = null,
-            kreditorKid = null,
-            tssEksternId = null,
-            prioritet = null,
-            prioritetFom = null,
-            trekkalternativ = null,
-            belopSaldotrekk = null,
-            belopTrukket = null,
-            datoOppfolging = null,
-            gyldigTom = null,
-            ansvarligEnhetId = null,
-            sporing = null,
-            fagomradeListe = listOf(FagomradeResponse(
-                kode = "FRIS",
-                dekode = "FRIS",
-                sporing = null
-            )),
-            satsperiodeListe = satsperiodeListe
-        )
+        andreTrekk =
+            AndreTrekkResponse(
+                trekkvedtakId = andreTrekkVedtakId,
+                debitor = null,
+                trekktype = null,
+                trekkstatus = null,
+                kreditor = null,
+                kreditorAvdelingsnr = null,
+                kreditorRef = null,
+                kreditorKid = null,
+                tssEksternId = null,
+                prioritet = null,
+                prioritetFom = null,
+                trekkalternativ = null,
+                belopSaldotrekk = null,
+                belopTrukket = null,
+                datoOppfolging = null,
+                gyldigTom = null,
+                ansvarligEnhetId = null,
+                sporing = null,
+                fagomradeListe =
+                    listOf(
+                        FagomradeResponse(
+                            kode = "FRIS",
+                            dekode = "FRIS",
+                            sporing = null,
+                        ),
+                    ),
+                satsperiodeListe = satsperiodeListe,
+            ),
     )
 
-    private fun lagTrekkInfo(trekkvedtakId: Long, sats: BigDecimal, ansvarligEnhetId: String?, fom: LocalDate, tom: LocalDate?) = TrekkInfo(
+    private fun lagTrekkInfo(
+        trekkvedtakId: Long,
+        sats: BigDecimal,
+        ansvarligEnhetId: String?,
+        fom: LocalDate,
+        tom: LocalDate?,
+    ) = TrekkInfo(
         trekkvedtakId = trekkvedtakId,
         debitor = null,
         trekktype = null,

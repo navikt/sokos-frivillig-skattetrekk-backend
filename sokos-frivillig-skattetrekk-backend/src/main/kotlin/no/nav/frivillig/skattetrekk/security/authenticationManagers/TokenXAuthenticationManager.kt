@@ -1,6 +1,6 @@
 package no.nav.frivillig.skattetrekk.security.authenticationManagers
 
-import no.nav.frivillig.skattetrekk.security.ClaimTypes
+import no.nav.frivillig.skattetrekk.security.OAuthTypes
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.security.authentication.AuthenticationManager
@@ -14,20 +14,22 @@ import org.springframework.stereotype.Component
 @Component("tokenXAuthManager")
 class TokenXAuthenticationManager(
     @Value("\${oauth2.tokenX.issuer}") private val tokenXIssuer: String,
-    @Qualifier("jwtDecoderTokenX") jwtDecoderTokenX: NimbusJwtDecoder
-): AuthenticationManager {
+    @Qualifier("jwtDecoderTokenX") jwtDecoderTokenX: NimbusJwtDecoder,
+) : AuthenticationManager {
+    val authProvider =
+        JwtAuthenticationProvider(jwtDecoderTokenX).apply {
+            this.setJwtAuthenticationConverter(
+                JwtAuthenticationConverter().apply {
+                    this.setJwtGrantedAuthoritiesConverter(createJwtConverter())
+                },
+            )
+        }
 
-    val authProvider = JwtAuthenticationProvider(jwtDecoderTokenX).apply {
-        this.setJwtAuthenticationConverter(JwtAuthenticationConverter().apply {
-            this.setJwtGrantedAuthoritiesConverter(createJwtConverter())
-        })
-    }
+    override fun authenticate(authentication: Authentication): Authentication = authProvider.authenticate(authentication)
 
-    override fun authenticate(authentication: Authentication): Authentication =
-        authProvider.authenticate(authentication)
-
-    private fun createJwtConverter() = JwtGrantedAuthoritiesConverter().apply {
-        this.setAuthoritiesClaimName(ClaimTypes.TOKENX.claimName)
-        this.setAuthorityPrefix(ClaimTypes.TOKENX.authPrefix)
-    }
+    private fun createJwtConverter() =
+        JwtGrantedAuthoritiesConverter().apply {
+            this.setAuthoritiesClaimName(OAuthTypes.TOKENX.claimName)
+            this.setAuthorityPrefix(OAuthTypes.TOKENX.authPrefix)
+        }
 }

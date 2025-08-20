@@ -15,26 +15,31 @@ class TokenService(
     private val tokenXService: TokenXService,
     private val azureAdService: AzureAdService,
 ) {
-
     private val log = LoggerFactory.getLogger(TokenService::class.java)
 
     enum class TokenType {
-        AZURE_AD_CLIENT_CREDENTIALS, TOKEN_X
+        AZURE_AD_CLIENT_CREDENTIALS,
+        TOKEN_X,
     }
 
-    fun getEgressToken(scope: String, audience: String? = null, pid: String, appId: AppId): String? =
+    fun getEgressToken(
+        scope: String,
+        audience: String? = null,
+        pid: String,
+        appId: AppId,
+    ): String? =
         SecurityContextHolder.getContext().authentication.let {
             val token = (it as JwtAuthenticationToken).token
             val scopes = listOf(scope)
 
             when (typeOf(token, pid, appId)) {
-                TokenType.TOKEN_X -> audience?.let { audience ->
-                    tokenXService.exchangeIngressTokenToEgressToken(token.tokenValue, audience)
-                } ?: throw EgressAudienceMissingException()
+                TokenType.TOKEN_X ->
+                    audience?.let { audience ->
+                        tokenXService.exchangeIngressTokenToEgressToken(token.tokenValue, audience)
+                    } ?: throw EgressAudienceMissingException()
                 TokenType.AZURE_AD_CLIENT_CREDENTIALS -> azureAdService.retrieveClientCredentialsToken(scopes)
             }
         }
-
 
     fun isLoginLevelHigh(): Boolean = getInnloggingstype() == Innloggingstype.LEVEL4
 
@@ -42,7 +47,7 @@ class TokenService(
         SecurityContextHolder.getContext().authentication.let {
             val token = (it as JwtAuthenticationToken).token
             val issuer = token.getClaim<String>("iss")
-             if (issuer == tokenXIssuer) {
+            if (issuer == tokenXIssuer) {
                 return TokenType.TOKEN_X
             }
             throw IllegalStateException("Unknown token type")
@@ -72,10 +77,13 @@ class TokenService(
         return Innloggingstype.SYSTEM
     }
 
-    private fun typeOf(jwt: Jwt, pid: String, appId: AppId): TokenType {
+    private fun typeOf(
+        jwt: Jwt,
+        pid: String,
+        appId: AppId,
+    ): TokenType {
         val issuer = jwt.getClaim<String>("iss")
-         if (issuer == tokenXIssuer) {
-
+        if (issuer == tokenXIssuer) {
             if (appId.supportsTokenX) {
                 return TokenType.TOKEN_X
             } else {
@@ -89,8 +97,9 @@ class TokenService(
 enum class Innloggingstype {
     LEVEL4,
     LEVEL3,
-    SYSTEM
+    SYSTEM,
 }
 
 class EgressAudienceMissingException : RuntimeException("Audience missing when scoping token for outgoing call")
+
 class CouldNotDetermineTokenTypeException : RuntimeException("Unable to determine type of token")

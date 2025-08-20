@@ -7,5 +7,3 @@ data class OpprettAndreTrekkRequest(
     @JsonProperty("kilde") val kilde: String,
     @JsonProperty("andreTrekk") val andreTrekk: AndreTrekkRequest,
 )
-
-

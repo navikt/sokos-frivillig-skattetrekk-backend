@@ -5,7 +5,9 @@ data class FrivilligSkattetrekkMessage(
     val type: FrivilligSkattetrekkType,
 )
 
-enum class FrivilligSkattetrekkMessageCode(val message: String) {
+enum class FrivilligSkattetrekkMessageCode(
+    val message: String,
+) {
     OPPDRAG_UTILGJENGELIG("Oppdragssystemet er nede eller utilgjengelig"),
     MAX_BELOP_OVERSTEGET("Maksimalt beløp for frivillig skattetrekk er 1000 kr"),
     MAX_PROSENT_OVERSTEGET("Maksimalt prosent for frivillig skattetrekk er 50%"),
@@ -17,5 +19,5 @@ enum class FrivilligSkattetrekkMessageCode(val message: String) {
 enum class FrivilligSkattetrekkType {
     ERROR,
     WARNING,
-    INFO
+    INFO,
 }

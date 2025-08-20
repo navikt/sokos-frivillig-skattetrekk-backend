@@ -15,6 +15,7 @@ import org.springframework.web.client.HttpServerErrorException
 import org.springframework.web.reactive.function.client.WebClient
 import java.time.LocalDate
 
+private const val MND_FOM_DATO_FOER = 3
 
 @Component
 class UtbetalingClient(
@@ -24,23 +25,20 @@ class UtbetalingClient(
     private val tokenService: TokenService,
     val webClient: WebClient,
 ) {
-
-    val MND_FOM_DATO_FOER = 3
-
     fun fetchUtbetalinger(pid: String): List<Utbetaling> {
-
-        val utbetalRequest = UtbetalRequest(
-            ident = pid,
-            rolle = Rolle.UTBETALT_TIL.name,
-            periode = Periode(
-                fom = LocalDate.now().minusMonths(MND_FOM_DATO_FOER.toLong()),
-                tom = LocalDate.now()
-            ),
-            periodetype = Periodetype.UTBETALINGSPERIODE.name
-        )
+        val utbetalRequest =
+            UtbetalRequest(
+                ident = pid,
+                rolle = Rolle.UTBETALT_TIL.name,
+                periode =
+                    Periode(
+                        fom = LocalDate.now().minusMonths(MND_FOM_DATO_FOER.toLong()),
+                        tom = LocalDate.now(),
+                    ),
+                periodetype = Periodetype.UTBETALINGSPERIODE.name,
+            )
         val payload: HttpEntity<UtbetalRequest> = HttpEntity(utbetalRequest)
         val response: List<Utbetaling>
-
 
         try {
             response = webClient
@@ -61,12 +59,11 @@ class UtbetalingClient(
     }
 }
 
-
 data class UtbetalRequest(
     val ident: String,
     val rolle: String,
     val periode: Periode,
-    val periodetype: String
+    val periodetype: String,
 )
 
 data class Periode(
@@ -74,14 +71,10 @@ data class Periode(
     val tom: LocalDate,
 )
 
-enum class Rolle() {
+enum class Rolle {
     UTBETALT_TIL,
-    RETTIGHETSHAVER
 }
 
-enum class Periodetype() {
+enum class Periodetype {
     UTBETALINGSPERIODE,
-    YTELSESPERIODE
 }
-
-

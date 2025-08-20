@@ -2,8 +2,8 @@ package no.nav.frivillig.skattetrekk.endpoint.api
 
 import no.nav.frivillig.skattetrekk.client.trekk.api.SatsType
 
-data class OppdaterRequest (
+data class OppdaterRequest(
     val trekkVedtakId: Long,
     val value: Int,
-    val satsType: SatsType
+    val satsType: SatsType,
 )

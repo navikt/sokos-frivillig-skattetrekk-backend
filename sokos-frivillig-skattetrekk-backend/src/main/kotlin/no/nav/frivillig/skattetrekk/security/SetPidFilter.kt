@@ -16,15 +16,14 @@ import java.time.LocalDateTime
 
 @Component
 class SetPidFilter(
-    private val tokenService: TokenService
-): OncePerRequestFilter() {
-
+    private val tokenService: TokenService,
+) : OncePerRequestFilter() {
     private val log: Logger = LoggerFactory.getLogger(SetPidFilter::class.java)
 
     override fun doFilterInternal(
         request: HttpServletRequest,
         response: HttpServletResponse,
-        filterChain: FilterChain
+        filterChain: FilterChain,
     ) {
         val authHeader = request.getHeader("Authorization")
         if (authHeader != null) {
@@ -33,7 +32,8 @@ class SetPidFilter(
                     throw UnauthorizedException()
                 }
                 val requestingPid = tokenService.determineRequestingPid()
-                (SecurityContextHolder.getContext().authentication as JwtAuthenticationToken).details = AuthenticatedUserDetails(requestingPid)
+                (SecurityContextHolder.getContext().authentication as JwtAuthenticationToken).details =
+                    AuthenticatedUserDetails(requestingPid)
 
                 filterChain.doFilter(request, response)
             } catch (e: Exception) {
@@ -48,22 +48,25 @@ class SetPidFilter(
         }
     }
 
-    private fun forbiddenResponse(response: HttpServletResponse, errorCode: ErrorCode, path: String
+    private fun forbiddenResponse(
+        response: HttpServletResponse,
+        errorCode: ErrorCode,
+        path: String,
     ) {
         val forbiddenStatus = HttpStatus.FORBIDDEN.value()
         val mapper = ObjectMapper()
-        val errorResponse = SetPidFilterErrorResponse(
-            timestamp = LocalDateTime.now().toString(),
-            status = forbiddenStatus,
-            error = HttpStatus.FORBIDDEN.name,
-            message = errorCode,
-            path = path
-        )
+        val errorResponse =
+            SetPidFilterErrorResponse(
+                timestamp = LocalDateTime.now().toString(),
+                status = forbiddenStatus,
+                error = HttpStatus.FORBIDDEN.name,
+                message = errorCode,
+                path = path,
+            )
         response.apply {
             status = forbiddenStatus
             setHeader("Content-Type", "application/json")
             writer.write(mapper.writeValueAsString(errorResponse))
         }
     }
-
 }

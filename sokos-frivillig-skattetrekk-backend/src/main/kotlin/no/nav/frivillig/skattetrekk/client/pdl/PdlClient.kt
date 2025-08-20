@@ -3,7 +3,8 @@ package no.nav.frivillig.skattetrekk.client.pdl
 import no.nav.frivillig.skattetrekk.client.CallIdUtil
 import no.nav.frivillig.skattetrekk.client.CallIdUtil.Companion.NAV_CALL_ID_NAME
 import no.nav.frivillig.skattetrekk.client.getCallIdFromMdc
-import no.nav.frivillig.skattetrekk.client.pdl.api.*
+import no.nav.frivillig.skattetrekk.client.pdl.api.HentPdlGeografiskTilknytningOgAdressebeskyttelseResponse
+import no.nav.frivillig.skattetrekk.client.pdl.api.PdlErrorCodes
 import no.nav.frivillig.skattetrekk.configuration.AppId
 import no.nav.frivillig.skattetrekk.endpoint.ClientException
 import no.nav.frivillig.skattetrekk.endpoint.ForbiddenException
@@ -22,23 +23,26 @@ class PdlClient(
     @Value("\${pdl.endpoint.url}") private val url: String,
     @Value("\${pdl.scope}") private val scope: String,
     @Value("\${pdl.audience}") private val audience: String,
-    private val tokenService: TokenService
+    private val tokenService: TokenService,
 ) {
-
     private val logger = LoggerFactory.getLogger(PdlClient::class.java)
 
     fun hentGeografiskTilknytningOgAdresseBeskyttelseQuery(pid: String): HentPdlGeografiskTilknytningOgAdressebeskyttelseResponse? {
-         val response = tokenService.getEgressToken(scope, audience, pid, AppId.PDL)
-            ?.let { webClient.post()
-                .uri(url)
-                .header("Authorization", "Bearer $it")
-                .header(NAV_CALL_ID_NAME, CallIdUtil.getCallIdFromMdc())
-                .header(PDL_BEHANDLINGSNUMMER_KEY, PDL_BEHANDLINGSNUMMER_VALUE)
-                .accept(MediaType.APPLICATION_JSON)
-                .body(Mono.just(hentBasertPaaQuery(pid)), PdlPersonQuery::class.java)
-                .retrieve()
-                .bodyToMono(HentPdlGeografiskTilknytningOgAdressebeskyttelseResponse::class.java) }
-                ?.block()
+        val response =
+            tokenService
+                .getEgressToken(scope, audience, pid, AppId.PDL)
+                ?.let {
+                    webClient
+                        .post()
+                        .uri(url)
+                        .header("Authorization", "Bearer $it")
+                        .header(NAV_CALL_ID_NAME, CallIdUtil.getCallIdFromMdc())
+                        .header(PDL_BEHANDLINGSNUMMER_KEY, PDL_BEHANDLINGSNUMMER_VALUE)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .body(Mono.just(hentBasertPaaQuery(pid)), PdlPersonQuery::class.java)
+                        .retrieve()
+                        .bodyToMono(HentPdlGeografiskTilknytningOgAdressebeskyttelseResponse::class.java)
+                }?.block()
 
         return if (response != null && response.errors.isNullOrEmpty()) {
             response
@@ -51,14 +55,14 @@ class PdlClient(
                         AppId.PDL.name,
                         PDL_API,
                         error.message,
-                        null
+                        null,
                     )
 
                     PdlErrorCodes.UNAUTHORIZED -> throw ForbiddenException(
                         AppId.PDL.name,
                         PDL_API,
                         error.message,
-                        null
+                        null,
                     )
 
                     PdlErrorCodes.NOT_FOUND -> throw PersonNotFoundException(AppId.PDL.name, PDL_API, error.message, null)
@@ -78,18 +82,21 @@ class PdlClient(
     }
 }
 
-fun hentBasertPaaQuery(pid: String) = PdlPersonQuery(
-    PdlPersonQuery::class.java.getResource("/pdl/GeografiskTilknytningOgAdressebeskyttelseQuery.graphql")
-        ?.readText()?.replace("[ \n\r]", "")
-        ?: throw IllegalArgumentException("Unable to locate graphQl file"),
-    PdlPersonVariables(pid)
-)
+fun hentBasertPaaQuery(pid: String) =
+    PdlPersonQuery(
+        PdlPersonQuery::class.java
+            .getResource("/pdl/GeografiskTilknytningOgAdressebeskyttelseQuery.graphql")
+            ?.readText()
+            ?.replace("[ \n\r]", "")
+            ?: throw IllegalArgumentException("Unable to locate graphQl file"),
+        PdlPersonVariables(pid),
+    )
 
 data class PdlPersonQuery(
     val query: String,
-    val variables: PdlPersonVariables
+    val variables: PdlPersonVariables,
 )
 
 data class PdlPersonVariables(
-    val ident: String
+    val ident: String,
 )

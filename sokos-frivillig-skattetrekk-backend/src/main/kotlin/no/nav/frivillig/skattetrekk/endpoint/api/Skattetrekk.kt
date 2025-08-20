@@ -5,7 +5,7 @@ import java.time.LocalDate
 
 data class FrivilligSkattetrekkInitResponse(
     val data: FrivilligSkattetrekkData?,
-    val messages: List<FrivilligSkattetrekkMessage>?
+    val messages: List<FrivilligSkattetrekkMessage>?,
 )
 
 data class FrivilligSkattetrekkData(
@@ -13,12 +13,12 @@ data class FrivilligSkattetrekkData(
     val fremtidigTilleggstrekk: FremtidigTrekkDto?,
     val skattetrekk: ForenkletSkattetrekkDto,
     val maxBelop: Int,
-    val maxProsent: Int
+    val maxProsent: Int,
 )
 
 data class TrekkDto(
     val sats: Int?,
-    val satsType: SatsType?
+    val satsType: SatsType?,
 )
 
 data class FremtidigTrekkDto(
@@ -29,10 +29,10 @@ data class FremtidigTrekkDto(
 
 data class Skattetrekk(
     val sats: Double?,
-    val satsType: SatsType?
+    val satsType: SatsType?,
 )
 
 data class ForenkletSkattetrekkDto(
     val tabellNr: String?,
-    val prosentsats: Int?
+    val prosentsats: Int?,
 )

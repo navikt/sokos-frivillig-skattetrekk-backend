@@ -1,6 +1,13 @@
 package no.nav.frivillig.skattetrekk.utbetaling
 
-import no.nav.frivillig.skattetrekk.utbetaling.model.*
+import no.nav.frivillig.skattetrekk.utbetaling.model.Aktoer
+import no.nav.frivillig.skattetrekk.utbetaling.model.Aktoertype
+import no.nav.frivillig.skattetrekk.utbetaling.model.Bankkonto
+import no.nav.frivillig.skattetrekk.utbetaling.model.Skatt
+import no.nav.frivillig.skattetrekk.utbetaling.model.Trekk
+import no.nav.frivillig.skattetrekk.utbetaling.model.Utbetaling
+import no.nav.frivillig.skattetrekk.utbetaling.model.Ytelse
+import no.nav.frivillig.skattetrekk.utbetaling.model.Ytelseskomponent
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -13,7 +20,6 @@ import java.time.LocalDate
 
 @ExtendWith(MockitoExtension::class)
 class UtbetalingServiceTest {
-
     @Mock
     private lateinit var utbetalingClient: UtbetalingClient
 
@@ -40,8 +46,8 @@ class UtbetalingServiceTest {
         assertTrue(result)
     }
 
-    fun mockYtelse(ytelsestype: String? = "alderspensjon"): Ytelse {
-        return Ytelse(
+    fun mockYtelse(ytelsestype: String? = "alderspensjon"): Ytelse =
+        Ytelse(
             ytelsestype = ytelsestype,
             ytelsesperiode = Periode(LocalDate.now().minusMonths(1), LocalDate.now()),
             ytelseNettobeloep = BigDecimal("1000.00"),
@@ -53,12 +59,11 @@ class UtbetalingServiceTest {
             trekkListe = listOf(Trekk("mockTrekktype", BigDecimal("50.00"), "mockKreditor")),
             ytelseskomponentListe = listOf(Ytelseskomponent("mockType", BigDecimal("100.00"), "mockSatstype", 1.0, BigDecimal("100.00"))),
             bilagsnummer = "mockBilagsnummer",
-            refundertForOrg = Aktoer(Aktoertype.ORGANISASJON, "987654321", "Mock Org")
+            refundertForOrg = Aktoer(Aktoertype.ORGANISASJON, "987654321", "Mock Org"),
         )
-    }
 
-    fun mockUtbetaling(ytelsestype: String? = "alderspensjon"): Utbetaling {
-        return Utbetaling(
+    fun mockUtbetaling(ytelsestype: String? = "alderspensjon"): Utbetaling =
+        Utbetaling(
             posteringsdato = LocalDate.now(),
             ytelseListe = listOf(mockYtelse(ytelsestype)),
             utbetaltTil = Aktoer(Aktoertype.PERSON, "12345678901", "Mock Navn"),
@@ -68,7 +73,6 @@ class UtbetalingServiceTest {
             utbetalingsdato = LocalDate.now().plusDays(2),
             utbetalingNettobeloep = BigDecimal("1000.00"),
             utbetalingsmelding = "mockUtbetalingsmelding",
-            utbetaltTilKonto = Bankkonto("mockKontonummer", "mockKontotype")
+            utbetaltTilKonto = Bankkonto("mockKontonummer", "mockKontotype"),
         )
-    }
 }

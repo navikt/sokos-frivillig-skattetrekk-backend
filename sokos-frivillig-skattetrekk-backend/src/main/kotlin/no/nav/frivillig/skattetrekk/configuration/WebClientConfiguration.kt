@@ -11,31 +11,36 @@ import java.net.URI
 
 @Configuration
 class WebClientConfiguration {
-
     @Bean("webClientProxy")
-    fun webClientProxy(): WebClient = (System.getenv("HTTP_PROXY")
-        ?.let { URI(it) }
-        ?.run {
-            WebClient.builder()
-                .clientConnector(
-                    ReactorClientHttpConnector(
-                        HttpClient.create()
-                            .proxy {
-                                it
-                                    .type(ProxyProvider.Proxy.HTTP)
-                                    .host(host)
-                                    .port(port)
-                            }
-                    )
-                )
-                .build()
-        }
-        ?: WebClient.builder().build())
+    fun webClientProxy(): WebClient =
+        (
+            System
+                .getenv("HTTP_PROXY")
+                ?.let { URI(it) }
+                ?.run {
+                    WebClient
+                        .builder()
+                        .clientConnector(
+                            ReactorClientHttpConnector(
+                                HttpClient
+                                    .create()
+                                    .proxy {
+                                        it
+                                            .type(ProxyProvider.Proxy.HTTP)
+                                            .host(host)
+                                            .port(port)
+                                    },
+                            ),
+                        ).build()
+                }
+                ?: WebClient.builder().build()
+        )
 
     @Bean
-    fun webClient(): WebClient = WebClient.builder()
-        .clientConnector(ReactorClientHttpConnector(HttpClient.create()))
-        .exchangeStrategies(ExchangeStrategies.builder().codecs { it.defaultCodecs().maxInMemorySize(16 * 1024 * 1024) }.build())
-        .build()
-
+    fun webClient(): WebClient =
+        WebClient
+            .builder()
+            .clientConnector(ReactorClientHttpConnector(HttpClient.create()))
+            .exchangeStrategies(ExchangeStrategies.builder().codecs { it.defaultCodecs().maxInMemorySize(16 * 1024 * 1024) }.build())
+            .build()
 }

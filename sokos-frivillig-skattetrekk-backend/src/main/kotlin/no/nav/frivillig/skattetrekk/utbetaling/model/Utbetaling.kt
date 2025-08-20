@@ -25,11 +25,9 @@ data class Ytelse(
     val skattsum: BigDecimal,
     val trekksum: BigDecimal,
     val ytelseskomponentersum: BigDecimal,
-
     val skattListe: List<Skatt>? = null,
     val trekkListe: List<Trekk>? = null,
     val ytelseskomponentListe: List<Ytelseskomponent>? = null,
-
     val bilagsnummer: String?,
     val refundertForOrg: Aktoer?,
 )
@@ -48,7 +46,9 @@ data class Ytelseskomponent(
     val ytelseskomponentbeloep: BigDecimal?,
 )
 
-data class Skatt(val skattebeloep: BigDecimal?)
+data class Skatt(
+    val skattebeloep: BigDecimal?,
+)
 
 data class Trekk(
     val trekktype: String?,
@@ -71,5 +71,3 @@ enum class Aktoertype {
     ORGANISASJON,
     SAMHANDLER,
 }
-
-
