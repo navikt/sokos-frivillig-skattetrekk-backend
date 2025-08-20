@@ -2,10 +2,8 @@ package no.nav.frivillig.skattetrekk.security
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import jakarta.servlet.FilterChain
-import jakarta.servlet.http.Cookie
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
-import no.nav.frivillig.skattetrekk.endpoint.NoFullmaktPresentException
 import no.nav.frivillig.skattetrekk.endpoint.UnauthorizedException
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -34,17 +32,13 @@ class SetPidFilter(
                 if (tokenService.determineTokenType() != TokenService.TokenType.TOKEN_X) {
                     throw UnauthorizedException()
                 }
-
-                val navOnBehalfOfCookie = request.cookies?.firstOrNull { cookie -> cookie.name.equals("nav-obo") }
-                val authenticatedUserDetails = checkBorgerTilgang(request.method, navOnBehalfOfCookie)
-                (SecurityContextHolder.getContext().authentication as JwtAuthenticationToken).details =
-                    authenticatedUserDetails
+                val requestingPid = tokenService.determineRequestingPid()
+                (SecurityContextHolder.getContext().authentication as JwtAuthenticationToken).details = AuthenticatedUserDetails(requestingPid)
 
                 filterChain.doFilter(request, response)
             } catch (e: Exception) {
                 val path = request.requestURI
                 when (e) {
-                    is NoFullmaktPresentException -> forbiddenResponse(response, ErrorCode.NO_FULLMAKT_PRESENT, path)
                     is UnauthorizedException -> forbiddenResponse(response, ErrorCode.UNAUTHORIZED, path)
                     else -> throw e
                 }
@@ -70,11 +64,6 @@ class SetPidFilter(
             setHeader("Content-Type", "application/json")
             writer.write(mapper.writeValueAsString(errorResponse))
         }
-    }
-
-    fun checkBorgerTilgang(httpMethod: String, navOnBehalfOfCookie: Cookie?) : AuthenticatedUserDetails {
-        val requestingPid = tokenService.determineRequestingPid()
-        return AuthenticatedUserDetails(requestingPid, false)
     }
 
 }

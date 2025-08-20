@@ -7,8 +7,5 @@ class SecurityContextUtil {
 
         fun getPidFromContext(): String =
             (SecurityContextHolder.getContext().authentication.details as AuthenticatedUserDetails).pid
-
-        fun isFullmakt(): Boolean =
-            (SecurityContextHolder.getContext().authentication.details as AuthenticatedUserDetails).isFullmakt
     }
 }

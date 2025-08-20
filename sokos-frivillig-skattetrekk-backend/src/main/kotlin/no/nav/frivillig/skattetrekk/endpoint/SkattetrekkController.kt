@@ -43,10 +43,6 @@ class SkattetrekkController(
     @ExceptionHandler(ClientException::class)
     fun feilmotKlienter() = Unit
 
-    @ResponseStatus(value = BAD_REQUEST, reason = "Fullmaktsforhold finnes ikke")
-    @ExceptionHandler(NoFullmaktPresentException::class)
-    fun fullmaktFinnesIkke() = Unit
-
     @ResponseStatus(value = BAD_REQUEST, reason = "Person finnes ikke i PDL")
     @ExceptionHandler(PersonNotFoundException::class)
     fun personFinnesIkke() = Unit
