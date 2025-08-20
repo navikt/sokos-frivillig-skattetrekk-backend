@@ -21,7 +21,6 @@ repositories {
 val jacksonVersion = "2.19.2"
 val logstashVersion = "8.1"
 val mockkVersion = "1.14.5"
-val junitJupiterVersion = "5.13.4"
 val mockWebServerVersion = "5.1.0"
 
 dependencies {
@@ -51,7 +50,6 @@ dependencies {
     }
 
     testImplementation("org.springframework.security:spring-security-test")
-    testImplementation("org.junit.jupiter:junit-jupiter-engine:$junitJupiterVersion")
     testImplementation("io.mockk:mockk-jvm:$mockkVersion")
     testImplementation("com.squareup.okhttp3:mockwebserver:$mockWebServerVersion")
 }
