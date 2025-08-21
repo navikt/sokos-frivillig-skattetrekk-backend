@@ -93,6 +93,7 @@ tasks {
                 "-Xannotation-default-target=param-property",
             )
         }
+
         dependsOn("ktlintFormat")
     }
 
@@ -102,6 +103,8 @@ tasks {
         manifest {
             attributes["Main-Class"] = "no.nav.sokos.frivillig.skattetrekk.backend.SkattetrekkApplicationKt"
         }
+        duplicatesStrategy = DuplicatesStrategy.INCLUDE
+        mergeServiceFiles()
 
         finalizedBy(koverHtmlReport)
     }
