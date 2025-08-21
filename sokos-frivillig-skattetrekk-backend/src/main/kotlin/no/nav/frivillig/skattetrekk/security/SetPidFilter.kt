@@ -4,9 +4,11 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
+import no.nav.frivillig.skattetrekk.endpoint.LogInLevelTooLowException
 import no.nav.frivillig.skattetrekk.endpoint.UnauthorizedException
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.springframework.context.annotation.Profile
 import org.springframework.http.HttpStatus
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken
@@ -14,11 +16,11 @@ import org.springframework.stereotype.Component
 import org.springframework.web.filter.OncePerRequestFilter
 import java.time.LocalDateTime
 
+@Profile("!test")
 @Component
 class SetPidFilter(
     private val tokenService: TokenService,
 ) : OncePerRequestFilter() {
-    private val log: Logger = LoggerFactory.getLogger(SetPidFilter::class.java)
 
     override fun doFilterInternal(
         request: HttpServletRequest,
@@ -28,9 +30,9 @@ class SetPidFilter(
         val authHeader = request.getHeader("Authorization")
         if (authHeader != null) {
             try {
-                if (tokenService.determineTokenType() != TokenService.TokenType.TOKEN_X) {
-                    throw UnauthorizedException()
-                }
+                if (tokenService.determineTokenType() != TokenService.TokenType.TOKEN_X) throw UnauthorizedException()
+                if (!tokenService.isLoginLevelHigh()) throw LogInLevelTooLowException()
+
                 val requestingPid = tokenService.determineRequestingPid()
                 (SecurityContextHolder.getContext().authentication as JwtAuthenticationToken).details =
                     AuthenticatedUserDetails(requestingPid)
@@ -40,6 +42,7 @@ class SetPidFilter(
                 val path = request.requestURI
                 when (e) {
                     is UnauthorizedException -> forbiddenResponse(response, ErrorCode.UNAUTHORIZED, path)
+                    is LogInLevelTooLowException -> forbiddenResponse(response, ErrorCode.LOGIN_LEVEL_TOO_LOW, path)
                     else -> throw e
                 }
             }

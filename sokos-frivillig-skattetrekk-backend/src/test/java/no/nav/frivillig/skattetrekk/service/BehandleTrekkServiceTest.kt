@@ -5,12 +5,16 @@ import io.mockk.mockk
 import io.mockk.verify
 import no.nav.frivillig.skattetrekk.client.trekk.TrekkClient
 import no.nav.frivillig.skattetrekk.client.trekk.api.AndreTrekkResponse
+import no.nav.frivillig.skattetrekk.client.trekk.api.Bruker
 import no.nav.frivillig.skattetrekk.client.trekk.api.FagomradeResponse
 import no.nav.frivillig.skattetrekk.client.trekk.api.HentSkattOgTrekkResponse
 import no.nav.frivillig.skattetrekk.client.trekk.api.OpprettAndreTrekkResponse
 import no.nav.frivillig.skattetrekk.client.trekk.api.SatsType
 import no.nav.frivillig.skattetrekk.client.trekk.api.Satsperiode
 import no.nav.frivillig.skattetrekk.client.trekk.api.TrekkInfo
+import no.nav.frivillig.skattetrekk.client.trekk.api.Trekktype
+import no.nav.pensjon.pselv.consumer.behandletrekk.oppdragrestproxy.OppdaterAndreTrekkRequest
+import org.hamcrest.CoreMatchers.any
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Disabled
@@ -169,7 +173,7 @@ class BehandleTrekkServiceTest {
         verify(exactly = 0) { trekkClientMock.opprettAndreTrekk(eq(pid), any()) }
     }
 
-    @Disabled
+
     @Test
     fun `Oppdater trekk dersom for usortert med ett løpende trekk og ikke gjøre noe med ett lukket via behandle trekk`() {
         val trekkvedtakId = 1L
@@ -219,7 +223,7 @@ class BehandleTrekkServiceTest {
 
         behandleTrekkService.behandleTrekk(pid, 30, SatsType.PROSENT)
 
-        verify(exactly = 1) { trekkClientMock.opphorAndreTrekk(eq(pid), any()) }
+        verify(exactly = 0) { trekkClientMock.opphorAndreTrekk(eq(pid), any()) }
         verify(exactly = 1) { trekkClientMock.opprettAndreTrekk(eq(pid), any()) }
     }
 
@@ -405,7 +409,6 @@ class BehandleTrekkServiceTest {
         }
     }
 
-    @Disabled
     @Test
     fun `Oppdater skattetrekk`() {
         val trekkVedtakId = 1L
@@ -424,32 +427,26 @@ class BehandleTrekkServiceTest {
 
         every { trekkClientMock.opphorAndreTrekk(eq(pid), any()) } returns Unit
         every { trekkClientMock.opprettAndreTrekk(eq(pid), any()) } returns OpprettAndreTrekkResponse(1L)
+        every { trekkClientMock.oppdaterAndreTrekk(eq(pid), any()) } returns Unit
 
         every { trekkClientMock.hentSkattOgTrekk(pid, trekkVedtakId) } returns
-            lagHentSkattOgTrekkRespons(
-                trekkVedtakId,
-                listOf(
-                    lagSatsperiode(
-                        fom = LocalDate.now().minusMonths(1L),
-                        tom = LocalDate.now().plusMonths(3L),
-                        sats = 100.0,
+                lagHentSkattOgTrekkRespons(
+                    trekkVedtakId,
+                    listOf(
+                        lagSatsperiode(
+                            fom = LocalDate.now().minusMonths(1L),
+                            tom = LocalDate.now().plusMonths(3L),
+                            sats = 100.0,
+                        ),
                     ),
-                ),
-            )
+                )
 
         every { trekkClientMock.finnTrekkListe(pid, any()) } returns trekkListe
 
         behandleTrekkService.oppdaterTrekk(pid, trekkVedtakId, tilleggstrekk, SatsType.KRONER)
 
         verify(exactly = 1) {
-            trekkClientMock.opphorAndreTrekk(
-                eq(pid),
-                any(),
-            )
-        }
-
-        verify(exactly = 1) {
-            trekkClientMock.opprettAndreTrekk(
+            trekkClientMock.oppdaterAndreTrekk(
                 eq(pid),
                 any(),
             )
@@ -570,8 +567,8 @@ class BehandleTrekkServiceTest {
         andreTrekk =
             AndreTrekkResponse(
                 trekkvedtakId = andreTrekkVedtakId,
-                debitor = null,
-                trekktype = null,
+                debitor = Bruker("123", "Bruker Navn"),
+                trekktype = Trekktype("", ""),
                 trekkstatus = null,
                 kreditor = null,
                 kreditorAvdelingsnr = null,
@@ -585,7 +582,7 @@ class BehandleTrekkServiceTest {
                 belopTrukket = null,
                 datoOppfolging = null,
                 gyldigTom = null,
-                ansvarligEnhetId = null,
+                ansvarligEnhetId = "4819",
                 sporing = null,
                 fagomradeListe =
                     listOf(

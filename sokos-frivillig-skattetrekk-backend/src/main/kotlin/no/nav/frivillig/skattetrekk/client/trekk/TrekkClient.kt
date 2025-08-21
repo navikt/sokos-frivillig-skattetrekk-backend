@@ -131,25 +131,35 @@ class TrekkClient(
     fun oppdaterAndreTrekk(
         pid: String,
         request: OppdaterAndreTrekkRequest,
-    ) = try {
-        webClient
-            .post()
-            .uri("$trekkUrl/api/nav-tjeneste-behandleTrekk/oppdaterAndreTrekk")
-            .header("Authorization", "Bearer ${tokenService.getEgressToken(trekkScope, audience, pid, AppId.OPPDRAG_REST_PROXY)}")
-            .bodyValue(request)
-            .retrieve()
-            .toBodilessEntity()
-            .block()
-    } catch (e: Exception) {
-        log.error("Failed to oppdaterAndreTrekk: ${e.message}", e)
-        if (e is WebClientResponseException) {
-            when (e.message) {
-                "Oppdragssystemet er nede eller utilgjengelig" -> throw OppdragUtilgjengeligException()
-                "Teknisk feil fra Oppdragssystemet, prøv igjen senere" -> throw TekniskFeilFraOppdragException()
-                else -> throw ClientException(AppId.OPPDRAG_REST_PROXY.name, TREKK_API, e.message, null)
+    ) {
+        try {
+            webClient
+                .post()
+                .uri("$trekkUrl/api/nav-tjeneste-behandleTrekk/oppdaterAndreTrekk")
+                .header(
+                    "Authorization",
+                    "Bearer ${tokenService.getEgressToken(trekkScope, audience, pid, AppId.OPPDRAG_REST_PROXY)}"
+                )
+                .bodyValue(request)
+                .retrieve()
+                .toBodilessEntity()
+                .block()
+        } catch (e: Exception) {
+            log.error("Failed to oppdaterAndreTrekk: ${e.message}", e)
+            if (e is WebClientResponseException) {
+                when (e.message) {
+                    "Oppdragssystemet er nede eller utilgjengelig" -> throw OppdragUtilgjengeligException()
+                    "Teknisk feil fra Oppdragssystemet, prøv igjen senere" -> throw TekniskFeilFraOppdragException()
+                    else -> throw ClientException(AppId.OPPDRAG_REST_PROXY.name, TREKK_API, e.message, null)
+                }
             }
+            throw ClientException(
+                AppId.OPPDRAG_REST_PROXY.name,
+                TREKK_API,
+                "Failed to oppdater andre trekk: ${e.message}",
+                null
+            )
         }
-        throw ClientException(AppId.OPPDRAG_REST_PROXY.name, TREKK_API, "Failed to oppdater andre trekk: ${e.message}", null)
     }
 
     fun opphorAndreTrekk(

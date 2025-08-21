@@ -17,7 +17,6 @@ import org.springframework.security.core.context.SecurityContextImpl
 import org.springframework.security.oauth2.jwt.Jwt
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken
 
-@Disabled
 class SetPidFilterTest {
     private val tokenService = mock(TokenService::class.java)
 
@@ -47,7 +46,7 @@ class SetPidFilterTest {
     }
 
     @Test
-    fun `should resolve to FORBIDDEN with LOGIN_LEVEL_TOO_LOW when user has diskresjon and logged in with insufficient login level`() {
+    fun `should resolve to FORBIDDEN with LOGIN_LEVEL_TOO_LOW when user is logged in with insufficient login level`() {
         val pid = "00000000001"
         val path = "/random/endpoint"
 
@@ -85,25 +84,6 @@ class SetPidFilterTest {
         `when`(tokenService.determineTokenType()).thenReturn(TokenService.TokenType.TOKEN_X)
         `when`(tokenService.determineRequestingPid()).thenReturn(pid)
         `when`(tokenService.isLoginLevelHigh()).thenReturn(true)
-
-        filter.doFilter(request, response, filterChain)
-
-        assertEquals(pid, SecurityContextUtil.getPidFromContext())
-    }
-
-    @Test
-    fun `should set AuthenticatedUserDetails when user is logged in with level3 and without diskresjonskode`() {
-        val pid = "00000000001"
-
-        val request = mock(HttpServletRequest::class.java)
-        val response = mock(HttpServletResponse::class.java)
-        val filterChain = mock(FilterChain::class.java)
-
-        `when`(request.getHeader("Authorization")).thenReturn("Test")
-        `when`(request.getHeader("pid")).thenReturn(pid)
-        `when`(tokenService.determineTokenType()).thenReturn(TokenService.TokenType.TOKEN_X)
-        `when`(tokenService.determineRequestingPid()).thenReturn(pid)
-        `when`(tokenService.isLoginLevelHigh()).thenReturn(false)
 
         filter.doFilter(request, response, filterChain)
 
