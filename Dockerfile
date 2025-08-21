@@ -5,12 +5,9 @@ RUN apk update && apk add --no-cache \
   && rm -rf /var/lib/apt/lists/*
 
 COPY build/libs/*.jar app.jar
-COPY java-opts.sh /
-
-RUN chmod +x /java-opts.sh
 
 ENV TZ="Europe/Oslo"
 ENV JAVA_OPTS="-XX:MaxRAMPercentage=75"
 
 ENTRYPOINT ["dumb-init", "--"]
-CMD ["sh", "-c", ". /java-opts.sh && exec java ${JAVA_OPTS} -jar app.jar"]
+CMD ["sh", "-c", "exec java ${JAVA_OPTS} -jar app.jar"]

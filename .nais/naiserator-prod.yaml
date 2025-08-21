@@ -60,8 +60,8 @@ spec:
   env:
 
     - name: TREKK_URL
-      value: http://oppdrag-rest-proxy.pensjondeployer.svc.nais.local
+      value: http://oppdrag-rest-proxy.okonomi.svc.nais.local
     - name: TREKK_SCOPE
-      value: api://prod-fss.pensjondeployer.oppdrag-rest-proxy/.default
+      value: api://prod-fss.okonomi.oppdrag-rest-proxy/.default
     - name: TREKK_AUDIENCE
-      value: prod-fss:pensjondeployer:oppdrag-rest-proxy
+      value: prod-fss:okonomi:oppdrag-rest-proxy
