@@ -1,0 +1,44 @@
+spring:
+  main:
+    web-application-type: servlet
+    banner-mode: off
+
+server:
+  error:
+    include-message: always
+  max-http-request-header-size: 16KB
+
+management:
+  endpoint:
+    health:
+      show-details: always
+    prometheus:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include:
+          - prometheus
+          - health
+          - info
+          - gateway
+
+oauth2:
+  azureAd:
+    clientId: ${AZURE_APP_CLIENT_ID}
+    clientSecret: ${AZURE_APP_CLIENT_SECRET}
+    issuer: ${AZURE_OPENID_CONFIG_ISSUER}
+    jsonWebKeyUri: ${AZURE_OPENID_CONFIG_JWKS_URI}
+    tokenEndpoint: ${AZURE_OPENID_CONFIG_TOKEN_ENDPOINT}
+  tokenX:
+    clientId: ${TOKEN_X_CLIENT_ID}
+    issuer: ${TOKEN_X_ISSUER}
+    jsonWebKeyUri: ${TOKEN_X_JWKS_URI}
+    tokenEndpoint: ${TOKEN_X_TOKEN_ENDPOINT}
+    privateJwk: ${TOKEN_X_PRIVATE_JWK}
+
+trekk:
+  endpoint:
+    url: ${TREKK_URL}
+  scope: ${TREKK_SCOPE}
+  audience: ${TREKK_AUDIENCE}
