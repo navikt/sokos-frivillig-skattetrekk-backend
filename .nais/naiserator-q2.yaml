@@ -1,0 +1,73 @@
+apiVersion: "nais.io/v1alpha1"
+kind: "Application"
+metadata:
+  name: sokos-frivillig-skattetrekk-backend-q2
+  namespace: okonomi
+  labels:
+    team: okonomi
+spec:
+  image: "{{{ image }}}"
+  port: 8080
+  ingresses:
+    - https://sokos-frivillig-skattetrekk-backend-q2.intern.dev.nav.no
+    - https://sokos-frivillig-skattetrekk-backend-q2.dev-fss-pub.nais.io
+  liveness:
+    path: actuator/health/liveness
+    initialDelay: 30
+  readiness:
+    path: actuator/health/readiness
+    initialDelay: 30
+  startup:
+    path: actuator/health/readiness
+    initialDelay: 30
+    failureThreshold: 30
+    periodSeconds: 5
+  tokenx:
+    enabled: true
+  azure:
+    application:
+      enabled: true
+  replicas:
+    min: 1
+    max: 2
+  resources:
+    limits:
+      memory: 4096Mi
+    requests:
+      cpu: 100m
+      memory: 512Mi
+  prometheus:
+    enabled: true
+    path: actuator/prometheus
+  observability:
+    autoInstrumentation:
+      enabled: true
+      runtime: java
+  webproxy: true
+  accessPolicy:
+    inbound:
+      rules:
+        - application: sokos-frivillig-skattetrekk-frontend-q2
+          namespace: okonomi
+          cluster: dev-gcp
+        - application: tokenx-token-generator
+          namespace: nais
+          cluster: dev-gcp
+        - application: azure-token-generator
+          namespace: nais
+          cluster: dev-gcp
+    outbound:
+      rules:
+        - application: sokos-oppdrag-proxy-q2
+          namespace: okonomi
+        - application: logging
+          namespace: nais-system
+
+  env:
+
+    - name: TREKK_URL
+      value: http://sokos-oppdrag-proxy-q2.okonomi.svc.nais.local
+    - name: TREKK_SCOPE
+      value: api://dev-fss.okonomi.sokos-oppdrag-proxy-q2/.default
+    - name: TREKK_AUDIENCE
+      value: dev-fss:okonomi:sokos-oppdrag-proxy-q2
