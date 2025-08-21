@@ -2,28 +2,25 @@ package no.nav.frivillig.skattetrekk.endpoint
 
 import no.nav.frivillig.skattetrekk.endpoint.api.FrivilligSkattetrekkInitResponse
 import no.nav.frivillig.skattetrekk.security.AuthenticatedUserDetails
+import no.nav.frivillig.skattetrekk.service.BehandleTrekkService
 import no.nav.frivillig.skattetrekk.service.HentSkattOgTrekkService
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.mockito.ArgumentMatchers.anyString
+import org.mockito.Mockito
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
+import org.springframework.context.annotation.Import
 import org.springframework.http.MediaType
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.test.context.ActiveProfiles
+import org.springframework.test.context.bean.override.mockito.MockitoBean
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
-
-import no.nav.frivillig.skattetrekk.service.BehandleTrekkService
-import org.hamcrest.CoreMatchers.any
-import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.assertNull
-import org.mockito.ArgumentMatchers.anyString
-import org.mockito.Mockito
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
-import org.springframework.context.annotation.Import
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
-import org.springframework.security.core.context.SecurityContextHolder
-import org.springframework.test.context.bean.override.mockito.MockitoBean
 
 @ActiveProfiles("test")
 @WebMvcTest(SkattetrekkController::class)
@@ -53,15 +50,15 @@ class SkattetrekkControllerTest(
         Mockito.`when`(skattetrekkService.hentSkattetrekk(anyString())).thenReturn(
             FrivilligSkattetrekkInitResponse(
                 messages = emptyList(),
-                data = null
-            )
+                data = null,
+            ),
         )
 
         mockMvc
             .perform(
                 get("/api/skattetrekk")
-            .header("authorization", "Bearer test-token"))
-            .andExpect(status().isOk)
+                    .header("authorization", "Bearer test-token"),
+            ).andExpect(status().isOk)
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
     }
 }

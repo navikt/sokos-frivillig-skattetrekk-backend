@@ -1,6 +1,4 @@
-package no.nav.pensjon.pselv.consumer.behandletrekk.oppdragrestproxy
-
-import no.nav.frivillig.skattetrekk.client.trekk.api.AndreTrekkRequest
+package no.nav.frivillig.skattetrekk.client.trekk.api
 
 data class OppdaterAndreTrekkRequest(
     val trekkvedtakId: Long,

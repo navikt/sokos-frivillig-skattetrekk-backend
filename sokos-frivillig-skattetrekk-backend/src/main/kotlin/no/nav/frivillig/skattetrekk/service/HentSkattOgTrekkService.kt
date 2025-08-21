@@ -1,5 +1,6 @@
 package no.nav.frivillig.skattetrekk.service
 
+import mu.KotlinLogging
 import no.nav.frivillig.skattetrekk.client.trekk.TrekkClient
 import no.nav.frivillig.skattetrekk.client.trekk.api.AndreTrekkResponse
 import no.nav.frivillig.skattetrekk.client.trekk.api.SatsType
@@ -16,11 +17,10 @@ import no.nav.frivillig.skattetrekk.endpoint.api.FrivilligSkattetrekkMessageCode
 import no.nav.frivillig.skattetrekk.endpoint.api.FrivilligSkattetrekkType
 import no.nav.frivillig.skattetrekk.endpoint.api.TrekkDto
 import no.nav.frivillig.skattetrekk.util.isDateInPeriod
-import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import java.time.LocalDate
 
-private val log = LoggerFactory.getLogger(HentSkattOgTrekkService::class.java)
+private val logger = KotlinLogging.logger {}
 private const val TREKK_KODE_LOPP: String = "LOPP" // Prosenttrekk
 
 @Service
@@ -29,11 +29,11 @@ class HentSkattOgTrekkService(
 ) {
     fun hentSkattetrekk(pid: String): FrivilligSkattetrekkInitResponse? {
         try {
-            log.info("Finner trekkliste for forskuddsskatt og frivillig skattetrekk")
+            logger.info("Finner trekkliste for forskuddsskatt og frivillig skattetrekk")
             val forskuddsTrekkListe = trekkClient.finnTrekkListe(pid, TrekkTypeCode.FSKT)
             val tilleggsTrekkInfoListe = trekkClient.finnTrekkListe(pid, TrekkTypeCode.FRIS)
 
-            log.info("Henter skatt og trekk for forskuddsskatt og frivillig skattetrekk")
+            logger.info("Henter skatt og trekk for forskuddsskatt og frivillig skattetrekk")
             val skattetrekk = finnSkattetrekk(pid, forskuddsTrekkListe)
             val tillegstrekkVedtakListe = finnTilleggstrekkListe(pid, tilleggsTrekkInfoListe)
 

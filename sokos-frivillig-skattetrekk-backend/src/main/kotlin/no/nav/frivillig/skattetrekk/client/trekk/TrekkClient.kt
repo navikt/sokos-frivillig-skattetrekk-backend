@@ -1,11 +1,15 @@
 package no.nav.frivillig.skattetrekk.client.trekk
 
+import mu.KotlinLogging
 import no.nav.frivillig.skattetrekk.client.trekk.api.DebitorFilter
 import no.nav.frivillig.skattetrekk.client.trekk.api.DebitorSok
 import no.nav.frivillig.skattetrekk.client.trekk.api.FinnTrekkListeRequest
 import no.nav.frivillig.skattetrekk.client.trekk.api.FinnTrekkListeResponse
 import no.nav.frivillig.skattetrekk.client.trekk.api.HentSkattOgTrekkRequest
 import no.nav.frivillig.skattetrekk.client.trekk.api.HentSkattOgTrekkResponse
+import no.nav.frivillig.skattetrekk.client.trekk.api.OppdaterAndreTrekkRequest
+import no.nav.frivillig.skattetrekk.client.trekk.api.OpphorAndreTrekkRequest
+import no.nav.frivillig.skattetrekk.client.trekk.api.OpprettAndreTrekkRequest
 import no.nav.frivillig.skattetrekk.client.trekk.api.OpprettAndreTrekkResponse
 import no.nav.frivillig.skattetrekk.client.trekk.api.TrekkInfo
 import no.nav.frivillig.skattetrekk.configuration.AppId
@@ -14,14 +18,12 @@ import no.nav.frivillig.skattetrekk.endpoint.OppdragUtilgjengeligException
 import no.nav.frivillig.skattetrekk.endpoint.TekniskFeilFraOppdragException
 import no.nav.frivillig.skattetrekk.security.TokenService
 import no.nav.frivillig.skattetrekk.service.TrekkTypeCode
-import no.nav.pensjon.pselv.consumer.behandletrekk.oppdragrestproxy.OppdaterAndreTrekkRequest
-import no.nav.pensjon.pselv.consumer.behandletrekk.oppdragrestproxy.OpphorAndreTrekkRequest
-import no.nav.pensjon.pselv.consumer.behandletrekk.oppdragrestproxy.OpprettAndreTrekkRequest
-import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.WebClientResponseException
+
+private val logger = KotlinLogging.logger {}
 
 @Component
 class TrekkClient(
@@ -31,8 +33,6 @@ class TrekkClient(
     private val tokenService: TokenService,
     private val webClient: WebClient,
 ) {
-    private val log = LoggerFactory.getLogger(TrekkClient::class.java)
-
     fun finnTrekkListe(
         pid: String,
         trekkType: TrekkTypeCode,
@@ -63,7 +63,7 @@ class TrekkClient(
                 ?.toList()
                 ?: emptyList()
         } catch (e: Exception) {
-            log.error("Failed to fetch trekkliste: ${e.message}", e)
+            logger.error("Failed to fetch trekkliste: ${e.message}", e)
             if (e is WebClientResponseException) {
                 when (e.message) {
                     "Oppdragssystemet er nede eller utilgjengelig" -> throw OppdragUtilgjengeligException()
@@ -91,7 +91,7 @@ class TrekkClient(
                 .bodyToMono(HentSkattOgTrekkResponse::class.java)
                 .block()
         } catch (e: Exception) {
-            log.error("Failed to hentSkattOgTrekk: ${e.message}", e)
+            logger.error("Failed to hentSkattOgTrekk: ${e.message}", e)
             if (e is WebClientResponseException) {
                 when (e.message) {
                     "Oppdragssystemet er nede eller utilgjengelig" -> throw OppdragUtilgjengeligException()
@@ -117,7 +117,7 @@ class TrekkClient(
                 .bodyToMono(OpprettAndreTrekkResponse::class.java)
                 .block()
         } catch (e: Exception) {
-            log.error("Failed to opprettAndreTrekk: ${e.message}", e)
+            logger.error("Failed to opprettAndreTrekk: ${e.message}", e)
             if (e is WebClientResponseException) {
                 when (e.message) {
                     "Oppdragssystemet er nede eller utilgjengelig" -> throw OppdragUtilgjengeligException()
@@ -138,14 +138,13 @@ class TrekkClient(
                 .uri("$trekkUrl/api/nav-tjeneste-behandleTrekk/oppdaterAndreTrekk")
                 .header(
                     "Authorization",
-                    "Bearer ${tokenService.getEgressToken(trekkScope, audience, pid, AppId.OPPDRAG_REST_PROXY)}"
-                )
-                .bodyValue(request)
+                    "Bearer ${tokenService.getEgressToken(trekkScope, audience, pid, AppId.OPPDRAG_REST_PROXY)}",
+                ).bodyValue(request)
                 .retrieve()
                 .toBodilessEntity()
                 .block()
         } catch (e: Exception) {
-            log.error("Failed to oppdaterAndreTrekk: ${e.message}", e)
+            logger.error("Failed to oppdaterAndreTrekk: ${e.message}", e)
             if (e is WebClientResponseException) {
                 when (e.message) {
                     "Oppdragssystemet er nede eller utilgjengelig" -> throw OppdragUtilgjengeligException()
@@ -157,7 +156,7 @@ class TrekkClient(
                 AppId.OPPDRAG_REST_PROXY.name,
                 TREKK_API,
                 "Failed to oppdater andre trekk: ${e.message}",
-                null
+                null,
             )
         }
     }
@@ -176,7 +175,7 @@ class TrekkClient(
                 .toBodilessEntity()
                 .block()
         } catch (e: Exception) {
-            log.error("Failed to opphorAndreTrekk: ${e.message}", e)
+            logger.error("Failed to opphorAndreTrekk: ${e.message}", e)
             if (e is WebClientResponseException) {
                 when (e.message) {
                     "Oppdragssystemet er nede eller utilgjengelig" -> throw OppdragUtilgjengeligException()

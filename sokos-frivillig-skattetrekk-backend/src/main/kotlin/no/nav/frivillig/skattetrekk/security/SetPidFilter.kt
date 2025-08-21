@@ -6,8 +6,6 @@ import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import no.nav.frivillig.skattetrekk.endpoint.LogInLevelTooLowException
 import no.nav.frivillig.skattetrekk.endpoint.UnauthorizedException
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
 import org.springframework.context.annotation.Profile
 import org.springframework.http.HttpStatus
 import org.springframework.security.core.context.SecurityContextHolder
@@ -21,7 +19,6 @@ import java.time.LocalDateTime
 class SetPidFilter(
     private val tokenService: TokenService,
 ) : OncePerRequestFilter() {
-
     override fun doFilterInternal(
         request: HttpServletRequest,
         response: HttpServletResponse,

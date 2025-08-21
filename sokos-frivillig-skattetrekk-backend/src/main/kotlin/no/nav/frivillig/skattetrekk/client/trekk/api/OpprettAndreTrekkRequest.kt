@@ -1,7 +1,6 @@
-package no.nav.pensjon.pselv.consumer.behandletrekk.oppdragrestproxy
+package no.nav.frivillig.skattetrekk.client.trekk.api
 
 import com.fasterxml.jackson.annotation.JsonProperty
-import no.nav.frivillig.skattetrekk.client.trekk.api.AndreTrekkRequest
 
 data class OpprettAndreTrekkRequest(
     @JsonProperty("kilde") val kilde: String,

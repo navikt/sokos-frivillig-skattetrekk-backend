@@ -1,24 +1,24 @@
 package no.nav.frivillig.skattetrekk.service
 
+import mu.KotlinLogging
 import no.nav.frivillig.skattetrekk.client.trekk.TrekkClient
 import no.nav.frivillig.skattetrekk.client.trekk.api.AndreTrekkRequest
 import no.nav.frivillig.skattetrekk.client.trekk.api.AndreTrekkResponse
 import no.nav.frivillig.skattetrekk.client.trekk.api.Fagomrade
+import no.nav.frivillig.skattetrekk.client.trekk.api.Kilde
+import no.nav.frivillig.skattetrekk.client.trekk.api.OppdaterAndreTrekkRequest
+import no.nav.frivillig.skattetrekk.client.trekk.api.OpphorAndreTrekkRequest
+import no.nav.frivillig.skattetrekk.client.trekk.api.OpprettAndreTrekkRequest
 import no.nav.frivillig.skattetrekk.client.trekk.api.SatsType
 import no.nav.frivillig.skattetrekk.client.trekk.api.Satsperiode
 import no.nav.frivillig.skattetrekk.client.trekk.api.Sporing
 import no.nav.frivillig.skattetrekk.client.trekk.api.Sporingsdetalj
 import no.nav.frivillig.skattetrekk.client.trekk.api.TrekkInfo
 import no.nav.frivillig.skattetrekk.util.isDateInPeriod
-import no.nav.pensjon.pselv.consumer.behandletrekk.oppdragrestproxy.Kilde
-import no.nav.pensjon.pselv.consumer.behandletrekk.oppdragrestproxy.OppdaterAndreTrekkRequest
-import no.nav.pensjon.pselv.consumer.behandletrekk.oppdragrestproxy.OpphorAndreTrekkRequest
-import no.nav.pensjon.pselv.consumer.behandletrekk.oppdragrestproxy.OpprettAndreTrekkRequest
-import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import java.time.LocalDate
 
-private val log = LoggerFactory.getLogger(BehandleTrekkService::class.java)
+private val logger = KotlinLogging.logger {}
 private const val ANSVARLIG_ENHET = "4819"
 
 @Service
@@ -104,7 +104,7 @@ class BehandleTrekkService(
         satsType: SatsType,
         gjelderFraOgMed: LocalDate,
     ): Long? {
-        log.info("Henter skatt og trekk")
+        logger.info("Henter skatt og trekk")
 
         if (skalOppretteNyttTrekk(tilleggstrekk, null)) {
             val trekkalternativKode =
@@ -114,7 +114,7 @@ class BehandleTrekkService(
                     TrekkalternativKode.LOPP
                 }
 
-            log.info("Oppretter nytt frivillig skattetrekk")
+            logger.info("Oppretter nytt frivillig skattetrekk")
             val trekkOpprettet =
                 trekkClient.opprettAndreTrekk(
                     pid,
@@ -174,7 +174,7 @@ class BehandleTrekkService(
         pid: String,
         trekkvedtakId: Long,
     ) {
-        log.info("Henter skattetrekk")
+        logger.info("Henter skattetrekk")
         val sorterteSatsperioder =
             trekkClient
                 .hentSkattOgTrekk(pid, trekkvedtakId)
@@ -187,7 +187,7 @@ class BehandleTrekkService(
 
         val opphorDato = LocalDate.now().plusMonths(1L).withDayOfMonth(1)
         // Opphør løpende trekk, om det finnes
-        log.info("Opphører løpende trekk")
+        logger.info("Opphører løpende trekk")
         opphorTrekk(pid, trekkvedtakId, opphorDato)
     }
 

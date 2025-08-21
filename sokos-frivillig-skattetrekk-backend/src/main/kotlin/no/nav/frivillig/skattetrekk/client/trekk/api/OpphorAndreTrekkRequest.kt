@@ -1,4 +1,4 @@
-package no.nav.pensjon.pselv.consumer.behandletrekk.oppdragrestproxy
+package no.nav.frivillig.skattetrekk.client.trekk.api
 
 import com.fasterxml.jackson.annotation.JsonFormat
 import java.time.LocalDate

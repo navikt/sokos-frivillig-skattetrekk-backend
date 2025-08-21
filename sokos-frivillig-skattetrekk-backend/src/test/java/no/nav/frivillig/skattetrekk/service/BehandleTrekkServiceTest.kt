@@ -13,11 +13,9 @@ import no.nav.frivillig.skattetrekk.client.trekk.api.SatsType
 import no.nav.frivillig.skattetrekk.client.trekk.api.Satsperiode
 import no.nav.frivillig.skattetrekk.client.trekk.api.TrekkInfo
 import no.nav.frivillig.skattetrekk.client.trekk.api.Trekktype
-import no.nav.pensjon.pselv.consumer.behandletrekk.oppdragrestproxy.OppdaterAndreTrekkRequest
 import org.hamcrest.CoreMatchers.any
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNull
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import java.math.BigDecimal
 import java.time.LocalDate
@@ -172,7 +170,6 @@ class BehandleTrekkServiceTest {
         verify(exactly = 1) { trekkClientMock.opphorAndreTrekk(eq(pid), any()) }
         verify(exactly = 0) { trekkClientMock.opprettAndreTrekk(eq(pid), any()) }
     }
-
 
     @Test
     fun `Oppdater trekk dersom for usortert med ett løpende trekk og ikke gjøre noe med ett lukket via behandle trekk`() {
@@ -430,16 +427,16 @@ class BehandleTrekkServiceTest {
         every { trekkClientMock.oppdaterAndreTrekk(eq(pid), any()) } returns Unit
 
         every { trekkClientMock.hentSkattOgTrekk(pid, trekkVedtakId) } returns
-                lagHentSkattOgTrekkRespons(
-                    trekkVedtakId,
-                    listOf(
-                        lagSatsperiode(
-                            fom = LocalDate.now().minusMonths(1L),
-                            tom = LocalDate.now().plusMonths(3L),
-                            sats = 100.0,
-                        ),
+            lagHentSkattOgTrekkRespons(
+                trekkVedtakId,
+                listOf(
+                    lagSatsperiode(
+                        fom = LocalDate.now().minusMonths(1L),
+                        tom = LocalDate.now().plusMonths(3L),
+                        sats = 100.0,
                     ),
-                )
+                ),
+            )
 
         every { trekkClientMock.finnTrekkListe(pid, any()) } returns trekkListe
 

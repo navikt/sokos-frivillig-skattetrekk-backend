@@ -15,7 +15,7 @@ open class ClientException(
 ) : RuntimeException("Error occurred when calling service $service in $system. DetailMessage:  $message", cause)
 
 open class ForbiddenException(
-    val system: String,
+    system: String,
     val service: String,
     override val message: String?,
     override val cause: Throwable?,

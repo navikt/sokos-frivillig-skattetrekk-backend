@@ -24,7 +24,6 @@ class SkattetrekkController(
     @GetMapping(produces = ["application/json"])
     fun getSkattetrekk(): FrivilligSkattetrekkInitResponse? = skattetrekkService.hentSkattetrekk(SecurityContextUtil.getPidFromContext())
 
-
     @PostMapping
     fun behandleFrivilligSkattetrekk(
         @RequestBody request: BehandleRequest,

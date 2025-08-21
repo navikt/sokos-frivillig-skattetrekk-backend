@@ -28,17 +28,14 @@ spec:
     application:
       enabled: true
   replicas:
-    min: 2
-    max: 4
+    min: 1
+    max: 2
   resources:
     limits:
-      cpu: 1000m
-      memory: 512Mi
+      memory: 4096Mi
     requests:
-      cpu: 200m
-      memory: 256Mi
-  secureLogs:
-    enabled: true
+      cpu: 100m
+      memory: 512Mi
   prometheus:
     enabled: true
     path: actuator/prometheus
@@ -46,13 +43,6 @@ spec:
     autoInstrumentation:
       enabled: true
       runtime: java
-      destinations:
-        - id: "grafana-lgtm"
-        - id: "elastic-apm"
-    logging:
-      destinations:
-        - id: elastic
-        - id: loki
   webproxy: true
   accessPolicy:
     inbound:
@@ -70,19 +60,10 @@ spec:
       rules:
         - application: sokos-oppdrag-proxy-q2
           namespace: okonomi
-        - application: pensjon-representasjon-q2
-          namespace: pensjon-person
+        - application: logging
+          namespace: nais-system
 
   env:
-    - name: LOGGING_CONFIG
-      value: classpath:logback-json.xml
-
-    - name: PDL_URL
-      value: http://pdl-api.pdl.svc.nais.local/graphql
-    - name: PDL_SCOPE
-      value: api://dev-fss.pdl.pdl-api/.default
-    - name: PDL_AUDIENCE
-      value: dev-fss:pdl:pdl-api
 
     - name: TREKK_URL
       value: http://sokos-oppdrag-proxy-q2.okonomi.svc.nais.local

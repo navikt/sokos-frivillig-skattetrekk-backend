@@ -14,12 +14,14 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 class MockSecurityConfig {
     @Bean
     fun mockSecurityContext(): SecurityContext {
-        val jwt = Jwt.withTokenValue("test-token")
-            .header("alg", "none")
-            .claim("iss", "test-issuer")
-            .claim("acr", "Level4")
-            .claim("pid", "00000000001")
-            .build()
+        val jwt =
+            Jwt
+                .withTokenValue("test-token")
+                .header("alg", "none")
+                .claim("iss", "test-issuer")
+                .claim("acr", "Level4")
+                .claim("pid", "00000000001")
+                .build()
         val auth: Authentication = JwtAuthenticationToken(jwt)
         val context = SecurityContextHolder.createEmptyContext()
         context.authentication = auth

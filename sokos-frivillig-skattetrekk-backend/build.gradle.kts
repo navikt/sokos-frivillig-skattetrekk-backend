@@ -1,6 +1,11 @@
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
 import org.gradle.api.tasks.testing.logging.TestLogEvent
+import org.gradle.kotlin.dsl.named
+import org.gradle.kotlin.dsl.withType
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.springframework.boot.gradle.tasks.bundling.BootJar
+import kotlin.collections.set
 
 plugins {
     kotlin("jvm") version "2.2.10"
@@ -20,6 +25,10 @@ repositories {
 
 val jacksonVersion = "2.19.2"
 val logstashVersion = "8.1"
+val logbackVersion = "1.5.18"
+val micrometerVersion = "1.15.3"
+val kotlinLoggingVersion = "3.0.5"
+val janionVersion = "3.1.12"
 val mockkVersion = "1.14.5"
 val mockWebServerVersion = "5.1.0"
 
@@ -33,16 +42,19 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
 
     // Logging
-    implementation("net.logstash.logback:logstash-logback-encoder:$logstashVersion")
+    implementation("io.github.microutils:kotlin-logging-jvm:$kotlinLoggingVersion")
+    runtimeOnly("org.codehaus.janino:janino:$janionVersion")
+    runtimeOnly("ch.qos.logback:logback-classic:$logbackVersion")
+    runtimeOnly("net.logstash.logback:logstash-logback-encoder:$logstashVersion")
 
-    // Jackson (explicit versions as in pom.xml)
+    // Jackson
     implementation("com.fasterxml.jackson.core:jackson-core:$jacksonVersion")
     implementation("com.fasterxml.jackson.core:jackson-databind:$jacksonVersion")
     implementation("com.fasterxml.jackson.core:jackson-annotations:$jacksonVersion")
     implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-xml:$jacksonVersion")
 
     // Micrometer / Prometheus
-    implementation("io.micrometer:micrometer-registry-prometheus")
+    implementation("io.micrometer:micrometer-registry-prometheus:$micrometerVersion")
 
     // Test dependencies
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
@@ -74,6 +86,18 @@ tasks {
         dependsOn("ktlintFormat")
     }
 
+    withType<ShadowJar>().configureEach {
+        enabled = true
+        archiveFileName.set("app.jar")
+        manifest {
+            attributes["Main-Class"] = "no.nav.sokos.frivillig.skattetrekk.SkattetrekkApplicationKt"
+        }
+        duplicatesStrategy = DuplicatesStrategy.INCLUDE
+        mergeServiceFiles()
+
+        finalizedBy(koverHtmlReport)
+    }
+
     withType<Test>().configureEach {
         useJUnitPlatform()
         testLogging {
@@ -89,8 +113,11 @@ tasks {
         gradleVersion = "9.0.0"
     }
 
-    // Disable plain jar; Spring Boot will produce bootJar
     named("jar") {
+        enabled = false
+    }
+
+    named<BootJar>("bootJar") {
         enabled = false
     }
 
