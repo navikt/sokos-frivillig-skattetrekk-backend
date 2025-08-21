@@ -30,9 +30,9 @@ jobs:
     uses: navikt/mob-gha-workflows/.github/workflows/gradle-build-push-image.yaml@main
     secrets: inherit
 
-  deploy-q2:
+  deploy-dev-q2:
     needs: build
-    name: Deploy to dev-fss
+    name: Deploy to dev-fss-q2
     uses: navikt/mob-gha-workflows/.github/workflows/nais-app-deploy.yaml@main
     with:
       cluster: dev-fss
@@ -40,7 +40,7 @@ jobs:
       image: ${{ needs.build.outputs.image }}
 
   deploy-prod:
-    needs: [ build, deploy-q2 ]
+    needs: [ build, deploy-dev-q2 ]
     name: Deploy to prod-fss
     uses: navikt/mob-gha-workflows/.github/workflows/nais-app-deploy.yaml@main
     with:
