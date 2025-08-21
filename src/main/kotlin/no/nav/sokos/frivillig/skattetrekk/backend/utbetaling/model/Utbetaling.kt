@@ -3,7 +3,7 @@ package no.nav.sokos.frivillig.skattetrekk.backend.utbetaling.model
 import java.math.BigDecimal
 import java.time.LocalDate
 
-import no.nav.frivillig.skattetrekk.utbetaling.Periode
+import no.nav.sokos.frivillig.skattetrekk.backend.utbetaling.Periode
 
 data class Utbetaling(
     val utbetaltTil: Aktoer,

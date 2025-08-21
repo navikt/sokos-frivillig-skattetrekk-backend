@@ -2,7 +2,7 @@ package no.nav.sokos.frivillig.skattetrekk.backend.endpoint.api
 
 import java.time.LocalDate
 
-import no.nav.frivillig.skattetrekk.client.trekk.api.SatsType
+import no.nav.sokos.frivillig.skattetrekk.backend.client.trekk.api.SatsType
 
 data class FrivilligSkattetrekkInitResponse(
     val data: FrivilligSkattetrekkData?,

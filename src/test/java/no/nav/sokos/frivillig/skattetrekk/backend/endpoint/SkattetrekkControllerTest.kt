@@ -18,10 +18,10 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
-import no.nav.frivillig.skattetrekk.endpoint.api.FrivilligSkattetrekkInitResponse
-import no.nav.frivillig.skattetrekk.security.AuthenticatedUserDetails
-import no.nav.frivillig.skattetrekk.service.BehandleTrekkService
-import no.nav.frivillig.skattetrekk.service.HentSkattOgTrekkService
+import no.nav.sokos.frivillig.skattetrekk.backend.endpoint.api.FrivilligSkattetrekkInitResponse
+import no.nav.sokos.frivillig.skattetrekk.backend.security.AuthenticatedUserDetails
+import no.nav.sokos.frivillig.skattetrekk.backend.service.BehandleTrekkService
+import no.nav.sokos.frivillig.skattetrekk.backend.service.HentSkattOgTrekkService
 
 @ActiveProfiles("test")
 @WebMvcTest(SkattetrekkController::class)

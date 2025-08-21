@@ -10,15 +10,15 @@ import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Test
 
-import no.nav.frivillig.skattetrekk.client.trekk.TrekkClient
-import no.nav.frivillig.skattetrekk.client.trekk.api.AndreTrekkResponse
-import no.nav.frivillig.skattetrekk.client.trekk.api.Bruker
-import no.nav.frivillig.skattetrekk.client.trekk.api.HentSkattOgTrekkResponse
-import no.nav.frivillig.skattetrekk.client.trekk.api.Skattetrekk
-import no.nav.frivillig.skattetrekk.client.trekk.api.TrekkInfo
-import no.nav.frivillig.skattetrekk.client.trekk.api.Trekkalternativ
-import no.nav.frivillig.skattetrekk.client.trekk.api.Trekkstatus
-import no.nav.frivillig.skattetrekk.client.trekk.api.Trekktype
+import no.nav.sokos.frivillig.skattetrekk.backend.client.trekk.TrekkClient
+import no.nav.sokos.frivillig.skattetrekk.backend.client.trekk.api.AndreTrekkResponse
+import no.nav.sokos.frivillig.skattetrekk.backend.client.trekk.api.Bruker
+import no.nav.sokos.frivillig.skattetrekk.backend.client.trekk.api.HentSkattOgTrekkResponse
+import no.nav.sokos.frivillig.skattetrekk.backend.client.trekk.api.Skattetrekk
+import no.nav.sokos.frivillig.skattetrekk.backend.client.trekk.api.TrekkInfo
+import no.nav.sokos.frivillig.skattetrekk.backend.client.trekk.api.Trekkalternativ
+import no.nav.sokos.frivillig.skattetrekk.backend.client.trekk.api.Trekkstatus
+import no.nav.sokos.frivillig.skattetrekk.backend.client.trekk.api.Trekktype
 
 class HentSkattOgTrekkServiceTest {
     private val trekkClientMock = mockk<TrekkClient>()

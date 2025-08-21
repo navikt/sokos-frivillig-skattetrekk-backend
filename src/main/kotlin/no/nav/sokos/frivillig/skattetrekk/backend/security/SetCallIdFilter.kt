@@ -9,7 +9,7 @@ import org.slf4j.MDC
 import org.springframework.stereotype.Component
 import org.springframework.web.filter.OncePerRequestFilter
 
-import no.nav.frivillig.skattetrekk.client.CallIdUtil.Companion.NAV_CALL_ID_NAME
+import no.nav.sokos.frivillig.skattetrekk.backend.client.CallIdUtil.Companion.NAV_CALL_ID_NAME
 
 @Component
 class SetCallIdFilter : OncePerRequestFilter() {

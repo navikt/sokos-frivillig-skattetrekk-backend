@@ -19,7 +19,7 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtIss
 import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.util.matcher.DispatcherTypeRequestMatcher
 
-import no.nav.frivillig.skattetrekk.security.authenticationManagers.TokenXAuthenticationManager
+import no.nav.sokos.frivillig.skattetrekk.backend.security.authenticationManagers.TokenXAuthenticationManager
 
 @Profile("!test")
 @Configuration

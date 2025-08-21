@@ -6,21 +6,20 @@ import java.time.LocalDate
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
-import org.hamcrest.CoreMatchers.any
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Test
 
-import no.nav.frivillig.skattetrekk.client.trekk.TrekkClient
-import no.nav.frivillig.skattetrekk.client.trekk.api.AndreTrekkResponse
-import no.nav.frivillig.skattetrekk.client.trekk.api.Bruker
-import no.nav.frivillig.skattetrekk.client.trekk.api.FagomradeResponse
-import no.nav.frivillig.skattetrekk.client.trekk.api.HentSkattOgTrekkResponse
-import no.nav.frivillig.skattetrekk.client.trekk.api.OpprettAndreTrekkResponse
-import no.nav.frivillig.skattetrekk.client.trekk.api.SatsType
-import no.nav.frivillig.skattetrekk.client.trekk.api.Satsperiode
-import no.nav.frivillig.skattetrekk.client.trekk.api.TrekkInfo
-import no.nav.frivillig.skattetrekk.client.trekk.api.Trekktype
+import no.nav.sokos.frivillig.skattetrekk.backend.client.trekk.TrekkClient
+import no.nav.sokos.frivillig.skattetrekk.backend.client.trekk.api.AndreTrekkResponse
+import no.nav.sokos.frivillig.skattetrekk.backend.client.trekk.api.Bruker
+import no.nav.sokos.frivillig.skattetrekk.backend.client.trekk.api.FagomradeResponse
+import no.nav.sokos.frivillig.skattetrekk.backend.client.trekk.api.HentSkattOgTrekkResponse
+import no.nav.sokos.frivillig.skattetrekk.backend.client.trekk.api.OpprettAndreTrekkResponse
+import no.nav.sokos.frivillig.skattetrekk.backend.client.trekk.api.SatsType
+import no.nav.sokos.frivillig.skattetrekk.backend.client.trekk.api.Satsperiode
+import no.nav.sokos.frivillig.skattetrekk.backend.client.trekk.api.TrekkInfo
+import no.nav.sokos.frivillig.skattetrekk.backend.client.trekk.api.Trekktype
 
 class BehandleTrekkServiceTest {
     private val pid = "12345678910"

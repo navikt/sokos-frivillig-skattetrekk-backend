@@ -11,14 +11,14 @@ import org.mockito.Mock
 import org.mockito.Mockito.`when`
 import org.mockito.junit.jupiter.MockitoExtension
 
-import no.nav.frivillig.skattetrekk.utbetaling.model.Aktoer
-import no.nav.frivillig.skattetrekk.utbetaling.model.Aktoertype
-import no.nav.frivillig.skattetrekk.utbetaling.model.Bankkonto
-import no.nav.frivillig.skattetrekk.utbetaling.model.Skatt
-import no.nav.frivillig.skattetrekk.utbetaling.model.Trekk
-import no.nav.frivillig.skattetrekk.utbetaling.model.Utbetaling
-import no.nav.frivillig.skattetrekk.utbetaling.model.Ytelse
-import no.nav.frivillig.skattetrekk.utbetaling.model.Ytelseskomponent
+import no.nav.sokos.frivillig.skattetrekk.backend.utbetaling.model.Aktoer
+import no.nav.sokos.frivillig.skattetrekk.backend.utbetaling.model.Aktoertype
+import no.nav.sokos.frivillig.skattetrekk.backend.utbetaling.model.Bankkonto
+import no.nav.sokos.frivillig.skattetrekk.backend.utbetaling.model.Skatt
+import no.nav.sokos.frivillig.skattetrekk.backend.utbetaling.model.Trekk
+import no.nav.sokos.frivillig.skattetrekk.backend.utbetaling.model.Utbetaling
+import no.nav.sokos.frivillig.skattetrekk.backend.utbetaling.model.Ytelse
+import no.nav.sokos.frivillig.skattetrekk.backend.utbetaling.model.Ytelseskomponent
 
 @ExtendWith(MockitoExtension::class)
 class UtbetalingServiceTest {

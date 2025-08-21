@@ -10,7 +10,7 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter
 import org.springframework.stereotype.Component
 
-import no.nav.frivillig.skattetrekk.security.OAuthTypes
+import no.nav.sokos.frivillig.skattetrekk.backend.security.OAuthTypes
 
 @Component("tokenXAuthManager")
 class TokenXAuthenticationManager(

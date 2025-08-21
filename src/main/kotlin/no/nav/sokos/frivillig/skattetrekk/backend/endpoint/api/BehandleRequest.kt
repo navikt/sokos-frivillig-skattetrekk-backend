@@ -1,6 +1,6 @@
 package no.nav.sokos.frivillig.skattetrekk.backend.endpoint.api
 
-import no.nav.frivillig.skattetrekk.client.trekk.api.SatsType
+import no.nav.sokos.frivillig.skattetrekk.backend.client.trekk.api.SatsType
 
 data class BehandleRequest(
     val value: Int,

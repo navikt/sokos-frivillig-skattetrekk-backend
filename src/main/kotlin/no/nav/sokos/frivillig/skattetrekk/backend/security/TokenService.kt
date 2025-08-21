@@ -9,7 +9,7 @@ import org.springframework.security.oauth2.jwt.Jwt
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken
 import org.springframework.stereotype.Service
 
-import no.nav.frivillig.skattetrekk.configuration.AppId
+import no.nav.sokos.frivillig.skattetrekk.backend.configuration.AppId
 
 @Service
 class TokenService(

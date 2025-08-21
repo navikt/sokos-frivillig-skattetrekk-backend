@@ -9,12 +9,12 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
 
-import no.nav.frivillig.skattetrekk.endpoint.api.BehandleRequest
-import no.nav.frivillig.skattetrekk.endpoint.api.FrivilligSkattetrekkInitResponse
-import no.nav.frivillig.skattetrekk.security.SecurityContextUtil
-import no.nav.frivillig.skattetrekk.service.BehandleTrekkService
-import no.nav.frivillig.skattetrekk.service.HentSkattOgTrekkService
-import no.nav.frivillig.skattetrekk.service.Validering
+import no.nav.sokos.frivillig.skattetrekk.backend.endpoint.api.BehandleRequest
+import no.nav.sokos.frivillig.skattetrekk.backend.endpoint.api.FrivilligSkattetrekkInitResponse
+import no.nav.sokos.frivillig.skattetrekk.backend.security.SecurityContextUtil
+import no.nav.sokos.frivillig.skattetrekk.backend.service.BehandleTrekkService
+import no.nav.sokos.frivillig.skattetrekk.backend.service.HentSkattOgTrekkService
+import no.nav.sokos.frivillig.skattetrekk.backend.service.Validering
 
 @RestController
 @RequestMapping("api/skattetrekk")

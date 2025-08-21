@@ -5,20 +5,20 @@ import java.time.LocalDate
 import mu.KotlinLogging
 import org.springframework.stereotype.Service
 
-import no.nav.frivillig.skattetrekk.client.trekk.TrekkClient
-import no.nav.frivillig.skattetrekk.client.trekk.api.AndreTrekkRequest
-import no.nav.frivillig.skattetrekk.client.trekk.api.AndreTrekkResponse
-import no.nav.frivillig.skattetrekk.client.trekk.api.Fagomrade
-import no.nav.frivillig.skattetrekk.client.trekk.api.Kilde
-import no.nav.frivillig.skattetrekk.client.trekk.api.OppdaterAndreTrekkRequest
-import no.nav.frivillig.skattetrekk.client.trekk.api.OpphorAndreTrekkRequest
-import no.nav.frivillig.skattetrekk.client.trekk.api.OpprettAndreTrekkRequest
-import no.nav.frivillig.skattetrekk.client.trekk.api.SatsType
-import no.nav.frivillig.skattetrekk.client.trekk.api.Satsperiode
-import no.nav.frivillig.skattetrekk.client.trekk.api.Sporing
-import no.nav.frivillig.skattetrekk.client.trekk.api.Sporingsdetalj
-import no.nav.frivillig.skattetrekk.client.trekk.api.TrekkInfo
-import no.nav.frivillig.skattetrekk.util.isDateInPeriod
+import no.nav.sokos.frivillig.skattetrekk.backend.client.trekk.TrekkClient
+import no.nav.sokos.frivillig.skattetrekk.backend.client.trekk.api.AndreTrekkRequest
+import no.nav.sokos.frivillig.skattetrekk.backend.client.trekk.api.AndreTrekkResponse
+import no.nav.sokos.frivillig.skattetrekk.backend.client.trekk.api.Fagomrade
+import no.nav.sokos.frivillig.skattetrekk.backend.client.trekk.api.Kilde
+import no.nav.sokos.frivillig.skattetrekk.backend.client.trekk.api.OppdaterAndreTrekkRequest
+import no.nav.sokos.frivillig.skattetrekk.backend.client.trekk.api.OpphorAndreTrekkRequest
+import no.nav.sokos.frivillig.skattetrekk.backend.client.trekk.api.OpprettAndreTrekkRequest
+import no.nav.sokos.frivillig.skattetrekk.backend.client.trekk.api.SatsType
+import no.nav.sokos.frivillig.skattetrekk.backend.client.trekk.api.Satsperiode
+import no.nav.sokos.frivillig.skattetrekk.backend.client.trekk.api.Sporing
+import no.nav.sokos.frivillig.skattetrekk.backend.client.trekk.api.Sporingsdetalj
+import no.nav.sokos.frivillig.skattetrekk.backend.client.trekk.api.TrekkInfo
+import no.nav.sokos.frivillig.skattetrekk.backend.util.isDateInPeriod
 
 private val logger = KotlinLogging.logger {}
 private const val ANSVARLIG_ENHET = "4819"

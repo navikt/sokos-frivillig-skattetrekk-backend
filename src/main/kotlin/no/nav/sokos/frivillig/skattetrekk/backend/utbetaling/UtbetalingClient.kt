@@ -10,12 +10,12 @@ import org.springframework.web.client.HttpClientErrorException
 import org.springframework.web.client.HttpServerErrorException
 import org.springframework.web.reactive.function.client.WebClient
 
-import no.nav.frivillig.skattetrekk.configuration.AppId
-import no.nav.frivillig.skattetrekk.security.TokenService
-import no.nav.frivillig.skattetrekk.utbetaling.model.UtbetalDataApiFeil
-import no.nav.frivillig.skattetrekk.utbetaling.model.UtbetalDataIkkeFunnet
-import no.nav.frivillig.skattetrekk.utbetaling.model.UtbetalDataServerFeil
-import no.nav.frivillig.skattetrekk.utbetaling.model.Utbetaling
+import no.nav.sokos.frivillig.skattetrekk.backend.configuration.AppId
+import no.nav.sokos.frivillig.skattetrekk.backend.security.TokenService
+import no.nav.sokos.frivillig.skattetrekk.backend.utbetaling.model.UtbetalDataApiFeil
+import no.nav.sokos.frivillig.skattetrekk.backend.utbetaling.model.UtbetalDataIkkeFunnet
+import no.nav.sokos.frivillig.skattetrekk.backend.utbetaling.model.UtbetalDataServerFeil
+import no.nav.sokos.frivillig.skattetrekk.backend.utbetaling.model.Utbetaling
 
 private const val MND_FOM_DATO_FOER = 3
 

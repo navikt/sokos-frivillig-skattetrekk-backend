@@ -5,22 +5,22 @@ import java.time.LocalDate
 import mu.KotlinLogging
 import org.springframework.stereotype.Service
 
-import no.nav.frivillig.skattetrekk.client.trekk.TrekkClient
-import no.nav.frivillig.skattetrekk.client.trekk.api.AndreTrekkResponse
-import no.nav.frivillig.skattetrekk.client.trekk.api.SatsType
-import no.nav.frivillig.skattetrekk.client.trekk.api.Satsperiode
-import no.nav.frivillig.skattetrekk.client.trekk.api.Skattetrekk
-import no.nav.frivillig.skattetrekk.client.trekk.api.TrekkInfo
-import no.nav.frivillig.skattetrekk.endpoint.OppdragUtilgjengeligException
-import no.nav.frivillig.skattetrekk.endpoint.api.ForenkletSkattetrekkDto
-import no.nav.frivillig.skattetrekk.endpoint.api.FremtidigTrekkDto
-import no.nav.frivillig.skattetrekk.endpoint.api.FrivilligSkattetrekkData
-import no.nav.frivillig.skattetrekk.endpoint.api.FrivilligSkattetrekkInitResponse
-import no.nav.frivillig.skattetrekk.endpoint.api.FrivilligSkattetrekkMessage
-import no.nav.frivillig.skattetrekk.endpoint.api.FrivilligSkattetrekkMessageCode
-import no.nav.frivillig.skattetrekk.endpoint.api.FrivilligSkattetrekkType
-import no.nav.frivillig.skattetrekk.endpoint.api.TrekkDto
-import no.nav.frivillig.skattetrekk.util.isDateInPeriod
+import no.nav.sokos.frivillig.skattetrekk.backend.client.trekk.TrekkClient
+import no.nav.sokos.frivillig.skattetrekk.backend.client.trekk.api.AndreTrekkResponse
+import no.nav.sokos.frivillig.skattetrekk.backend.client.trekk.api.SatsType
+import no.nav.sokos.frivillig.skattetrekk.backend.client.trekk.api.Satsperiode
+import no.nav.sokos.frivillig.skattetrekk.backend.client.trekk.api.Skattetrekk
+import no.nav.sokos.frivillig.skattetrekk.backend.client.trekk.api.TrekkInfo
+import no.nav.sokos.frivillig.skattetrekk.backend.endpoint.OppdragUtilgjengeligException
+import no.nav.sokos.frivillig.skattetrekk.backend.endpoint.api.ForenkletSkattetrekkDto
+import no.nav.sokos.frivillig.skattetrekk.backend.endpoint.api.FremtidigTrekkDto
+import no.nav.sokos.frivillig.skattetrekk.backend.endpoint.api.FrivilligSkattetrekkData
+import no.nav.sokos.frivillig.skattetrekk.backend.endpoint.api.FrivilligSkattetrekkInitResponse
+import no.nav.sokos.frivillig.skattetrekk.backend.endpoint.api.FrivilligSkattetrekkMessage
+import no.nav.sokos.frivillig.skattetrekk.backend.endpoint.api.FrivilligSkattetrekkMessageCode
+import no.nav.sokos.frivillig.skattetrekk.backend.endpoint.api.FrivilligSkattetrekkType
+import no.nav.sokos.frivillig.skattetrekk.backend.endpoint.api.TrekkDto
+import no.nav.sokos.frivillig.skattetrekk.backend.util.isDateInPeriod
 
 private val logger = KotlinLogging.logger {}
 private const val TREKK_KODE_LOPP: String = "LOPP" // Prosenttrekk
