@@ -15,7 +15,7 @@ enum class AppId(
 
 @Configuration
 class TrekkConfig(
-    @Value("{trekk.endpoint.url}")
+    @Value("\${trekk.endpoint.url}")
     val trekkUrl: String,
     @Value("\${trekk.scope}")
     val trekkScope: String,
