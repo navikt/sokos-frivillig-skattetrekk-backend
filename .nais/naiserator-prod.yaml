@@ -61,8 +61,8 @@ spec:
     - name: SPRING_PROFILES_ACTIVE
       value: default
     - name: TREKK_URL
-      value: http://oppdrag-rest-proxy.okonomi.svc.nais.local
+      value: http://sokos-oppdrag-proxy.okonomi.svc.nais.local
     - name: TREKK_SCOPE
-      value: api://prod-fss.okonomi.oppdrag-rest-proxy/.default
+      value: api://prod-fss.okonomi.sokos-oppdrag-proxy/.default
     - name: TREKK_AUDIENCE
-      value: prod-fss:okonomi:oppdrag-rest-proxy
+      value: prod-fss:okonomi:sokos-oppdrag-proxy
