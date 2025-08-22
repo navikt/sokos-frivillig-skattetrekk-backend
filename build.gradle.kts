@@ -95,12 +95,6 @@ tasks {
     }
 
     withType<BootJar>().configureEach {
-        enabled = true
-        archiveFileName.set("app.jar")
-        manifest {
-            attributes["Main-Class"] = "no.nav.sokos.frivillig.skattetrekk.backend.SkattetrekkApplicationKt"
-        }
-
         finalizedBy(koverHtmlReport)
     }
 
