@@ -7,5 +7,5 @@ import org.springframework.boot.runApplication
 class SkattetrekkApplication
 
 fun main(args: Array<String>) {
-    runApplication<no.nav.sokos.frivillig.skattetrekk.backend.SkattetrekkApplication>(*args)
+    runApplication<SkattetrekkApplication>(*args)
 }
