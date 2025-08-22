@@ -39,6 +39,6 @@ oauth2:
 
 trekk:
   endpoint:
-    url: ${TREKK_URL}
+    url: ${TREKK_URL:http://sokos-oppdrag-proxy-q2.okonomi.svc.nais.local}
   scope: ${TREKK_SCOPE}
   audience: ${TREKK_AUDIENCE}
