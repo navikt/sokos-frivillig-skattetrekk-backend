@@ -1,6 +1,7 @@
 package no.nav.sokos.frivillig.skattetrekk.backend.client.trekk
 
 import mu.KotlinLogging
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.WebClientResponseException
@@ -17,7 +18,6 @@ import no.nav.sokos.frivillig.skattetrekk.backend.client.trekk.api.OpprettAndreT
 import no.nav.sokos.frivillig.skattetrekk.backend.client.trekk.api.OpprettAndreTrekkResponse
 import no.nav.sokos.frivillig.skattetrekk.backend.client.trekk.api.TrekkInfo
 import no.nav.sokos.frivillig.skattetrekk.backend.configuration.AppId
-import no.nav.sokos.frivillig.skattetrekk.backend.configuration.TrekkConfig
 import no.nav.sokos.frivillig.skattetrekk.backend.endpoint.ClientException
 import no.nav.sokos.frivillig.skattetrekk.backend.endpoint.OppdragUtilgjengeligException
 import no.nav.sokos.frivillig.skattetrekk.backend.endpoint.TekniskFeilFraOppdragException
@@ -28,7 +28,9 @@ private val logger = KotlinLogging.logger {}
 
 @Component
 class TrekkClient(
-    private val trekkConfig: TrekkConfig,
+    @Value("\${trekk.endpoint.url}") private val trekkUrl: String,
+    @Value("\${trekk.scope}") private val trekkScope: String,
+    @Value("\${trekk.audience}") private val audience: String,
     private val tokenService: TokenService,
     private val webClient: WebClient,
 ) {
@@ -51,8 +53,8 @@ class TrekkClient(
         try {
             return webClient
                 .post()
-                .uri("${trekkConfig.trekkUrl}/api/nav-tjeneste-trekk/finnTrekkListe")
-                .header("Authorization", "Bearer ${tokenService.getEgressToken(trekkConfig.trekkScope, trekkConfig.audience, pid, AppId.OPPDRAG_REST_PROXY)}")
+                .uri("$trekkUrl/api/nav-tjeneste-trekk/finnTrekkListe")
+                .header("Authorization", "Bearer ${tokenService.getEgressToken(trekkScope, audience, pid, AppId.OPPDRAG_REST_PROXY)}")
                 .header("Content-Type", "application/json")
                 .bodyValue(request)
                 .retrieve()
@@ -83,8 +85,8 @@ class TrekkClient(
         try {
             return webClient
                 .post()
-                .uri("${trekkConfig.trekkUrl}/api/nav-tjeneste-trekk/hentSkattOgTrekk")
-                .header("Authorization", "Bearer ${tokenService.getEgressToken(trekkConfig.trekkScope, trekkConfig.audience, pid, AppId.OPPDRAG_REST_PROXY)}")
+                .uri("$trekkUrl/api/nav-tjeneste-trekk/hentSkattOgTrekk")
+                .header("Authorization", "Bearer ${tokenService.getEgressToken(trekkScope, audience, pid, AppId.OPPDRAG_REST_PROXY)}")
                 .bodyValue(request)
                 .retrieve()
                 .bodyToMono(HentSkattOgTrekkResponse::class.java)
@@ -109,8 +111,8 @@ class TrekkClient(
         try {
             webClient
                 .post()
-                .uri("${trekkConfig.trekkUrl}/api/nav-tjeneste-behandleTrekk/opprettAndreTrekk")
-                .header("Authorization", "Bearer ${tokenService.getEgressToken(trekkConfig.trekkScope, trekkConfig.audience, pid, AppId.OPPDRAG_REST_PROXY)}")
+                .uri("$trekkUrl/api/nav-tjeneste-behandleTrekk/opprettAndreTrekk")
+                .header("Authorization", "Bearer ${tokenService.getEgressToken(trekkScope, audience, pid, AppId.OPPDRAG_REST_PROXY)}")
                 .bodyValue(request)
                 .retrieve()
                 .bodyToMono(OpprettAndreTrekkResponse::class.java)
@@ -134,10 +136,10 @@ class TrekkClient(
         try {
             webClient
                 .post()
-                .uri("${trekkConfig.trekkUrl}/api/nav-tjeneste-behandleTrekk/oppdaterAndreTrekk")
+                .uri("$trekkUrl/api/nav-tjeneste-behandleTrekk/oppdaterAndreTrekk")
                 .header(
                     "Authorization",
-                    "Bearer ${tokenService.getEgressToken(trekkConfig.trekkScope, trekkConfig.audience, pid, AppId.OPPDRAG_REST_PROXY)}",
+                    "Bearer ${tokenService.getEgressToken(trekkScope, audience, pid, AppId.OPPDRAG_REST_PROXY)}",
                 ).bodyValue(request)
                 .retrieve()
                 .toBodilessEntity()
@@ -167,8 +169,8 @@ class TrekkClient(
         try {
             webClient
                 .post()
-                .uri("${trekkConfig.trekkUrl}/api/nav-tjeneste-behandleTrekk/opphorAndreTrekk")
-                .header("Authorization", "Bearer ${tokenService.getEgressToken(trekkConfig.trekkScope, trekkConfig.audience, pid, AppId.OPPDRAG_REST_PROXY)}")
+                .uri("$trekkUrl/api/nav-tjeneste-behandleTrekk/opphorAndreTrekk")
+                .header("Authorization", "Bearer ${tokenService.getEgressToken(trekkScope, audience, pid, AppId.OPPDRAG_REST_PROXY)}")
                 .bodyValue(request)
                 .retrieve()
                 .toBodilessEntity()
