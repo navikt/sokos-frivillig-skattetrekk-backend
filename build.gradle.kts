@@ -1,7 +1,5 @@
-import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
 import org.gradle.api.tasks.testing.logging.TestLogEvent
-import org.gradle.kotlin.dsl.named
 import org.gradle.kotlin.dsl.withType
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.springframework.boot.gradle.tasks.bundling.BootJar
@@ -11,7 +9,6 @@ plugins {
     kotlin("plugin.spring") version "2.2.10"
     id("org.springframework.boot") version "3.5.4"
     id("io.spring.dependency-management") version "1.1.7"
-    id("com.gradleup.shadow") version "9.0.2"
     id("org.jlleitschuh.gradle.ktlint") version "13.0.0"
     id("org.jetbrains.kotlinx.kover") version "0.9.1"
 }
@@ -97,14 +94,12 @@ tasks {
         dependsOn("ktlintFormat")
     }
 
-    withType<ShadowJar>().configureEach {
+    withType<BootJar>().configureEach {
         enabled = true
         archiveFileName.set("app.jar")
         manifest {
             attributes["Main-Class"] = "no.nav.sokos.frivillig.skattetrekk.backend.SkattetrekkApplicationKt"
         }
-        duplicatesStrategy = DuplicatesStrategy.INCLUDE
-        mergeServiceFiles()
 
         finalizedBy(koverHtmlReport)
     }
@@ -125,10 +120,6 @@ tasks {
     }
 
     named("jar") {
-        enabled = false
-    }
-
-    named<BootJar>("bootJar") {
         enabled = false
     }
 
