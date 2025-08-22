@@ -1,7 +1,7 @@
 apiVersion: "nais.io/v1alpha1"
 kind: "Application"
 metadata:
-  name: skattetrekk-backend
+  name: sokos-frivillig-skattetrekk-backend
   namespace: okonomi
   labels:
     team: okonomi
@@ -9,8 +9,8 @@ spec:
   image: "{{{ image }}}"
   port: 8080
   ingresses:
-    - https://skattetrekk-backend.intern.nav.no
-    - https://skattetrekk-backend.prod-fss-pub.nais.io
+    - https://sokos-frivillig-skattetrekk-backend.intern.nav.no
+    - https://sokos-frivillig-skattetrekk-backend.prod-fss-pub.nais.io
   liveness:
     path: actuator/health/liveness
     initialDelay: 30
@@ -47,7 +47,7 @@ spec:
   accessPolicy:
     inbound:
       rules:
-        - application: skattetrekk-frontend
+        - application: sokos-frivillig-skattetrekk-frontend
           namespace: okonomi
           cluster: prod-gcp
     outbound:
