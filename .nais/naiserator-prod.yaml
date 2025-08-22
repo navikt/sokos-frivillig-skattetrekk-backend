@@ -58,7 +58,8 @@ spec:
           namespace: nais-system
 
   env:
-
+    - name: SPRING_PROFILES_ACTIVE
+      value: default
     - name: TREKK_URL
       value: http://oppdrag-rest-proxy.okonomi.svc.nais.local
     - name: TREKK_SCOPE

@@ -64,7 +64,8 @@ spec:
           namespace: nais-system
 
   env:
-
+    - name: SPRING_PROFILES_ACTIVE
+      value: default
     - name: TREKK_URL
       value: http://sokos-oppdrag-proxy-q2.okonomi.svc.nais.local
     - name: TREKK_SCOPE
