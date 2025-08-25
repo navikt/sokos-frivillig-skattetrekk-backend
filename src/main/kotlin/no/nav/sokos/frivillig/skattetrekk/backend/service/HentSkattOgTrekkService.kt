@@ -11,15 +11,15 @@ import no.nav.sokos.frivillig.skattetrekk.backend.client.trekk.api.SatsType
 import no.nav.sokos.frivillig.skattetrekk.backend.client.trekk.api.Satsperiode
 import no.nav.sokos.frivillig.skattetrekk.backend.client.trekk.api.Skattetrekk
 import no.nav.sokos.frivillig.skattetrekk.backend.client.trekk.api.TrekkInfo
-import no.nav.sokos.frivillig.skattetrekk.backend.endpoint.OppdragUtilgjengeligException
-import no.nav.sokos.frivillig.skattetrekk.backend.endpoint.api.ForenkletSkattetrekkDto
-import no.nav.sokos.frivillig.skattetrekk.backend.endpoint.api.FremtidigTrekkDto
-import no.nav.sokos.frivillig.skattetrekk.backend.endpoint.api.FrivilligSkattetrekkData
-import no.nav.sokos.frivillig.skattetrekk.backend.endpoint.api.FrivilligSkattetrekkInitResponse
-import no.nav.sokos.frivillig.skattetrekk.backend.endpoint.api.FrivilligSkattetrekkMessage
-import no.nav.sokos.frivillig.skattetrekk.backend.endpoint.api.FrivilligSkattetrekkMessageCode
-import no.nav.sokos.frivillig.skattetrekk.backend.endpoint.api.FrivilligSkattetrekkType
-import no.nav.sokos.frivillig.skattetrekk.backend.endpoint.api.TrekkDto
+import no.nav.sokos.frivillig.skattetrekk.backend.controller.OppdragUtilgjengeligException
+import no.nav.sokos.frivillig.skattetrekk.backend.controller.models.ForenkletSkattetrekkDto
+import no.nav.sokos.frivillig.skattetrekk.backend.controller.models.FremtidigTrekkDto
+import no.nav.sokos.frivillig.skattetrekk.backend.controller.models.FrivilligSkattetrekkData
+import no.nav.sokos.frivillig.skattetrekk.backend.controller.models.FrivilligSkattetrekkInitResponse
+import no.nav.sokos.frivillig.skattetrekk.backend.controller.models.FrivilligSkattetrekkMessage
+import no.nav.sokos.frivillig.skattetrekk.backend.controller.models.FrivilligSkattetrekkMessageCode
+import no.nav.sokos.frivillig.skattetrekk.backend.controller.models.FrivilligSkattetrekkType
+import no.nav.sokos.frivillig.skattetrekk.backend.controller.models.TrekkDto
 import no.nav.sokos.frivillig.skattetrekk.backend.util.isDateInPeriod
 
 private val logger = KotlinLogging.logger {}

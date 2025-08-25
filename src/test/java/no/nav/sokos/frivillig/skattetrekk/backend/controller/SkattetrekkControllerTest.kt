@@ -1,4 +1,4 @@
-package no.nav.sokos.frivillig.skattetrekk.backend.endpoint
+package no.nav.sokos.frivillig.skattetrekk.backend.controller
 
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -18,7 +18,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
-import no.nav.sokos.frivillig.skattetrekk.backend.endpoint.api.FrivilligSkattetrekkInitResponse
+import no.nav.sokos.frivillig.skattetrekk.backend.controller.models.FrivilligSkattetrekkInitResponse
 import no.nav.sokos.frivillig.skattetrekk.backend.security.AuthenticatedUserDetails
 import no.nav.sokos.frivillig.skattetrekk.backend.service.BehandleTrekkService
 import no.nav.sokos.frivillig.skattetrekk.backend.service.HentSkattOgTrekkService

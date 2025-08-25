@@ -1,4 +1,4 @@
-package no.nav.sokos.frivillig.skattetrekk.backend.endpoint
+package no.nav.sokos.frivillig.skattetrekk.backend.controller
 
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration

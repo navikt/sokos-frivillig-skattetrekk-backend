@@ -13,8 +13,8 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 import org.springframework.stereotype.Component
 import org.springframework.web.filter.OncePerRequestFilter
 
-import no.nav.sokos.frivillig.skattetrekk.backend.endpoint.LogInLevelTooLowException
-import no.nav.sokos.frivillig.skattetrekk.backend.endpoint.UnauthorizedException
+import no.nav.sokos.frivillig.skattetrekk.backend.controller.LogInLevelTooLowException
+import no.nav.sokos.frivillig.skattetrekk.backend.controller.UnauthorizedException
 
 @Profile("!test")
 @Component

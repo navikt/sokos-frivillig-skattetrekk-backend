@@ -1,9 +1,9 @@
 package no.nav.sokos.frivillig.skattetrekk.backend.service
 
 import no.nav.sokos.frivillig.skattetrekk.backend.client.trekk.api.SatsType
-import no.nav.sokos.frivillig.skattetrekk.backend.endpoint.api.FrivilligSkattetrekkMessage
-import no.nav.sokos.frivillig.skattetrekk.backend.endpoint.api.FrivilligSkattetrekkMessageCode
-import no.nav.sokos.frivillig.skattetrekk.backend.endpoint.api.FrivilligSkattetrekkType
+import no.nav.sokos.frivillig.skattetrekk.backend.controller.models.FrivilligSkattetrekkMessage
+import no.nav.sokos.frivillig.skattetrekk.backend.controller.models.FrivilligSkattetrekkMessageCode
+import no.nav.sokos.frivillig.skattetrekk.backend.controller.models.FrivilligSkattetrekkType
 
 class Validering {
     companion object {

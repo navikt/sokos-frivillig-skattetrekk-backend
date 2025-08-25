@@ -6,9 +6,6 @@ import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.WebClientResponseException
 
-import no.nav.sokos.frivillig.skattetrekk.backend.client.trekk.api.DebitorFilter
-import no.nav.sokos.frivillig.skattetrekk.backend.client.trekk.api.DebitorSok
-import no.nav.sokos.frivillig.skattetrekk.backend.client.trekk.api.FinnTrekkListeRequest
 import no.nav.sokos.frivillig.skattetrekk.backend.client.trekk.api.FinnTrekkListeResponse
 import no.nav.sokos.frivillig.skattetrekk.backend.client.trekk.api.HentSkattOgTrekkRequest
 import no.nav.sokos.frivillig.skattetrekk.backend.client.trekk.api.HentSkattOgTrekkResponse
@@ -17,10 +14,10 @@ import no.nav.sokos.frivillig.skattetrekk.backend.client.trekk.api.OpphorAndreTr
 import no.nav.sokos.frivillig.skattetrekk.backend.client.trekk.api.OpprettAndreTrekkRequest
 import no.nav.sokos.frivillig.skattetrekk.backend.client.trekk.api.OpprettAndreTrekkResponse
 import no.nav.sokos.frivillig.skattetrekk.backend.client.trekk.api.TrekkInfo
-import no.nav.sokos.frivillig.skattetrekk.backend.configuration.AppId
-import no.nav.sokos.frivillig.skattetrekk.backend.endpoint.ClientException
-import no.nav.sokos.frivillig.skattetrekk.backend.endpoint.OppdragUtilgjengeligException
-import no.nav.sokos.frivillig.skattetrekk.backend.endpoint.TekniskFeilFraOppdragException
+import no.nav.sokos.frivillig.skattetrekk.backend.config.AppId
+import no.nav.sokos.frivillig.skattetrekk.backend.controller.ClientException
+import no.nav.sokos.frivillig.skattetrekk.backend.controller.OppdragUtilgjengeligException
+import no.nav.sokos.frivillig.skattetrekk.backend.controller.TekniskFeilFraOppdragException
 import no.nav.sokos.frivillig.skattetrekk.backend.security.TokenService
 import no.nav.sokos.frivillig.skattetrekk.backend.service.TrekkTypeCode
 
@@ -37,14 +34,14 @@ class TrekkClient(
     fun finnTrekkListe(
         pid: String,
         trekkType: TrekkTypeCode,
-    ): List<TrekkInfo> {
+    ): List<no.nav.sokos.frivillig.skattetrekk.backend.client.trekk.api.TrekkInfo> {
         val request =
-            FinnTrekkListeRequest(
+            _root_ide_package_.no.nav.sokos.frivillig.skattetrekk.backend.client.trekk.api.FinnTrekkListeRequest(
                 debitorSok =
-                    DebitorSok(
+                    _root_ide_package_.no.nav.sokos.frivillig.skattetrekk.backend.client.trekk.api.DebitorSok(
                         debitorOffnr = pid,
                         filter =
-                            DebitorFilter(
+                            _root_ide_package_.no.nav.sokos.frivillig.skattetrekk.backend.client.trekk.api.DebitorFilter(
                                 trekktypeKode = trekkType.name,
                             ),
                     ),

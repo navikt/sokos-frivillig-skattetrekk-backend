@@ -23,10 +23,14 @@ import org.springframework.web.reactive.function.client.WebClient
 
 @Service
 class TokenXService(
-    @Value("\${oauth2.tokenX.tokenEndpoint}") private val endpoint: String,
-    @Value("\${oauth2.tokenX.privateJwk}") private val privateJwk: String,
-    @Value("\${oauth2.tokenX.clientId}") private val clientId: String,
-    @Qualifier("webClientProxy") private val webClient: WebClient,
+    @Value("\${oauth2.tokenX.tokenEndpoint}")
+    private val endpoint: String,
+    @Value("\${oauth2.tokenX.privateJwk}")
+    private val privateJwk: String,
+    @Value("\${oauth2.tokenX.clientId}")
+    private val clientId: String,
+    @Qualifier("webClientProxy")
+    private val webClient: WebClient,
 ) {
     companion object {
         internal const val PARAMS_GRANT_TYPE = "grant_type"
@@ -47,9 +51,12 @@ class TokenXService(
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     data class TokenXResponse(
-        @JsonProperty(value = "access_token", required = true) val accessToken: String,
-        @JsonProperty(value = "token_type", required = true) val tokenType: String,
-        @JsonProperty(value = "expires_in", required = true) val expiresIn: Int,
+        @JsonProperty(value = "access_token", required = true)
+        val accessToken: String,
+        @JsonProperty(value = "token_type", required = true)
+        val tokenType: String,
+        @JsonProperty(value = "expires_in", required = true)
+        val expiresIn: Int,
     )
 
     fun exchangeIngressTokenToEgressToken(

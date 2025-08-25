@@ -1,4 +1,4 @@
-package no.nav.sokos.frivillig.skattetrekk.backend.endpoint.api
+package no.nav.sokos.frivillig.skattetrekk.backend.controller.models
 
 data class FrivilligSkattetrekkMessage(
     val code: FrivilligSkattetrekkMessageCode? = null,

@@ -1,4 +1,4 @@
-package no.nav.sokos.frivillig.skattetrekk.backend.endpoint
+package no.nav.sokos.frivillig.skattetrekk.backend.controller
 
 open class PersonNotFoundException(
     override val system: String,

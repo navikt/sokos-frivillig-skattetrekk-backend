@@ -1,4 +1,4 @@
-package no.nav.sokos.frivillig.skattetrekk.backend.configuration
+package no.nav.sokos.frivillig.skattetrekk.backend.config
 
 import java.net.URI
 
