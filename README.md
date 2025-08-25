@@ -1,91 +1,98 @@
-# Frivillig Skattetrekk
+# sokos-frivillig-skattetrekk-backend
 
-En webapplikasjon for å administrere frivillig skattetrekk på et utvalg pengestøtter fra NAV.
-Backend integrerer mot https://github.com/navikt/sokos-oppdrag-proxy som er inngang til utbetaling hvor forvaltning
-av frivillig skattetrekk skjer. Denne applikasjonen presenterer registrert data til bruker i selvbetjening og lar bruker
-endre ønsket trekk.
+# Innholdsoversikt
+
+* [1. Funksjonelle krav](#1-funksjonelle-krav)
+* [2. Utviklingsmiljø](#2-utviklingsmiljø)
+* [3. Programvarearkitektur](#3-programvarearkitektur)
+* [4. Deployment](#4-deployment)
+* [5. Autentisering](#5-autentisering)
+* [6. Drift og støtte](#6-drift-og-støtte)
+* [7. Henvendelser](#8-henvendelser)
+
+---
+
+# 1. Funksjonelle Krav
+
+Backend for [sokos-frivillig-skattetrekk-frontend](https://github.com/navikt/sokos-frivillig-skattetrekk-frontend).
+Integrerer mot [sokos-oppdrag-proxy](https://github.com/navikt/sokos-oppdrag-proxy) som er inngang til utbetaling hvor forvaltning av frivillig skattetrekk skjer.
+
+# 2. Utviklingsmiljø
 
 ### Forutsetninger
-- Node.js 18+ og npm
-- Java 21+ og Maven 3.8+
 
-### Arkitektur
-- **Frontend**: React 19 + TypeScript + Vite med aksel designsystem komponenter
-- **Backend**: Spring Boot (Kotlin) med Maven
+* Java 21
+* [Gradle >= 9](https://gradle.org/)
 
-### Backend API-endepunkter
-- `GET /api/skattetrekk` - Hent skattetrekk og ytelsesinfo
-- `POST /api/skattetrekk` - Registrer/endre/stopp frivillig skattetrekk
+### Bygge prosjekt
 
-### Miljøvariabler
-- `VITE_FRIVILLIG_SKATTETREKK_INFO_URL` - URL til informasjonsside
+`./gradlew build shadowJar`
 
-### Frontend-utvikling
+### Lokal utvikling
 
-```bash
-cd skattetrekk-frontend
+Kjør `./setupLocalEnvironment.sh` for å sette opp prosjektet lokalt.
 
-# Installer avhengigheter og start med mock backend
-npm install
-npm run dev-local
+# 3. Programvarearkitektur
 
-npm run dev                 # Frontend uten mock
-npm run build:production    # Produksjonsbygg
-npm run lint               # Linting
+[System diagram](./dokumentasjon/system-diagram.md)
+
+# 4. Deployment
+
+Distribusjon av tjenesten er gjort med bruk av Github Actions.
+[sokos-oppdrag CI / CD](https://github.com/navikt/sokos-frivillig-skattetrekk-backend/actions)
+
+Push/merge til main branch direkte er ikke mulig. Det må opprettes PR og godkjennes før merge til main branch.
+Når PR er merged til main branch vil Github Actions bygge og deploye til dev-fss og prod-fss.
+Har også mulighet for å deploye manuelt til testmiljø ved å deploye PR.
+
+
+# 7. Autentisering
+
+Applikasjonen bruker [AzureAD](https://docs.nais.io/security/auth/azure-ad/) autentisering
+
+# 6. Drift og støtte
+
+### Logging
+
+https://logs.adeo.no.
+
+Feilmeldinger og infomeldinger som ikke innheholder sensitive data logges til [Grafana Loki](https://docs.nais.io/observability/logging/#grafana-loki).  
+Sensitive meldinger logges til [Team Logs](https://doc.nais.io/observability/logging/how-to/team-logs/).
+
+### Kubectl
+
+For dev-gcp:
+
+```shell script
+kubectl config use-context dev-fss
+kubectl get pods -n okonomi | grep sokos-ktor-template
+kubectl logs -f sokos-ktor-template-<POD-ID> --namespace okonomi -c sokos-ktor-template
 ```
 
-### Backend-utvikling
+For prod-gcp:
 
-```bash
-cd skattetrekk-backend
-
-mvn clean install    # Bygg
-mvn test             # Tester  
-mvn spring-boot:run  # Start
+```shell script
+kubectl config use-context prod-fss
+kubectl get pods -n okonomi | grep sokos-ktor-template
+kubectl logs -f sokos-ktor-template-<POD-ID> --namespace okonomi -c sokos-ktor-template
 ```
 
-## Mock Server
+### Alarmer
 
-For frontend-utvikling uten å kjøre backend, brukes en mock server som simulerer API-endepunktene.
+Applikasjonen bruker [Grafana Alerting](https://grafana.nav.cloud.nais.io/alerting/) for overvåkning og varsling.
 
-### Konfigurasjon
-Mock serveren kjører på port 3000 og serverer testdata fra JSON-filer:
+Alarmene overvåker metrics som:
 
-- **Server**: `mock/server.cjs` - Express server med CORS-konfigurasjon
-- **Testdata**: `mock/skattetrekkInitResponse.json` - Eksempeldata for API-responser
-- **Starter automatisk**: Med `npm run dev-local` startes både frontend og mock samtidig
+- HTTP-feilrater
+- JVM-metrikker
 
-### Tilpasse testdata
-Rediger `mock/skattetrekkInitResponse.json` for å teste ulike scenarier:
+### Grafana
 
-```json
-{
-  "data": {
-    "tilleggstrekk": null,
-    "fremtidigTilleggstrekk": {
-      "sats": 50,
-      "satsType": "PROSENT",
-      "gyldigFraOgMed": "2023-10-08T00:00:00Z"
-    },
-    "skattetrekk": {"tabellNr": null, "prosentsats": 50},
-    "maxBelop": 5000,
-    "maxProsent": 50
-  },
-  "messages": []
-}
-```
+- [appavn](url)
 
+---
 
-# Skattetrekk-backend
-## API Documentation
-Dev: TODO
-## How to run locally
-Set the following env variables:
-* AZURE_APP_CLIENT_SECRET
-* TOKEN_X_PRIVATE_JWK
+# 7. Henvendelser og tilgang
 
-URL: http://localhost:8080/api/..
-
-### Tokens for test
-#### TokenX (Innbygger)
-https://tokenx-token-generator.intern.dev.nav.no/api/obo?aud=dev-fss:okonomi:skattetrekk-backend-q2
+Spørsmål knyttet til koden eller prosjektet kan stilles som issues her på Github.
+Interne henvendelser kan sendes via Slack i kanalen [#utbetaling](https://nav-it.slack.com/archives/CKZADNFBP)

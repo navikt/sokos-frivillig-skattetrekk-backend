@@ -13,7 +13,6 @@ import no.nav.sokos.frivillig.skattetrekk.backend.client.trekk.api.OppdaterAndre
 import no.nav.sokos.frivillig.skattetrekk.backend.client.trekk.api.OpphorAndreTrekkRequest
 import no.nav.sokos.frivillig.skattetrekk.backend.client.trekk.api.OpprettAndreTrekkRequest
 import no.nav.sokos.frivillig.skattetrekk.backend.client.trekk.api.OpprettAndreTrekkResponse
-import no.nav.sokos.frivillig.skattetrekk.backend.client.trekk.api.TrekkInfo
 import no.nav.sokos.frivillig.skattetrekk.backend.config.AppId
 import no.nav.sokos.frivillig.skattetrekk.backend.controller.ClientException
 import no.nav.sokos.frivillig.skattetrekk.backend.controller.OppdragUtilgjengeligException
