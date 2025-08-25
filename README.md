@@ -8,7 +8,7 @@
 * [4. Deployment](#4-deployment)
 * [5. Autentisering](#5-autentisering)
 * [6. Drift og støtte](#6-drift-og-støtte)
-* [7. Henvendelser](#8-henvendelser)
+* [7. Henvendelser](#7-henvendelser)
 
 ---
 
@@ -46,7 +46,7 @@ Når PR er merged til main branch vil Github Actions bygge og deploye til dev-fs
 Har også mulighet for å deploye manuelt til testmiljø ved å deploye PR.
 
 
-# 7. Autentisering
+# 5. Autentisering
 
 Applikasjonen bruker [AzureAD](https://docs.nais.io/security/auth/azure-ad/) autentisering
 
@@ -92,7 +92,7 @@ Alarmene overvåker metrics som:
 
 ---
 
-# 7. Henvendelser og tilgang
+# 7. Henvendelser
 
 Spørsmål knyttet til koden eller prosjektet kan stilles som issues her på Github.
 Interne henvendelser kan sendes via Slack i kanalen [#utbetaling](https://nav-it.slack.com/archives/CKZADNFBP)
