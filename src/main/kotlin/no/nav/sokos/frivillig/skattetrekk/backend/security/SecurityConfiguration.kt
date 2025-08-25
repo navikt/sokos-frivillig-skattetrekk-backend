@@ -25,8 +25,10 @@ import no.nav.sokos.frivillig.skattetrekk.backend.security.authenticationManager
 @Configuration
 @EnableWebSecurity
 class SecurityConfiguration(
-    @Value("\${oauth2.tokenX.issuer}") private val tokenXIssuer: String,
-    @Value("\${oauth2.tokenX.jsonWebKeyUri}") private val tokenXJsonWebKeyUri: String,
+    @Value("\${oauth2.tokenX.issuer}")
+    private val tokenXIssuer: String,
+    @Value("\${oauth2.tokenX.jsonWebKeyUri}")
+    private val tokenXJsonWebKeyUri: String,
 ) {
     @Bean
     @Throws(Exception::class)

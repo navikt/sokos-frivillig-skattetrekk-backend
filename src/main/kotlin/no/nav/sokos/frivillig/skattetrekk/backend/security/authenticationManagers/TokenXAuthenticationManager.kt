@@ -14,7 +14,8 @@ import no.nav.sokos.frivillig.skattetrekk.backend.security.OAuthTypes
 
 @Component("tokenXAuthManager")
 class TokenXAuthenticationManager(
-    @Value("\${oauth2.tokenX.issuer}") private val tokenXIssuer: String,
+    @Value("\${oauth2.tokenX.issuer}")
+    private val tokenXIssuer: String,
     @Qualifier("jwtDecoderTokenX") jwtDecoderTokenX: NimbusJwtDecoder,
 ) : AuthenticationManager {
     val authProvider =

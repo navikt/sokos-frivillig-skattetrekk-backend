@@ -9,11 +9,12 @@ import org.springframework.security.oauth2.jwt.Jwt
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken
 import org.springframework.stereotype.Service
 
-import no.nav.sokos.frivillig.skattetrekk.backend.configuration.AppId
+import no.nav.sokos.frivillig.skattetrekk.backend.config.AppId
 
 @Service
 class TokenService(
-    @Value("\${oauth2.tokenX.issuer}") private val tokenXIssuer: String,
+    @Value("\${oauth2.tokenX.issuer}")
+    private val tokenXIssuer: String,
     private val tokenXService: TokenXService,
     private val azureAdService: AzureAdService,
 ) {

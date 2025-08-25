@@ -1,4 +1,4 @@
-package no.nav.sokos.frivillig.skattetrekk.backend.endpoint
+package no.nav.sokos.frivillig.skattetrekk.backend.controller
 
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.ExceptionHandler
@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
 
-import no.nav.sokos.frivillig.skattetrekk.backend.endpoint.api.BehandleRequest
-import no.nav.sokos.frivillig.skattetrekk.backend.endpoint.api.FrivilligSkattetrekkInitResponse
+import no.nav.sokos.frivillig.skattetrekk.backend.controller.models.BehandleRequest
+import no.nav.sokos.frivillig.skattetrekk.backend.controller.models.FrivilligSkattetrekkInitResponse
 import no.nav.sokos.frivillig.skattetrekk.backend.security.SecurityContextUtil
 import no.nav.sokos.frivillig.skattetrekk.backend.service.BehandleTrekkService
 import no.nav.sokos.frivillig.skattetrekk.backend.service.HentSkattOgTrekkService

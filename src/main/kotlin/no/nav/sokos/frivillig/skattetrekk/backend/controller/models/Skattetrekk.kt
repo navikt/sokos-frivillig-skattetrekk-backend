@@ -1,4 +1,4 @@
-package no.nav.sokos.frivillig.skattetrekk.backend.endpoint.api
+package no.nav.sokos.frivillig.skattetrekk.backend.controller.models
 
 import java.time.LocalDate
 
@@ -26,11 +26,6 @@ data class FremtidigTrekkDto(
     val sats: Int?,
     val satsType: SatsType?,
     val gyldigFraOgMed: LocalDate? = null,
-)
-
-data class Skattetrekk(
-    val sats: Double?,
-    val satsType: SatsType?,
 )
 
 data class ForenkletSkattetrekkDto(
