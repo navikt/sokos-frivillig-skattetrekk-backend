@@ -65,16 +65,16 @@ For dev-gcp:
 
 ```shell script
 kubectl config use-context dev-fss
-kubectl get pods -n okonomi | grep sokos-ktor-template
-kubectl logs -f sokos-ktor-template-<POD-ID> --namespace okonomi -c sokos-ktor-template
+kubectl get pods -n okonomi | grep sokos-frivillig-skattetrekk-backend
+kubectl logs -f sokos-frivillig-skattetrekk-backend-<POD-ID> --namespace okonomi -c sokos-frivillig-skattetrekk-backend
 ```
 
 For prod-gcp:
 
 ```shell script
 kubectl config use-context prod-fss
-kubectl get pods -n okonomi | grep sokos-ktor-template
-kubectl logs -f sokos-ktor-template-<POD-ID> --namespace okonomi -c sokos-ktor-template
+kubectl get pods -n okonomi | grep sokos-frivillig-skattetrekk-backend
+kubectl logs -f sokos-frivillig-skattetrekk-backend-<POD-ID> --namespace okonomi -c sokos-frivillig-skattetrekk-backend
 ```
 
 ### Alarmer
