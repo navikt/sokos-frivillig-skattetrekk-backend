@@ -16,6 +16,7 @@ jobs:
     uses: navikt/mob-gha-workflows/.github/workflows/gradle-build-push-image.yaml@main
     secrets: inherit
     with:
+      gradle-task: './gradlew --configuration-cache build'
       image-tag: snapshot
 
   deploy-dev-q2:
