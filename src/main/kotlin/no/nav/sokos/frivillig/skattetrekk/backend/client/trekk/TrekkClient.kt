@@ -6,6 +6,9 @@ import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.WebClientResponseException
 
+import no.nav.sokos.frivillig.skattetrekk.backend.client.trekk.api.DebitorFilter
+import no.nav.sokos.frivillig.skattetrekk.backend.client.trekk.api.DebitorSok
+import no.nav.sokos.frivillig.skattetrekk.backend.client.trekk.api.FinnTrekkListeRequest
 import no.nav.sokos.frivillig.skattetrekk.backend.client.trekk.api.FinnTrekkListeResponse
 import no.nav.sokos.frivillig.skattetrekk.backend.client.trekk.api.HentSkattOgTrekkRequest
 import no.nav.sokos.frivillig.skattetrekk.backend.client.trekk.api.HentSkattOgTrekkResponse
@@ -35,12 +38,12 @@ class TrekkClient(
         trekkType: TrekkTypeCode,
     ): List<no.nav.sokos.frivillig.skattetrekk.backend.client.trekk.api.TrekkInfo> {
         val request =
-            _root_ide_package_.no.nav.sokos.frivillig.skattetrekk.backend.client.trekk.api.FinnTrekkListeRequest(
+            FinnTrekkListeRequest(
                 debitorSok =
-                    _root_ide_package_.no.nav.sokos.frivillig.skattetrekk.backend.client.trekk.api.DebitorSok(
+                    DebitorSok(
                         debitorOffnr = pid,
                         filter =
-                            _root_ide_package_.no.nav.sokos.frivillig.skattetrekk.backend.client.trekk.api.DebitorFilter(
+                            DebitorFilter(
                                 trekktypeKode = trekkType.name,
                             ),
                     ),
