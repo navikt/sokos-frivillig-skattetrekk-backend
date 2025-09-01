@@ -19,7 +19,7 @@ repositories {
     mavenCentral()
 }
 
-val jacksonVersion = "2.19.2"
+val jacksonVersion = "2.20.0"
 val logstashVersion = "8.1"
 val logbackVersion = "1.5.18"
 val micrometerVersion = "1.15.3"
