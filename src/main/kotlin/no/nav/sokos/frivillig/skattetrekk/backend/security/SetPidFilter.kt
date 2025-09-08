@@ -13,7 +13,6 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 import org.springframework.stereotype.Component
 import org.springframework.web.filter.OncePerRequestFilter
 
-import no.nav.sokos.frivillig.skattetrekk.backend.controller.LogInLevelTooLowException
 import no.nav.sokos.frivillig.skattetrekk.backend.controller.UnauthorizedException
 
 @Profile("!test")
@@ -30,7 +29,6 @@ class SetPidFilter(
         if (authHeader != null) {
             try {
                 if (tokenService.determineTokenType() != TokenService.TokenType.TOKEN_X) throw UnauthorizedException()
-                if (!tokenService.isLoginLevelHigh()) throw LogInLevelTooLowException()
 
                 val requestingPid = tokenService.determineRequestingPid()
                 (SecurityContextHolder.getContext().authentication as JwtAuthenticationToken).details =
@@ -41,7 +39,6 @@ class SetPidFilter(
                 val path = request.requestURI
                 when (e) {
                     is UnauthorizedException -> forbiddenResponse(response, ErrorCode.UNAUTHORIZED, path)
-                    is LogInLevelTooLowException -> forbiddenResponse(response, ErrorCode.LOGIN_LEVEL_TOO_LOW, path)
                     else -> throw e
                 }
             }
