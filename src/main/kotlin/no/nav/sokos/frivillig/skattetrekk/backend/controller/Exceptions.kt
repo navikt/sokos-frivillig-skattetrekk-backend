@@ -25,6 +25,4 @@ class OppdragUtilgjengeligException : RuntimeException()
 
 class TekniskFeilFraOppdragException : RuntimeException()
 
-class LogInLevelTooLowException : RuntimeException()
-
 class UnauthorizedException : RuntimeException()

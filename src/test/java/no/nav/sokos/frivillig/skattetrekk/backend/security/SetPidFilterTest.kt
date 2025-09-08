@@ -45,7 +45,7 @@ class SetPidFilterTest {
     }
 
     @Test
-    fun `should resolve to FORBIDDEN with LOGIN_LEVEL_TOO_LOW when user is logged in with insufficient login level`() {
+    fun `should resolve to FORBIDDEN with LOGIN_LEVEL_TOO_LOW when user is logged in`() {
         val pid = "00000000001"
         val path = "/random/endpoint"
 
@@ -58,7 +58,6 @@ class SetPidFilterTest {
         `when`(request.requestURI).thenReturn(path)
         `when`(tokenService.determineTokenType()).thenReturn(TokenService.TokenType.TOKEN_X)
         `when`(tokenService.determineRequestingPid()).thenReturn(pid)
-        `when`(tokenService.isLoginLevelHigh()).thenReturn(false)
 
         filter.doFilter(request, response, filterChain)
 
@@ -71,7 +70,7 @@ class SetPidFilterTest {
     }
 
     @Test
-    fun `should set AuthenticatedUserDetails when user has diskresjon and is logged in with sufficient login level`() {
+    fun `should set AuthenticatedUserDetails when user has diskresjon`() {
         val pid = "00000000001"
 
         val request = mock(HttpServletRequest::class.java)
@@ -82,7 +81,6 @@ class SetPidFilterTest {
         `when`(request.getHeader("pid")).thenReturn(pid)
         `when`(tokenService.determineTokenType()).thenReturn(TokenService.TokenType.TOKEN_X)
         `when`(tokenService.determineRequestingPid()).thenReturn(pid)
-        `when`(tokenService.isLoginLevelHigh()).thenReturn(true)
 
         filter.doFilter(request, response, filterChain)
 

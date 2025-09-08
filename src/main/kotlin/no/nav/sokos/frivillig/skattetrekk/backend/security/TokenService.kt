@@ -44,8 +44,6 @@ class TokenService(
             }
         }
 
-    fun isLoginLevelHigh(): Boolean = getInnloggingstype() == Innloggingstype.LEVEL4
-
     fun determineTokenType(): TokenType {
         SecurityContextHolder.getContext().authentication.let {
             val token = (it as JwtAuthenticationToken).token
