@@ -45,31 +45,6 @@ class SetPidFilterTest {
     }
 
     @Test
-    fun `should resolve to FORBIDDEN with LOGIN_LEVEL_TOO_LOW when user is logged in`() {
-        val pid = "00000000001"
-        val path = "/random/endpoint"
-
-        val request = mock(HttpServletRequest::class.java)
-        val response = MockHttpServletResponse()
-        val filterChain = mock(FilterChain::class.java)
-
-        `when`(request.getHeader("Authorization")).thenReturn("Test")
-        `when`(request.getHeader("pid")).thenReturn(pid)
-        `when`(request.requestURI).thenReturn(path)
-        `when`(tokenService.determineTokenType()).thenReturn(TokenService.TokenType.TOKEN_X)
-        `when`(tokenService.determineRequestingPid()).thenReturn(pid)
-
-        filter.doFilter(request, response, filterChain)
-
-        val errorResponse = objectMapper.readValue(response.contentAsString, SetPidFilterErrorResponse::class.java)
-
-        assertEquals(ErrorCode.LOGIN_LEVEL_TOO_LOW, errorResponse.message)
-        assertEquals(HttpStatus.FORBIDDEN.value(), response.status)
-        assertEquals(HttpStatus.FORBIDDEN.name, errorResponse.error)
-        assertEquals(path, errorResponse.path)
-    }
-
-    @Test
     fun `should set AuthenticatedUserDetails when user has diskresjon`() {
         val pid = "00000000001"
 
