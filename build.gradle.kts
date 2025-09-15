@@ -5,8 +5,8 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.springframework.boot.gradle.tasks.bundling.BootJar
 
 plugins {
-    kotlin("jvm") version "2.2.10"
-    kotlin("plugin.spring") version "2.2.10"
+    kotlin("jvm") version "2.2.20"
+    kotlin("plugin.spring") version "2.2.20"
     id("org.springframework.boot") version "3.5.5"
     id("io.spring.dependency-management") version "1.1.7"
     id("org.jlleitschuh.gradle.ktlint") version "13.1.0"
@@ -19,10 +19,10 @@ repositories {
     mavenCentral()
 }
 
-val jacksonVersion = "2.19.2"
+val jacksonVersion = "2.20.0"
 val logstashVersion = "8.1"
 val logbackVersion = "1.5.18"
-val micrometerVersion = "1.15.3"
+val micrometerVersion = "1.15.4"
 val kotlinLoggingVersion = "3.0.5"
 val janionVersion = "3.1.12"
 val mockkVersion = "1.14.5"
