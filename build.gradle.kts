@@ -2,7 +2,6 @@ import org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
 import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.gradle.kotlin.dsl.withType
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-import org.springframework.boot.gradle.tasks.bundling.BootJar
 
 plugins {
     kotlin("jvm") version "2.2.10"
@@ -11,6 +10,8 @@ plugins {
     id("io.spring.dependency-management") version "1.1.7"
     id("org.jlleitschuh.gradle.ktlint") version "13.1.0"
     id("org.jetbrains.kotlinx.kover") version "0.9.1"
+
+    application
 }
 
 group = "no.nav.frivillig.skattetrekk"
@@ -67,6 +68,10 @@ configurations.ktlint {
     resolutionStrategy.force("ch.qos.logback:logback-classic:$logbackVersion")
 }
 
+application {
+    mainClass.set("no.nav.sokos.frivillig.skattetrekk.backend.ApplicationKt")
+}
+
 sourceSets {
     main {
         java {
@@ -94,10 +99,6 @@ tasks {
         dependsOn("ktlintFormat")
     }
 
-    withType<BootJar>().configureEach {
-        finalizedBy(koverHtmlReport)
-    }
-
     withType<Test>().configureEach {
         useJUnitPlatform()
         testLogging {
@@ -107,14 +108,12 @@ tasks {
             events = setOf(TestLogEvent.PASSED, TestLogEvent.SKIPPED, TestLogEvent.FAILED)
         }
         reports.forEach { it.required.set(false) }
+
+        finalizedBy(koverHtmlReport)
     }
 
     withType<Wrapper> {
-        gradleVersion = "9.0.0"
-    }
-
-    named("jar") {
-        enabled = false
+        gradleVersion = "9.1.0"
     }
 
     named("build") {
