@@ -150,7 +150,7 @@ class BehandleTrekkService(
                     ansvarligEnhetId = andreTrekkResponse.ansvarligEnhetId!!,
                     belopSaldotrekk = andreTrekkResponse.belopSaldotrekk,
                     datoOppfolging = andreTrekkResponse.datoOppfolging,
-                    gyldigTom = andreTrekkResponse.prioritetFom,
+                    gyldigTom = andreTrekkResponse.gyldigTom,
                     debitorOffnr = andreTrekkResponse.debitor?.id!!,
                     trekkalternativKode = trekkalternativKode.name,
                     trekktypeKode = andreTrekkResponse.trekktype?.kode!!,
@@ -176,17 +176,6 @@ class BehandleTrekkService(
         pid: String,
         trekkvedtakId: Long,
     ) {
-        logger.info("Henter skattetrekk")
-        val sorterteSatsperioder =
-            trekkClient
-                .hentSkattOgTrekk(pid, trekkvedtakId)
-                ?.andreTrekk
-                ?.satsperiodeListe
-                ?.sortedBy { it.fom } ?: emptyList()
-
-        val lopendeSatsperioder = sorterteSatsperioder.filter { isLopende(it) }
-        val fremtidigeSatsperioder = sorterteSatsperioder.filter { isFremtidig(LocalDate.now(), it) }
-
         val opphorDato = LocalDate.now().plusMonths(1L).withDayOfMonth(1)
         // Opphør løpende trekk, om det finnes
         logger.info("Opphører løpende trekk")
