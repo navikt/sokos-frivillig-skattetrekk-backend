@@ -32,6 +32,8 @@ Integrerer mot [sokos-oppdrag-proxy](https://github.com/navikt/sokos-oppdrag-pro
 
 Kjør `./setupLocalEnvironment.sh` for å sette opp prosjektet lokalt.
 
+[Her kan du lage en token for en bruker](https://tokenx-token-generator.intern.dev.nav.no/api/obo?aud=dev-fss:okonomi:sokos-frivillig-skattetrekk-backend-q2)
+
 # 3. Programvarearkitektur
 
 [System diagram](./dokumentasjon/system-diagram.md)
