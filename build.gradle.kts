@@ -22,11 +22,11 @@ repositories {
 
 val jacksonVersion = "2.20.0"
 val logstashVersion = "8.1"
-val logbackVersion = "1.5.18"
+val logbackVersion = "1.5.19"
 val micrometerVersion = "1.15.4"
 val kotlinLoggingVersion = "3.0.5"
 val janionVersion = "3.1.12"
-val mockkVersion = "1.14.5"
+val mockkVersion = "1.14.6"
 
 dependencies {
 
