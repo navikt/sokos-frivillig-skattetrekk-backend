@@ -9,7 +9,7 @@ plugins {
     id("org.springframework.boot") version "3.5.6"
     id("io.spring.dependency-management") version "1.1.7"
     id("org.jlleitschuh.gradle.ktlint") version "13.1.0"
-    id("org.jetbrains.kotlinx.kover") version "0.9.2"
+    id("org.jetbrains.kotlinx.kover") version "0.9.3"
 
     application
 }
@@ -22,8 +22,8 @@ repositories {
 
 val jacksonVersion = "2.20.0"
 val logstashVersion = "8.1"
-val logbackVersion = "1.5.19"
-val micrometerVersion = "1.15.4"
+val logbackVersion = "1.5.20"
+val micrometerVersion = "1.15.5"
 val kotlinLoggingVersion = "3.0.5"
 val janionVersion = "3.1.12"
 val mockkVersion = "1.14.6"
