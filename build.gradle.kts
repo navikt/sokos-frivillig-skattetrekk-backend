@@ -20,10 +20,10 @@ repositories {
     mavenCentral()
 }
 
-val jacksonVersion = "2.20.0"
+val jacksonVersion = "2.20.1"
 val logstashVersion = "9.0"
 val logbackVersion = "1.5.20"
-val micrometerVersion = "1.15.5"
+val micrometerVersion = "1.16.0"
 val kotlinLoggingVersion = "3.0.5"
 val janionVersion = "3.1.12"
 val mockkVersion = "1.14.6"
