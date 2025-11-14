@@ -571,7 +571,6 @@ class BehandleTrekkServiceTest {
                 kreditor = null,
                 kreditorAvdelingsnr = null,
                 kreditorRef = null,
-                kreditorKid = null,
                 tssEksternId = null,
                 prioritet = null,
                 prioritetFom = null,

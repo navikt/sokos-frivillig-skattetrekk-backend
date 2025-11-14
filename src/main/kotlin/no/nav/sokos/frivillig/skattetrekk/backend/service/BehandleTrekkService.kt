@@ -155,7 +155,6 @@ class BehandleTrekkService(
                     trekkalternativKode = trekkalternativKode.name,
                     trekktypeKode = andreTrekkResponse.trekktype?.kode!!,
                     tssEksternId = andreTrekkResponse.tssEksternId,
-                    kreditorKid = andreTrekkResponse.kreditor?.id,
                     kreditorRef = andreTrekkResponse.kreditorRef,
                     prioritetFom = andreTrekkResponse.prioritetFom,
                     satsperiodeListe = oppdaterteSatsperioder,
