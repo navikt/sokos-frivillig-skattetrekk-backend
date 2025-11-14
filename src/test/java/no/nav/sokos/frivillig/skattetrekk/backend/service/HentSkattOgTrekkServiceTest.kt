@@ -143,7 +143,6 @@ class HentSkattOgTrekkServiceTest {
                 kreditor = null,
                 kreditorAvdelingsnr = null,
                 kreditorRef = null,
-                kreditorKid = null,
                 tssEksternId = null,
                 trekkalternativ = null,
                 prioritet = null,
