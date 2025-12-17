@@ -21,7 +21,7 @@ Integrerer mot [sokos-oppdrag-proxy](https://github.com/navikt/sokos-oppdrag-pro
 
 ### Forutsetninger
 
-* Java 21
+* Java 25
 * [Gradle >= 9](https://gradle.org/)
 
 ### Bygge prosjekt
