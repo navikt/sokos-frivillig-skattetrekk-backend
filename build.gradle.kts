@@ -44,6 +44,7 @@ dependencies {
     implementation("io.github.microutils:kotlin-logging-jvm:$kotlinLoggingVersion")
     runtimeOnly("org.codehaus.janino:janino:$janionVersion")
     runtimeOnly("ch.qos.logback:logback-classic:$logbackVersion")
+    runtimeOnly("ch.qos.logback:logback-core:$logbackVersion")
     runtimeOnly("net.logstash.logback:logstash-logback-encoder:$logstashVersion")
 
     // Micrometer / Prometheus
