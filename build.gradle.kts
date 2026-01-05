@@ -21,7 +21,7 @@ repositories {
 }
 
 val logstashVersion = "9.0"
-val logbackVersion = "1.5.22"
+val logbackVersion = "1.5.23"
 val micrometerVersion = "1.16.1"
 val kotlinLoggingVersion = "3.0.5"
 val janionVersion = "3.1.12"
@@ -44,6 +44,7 @@ dependencies {
     implementation("io.github.microutils:kotlin-logging-jvm:$kotlinLoggingVersion")
     runtimeOnly("org.codehaus.janino:janino:$janionVersion")
     runtimeOnly("ch.qos.logback:logback-classic:$logbackVersion")
+    runtimeOnly("ch.qos.logback:logback-core:$logbackVersion")
     runtimeOnly("net.logstash.logback:logstash-logback-encoder:$logstashVersion")
 
     // Micrometer / Prometheus
