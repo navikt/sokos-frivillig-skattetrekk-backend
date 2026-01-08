@@ -203,8 +203,10 @@ class BehandleTrekkService(
         trekkalternativKode: String,
         brukersNavEnhet: String,
         trekkGjelderFraOgMed: LocalDate,
-    ): AndreTrekkRequest =
-        AndreTrekkRequest(
+    ): AndreTrekkRequest {
+        val sisteDagDetteAret = LocalDate.of(trekkGjelderFraOgMed.year, 12, 31)
+        return AndreTrekkRequest(
+            gyldigTom = sisteDagDetteAret,
             ansvarligEnhetId = brukersNavEnhet,
             debitorOffnr = pid,
             trekktypeKode = TrekkTypeCode.FRIS.name,
@@ -219,6 +221,7 @@ class BehandleTrekkService(
                 ),
             satsperiodeListe = listOf(opprettStatsperiode(tilleggstrekk, trekkGjelderFraOgMed)),
         )
+    }
 
     fun opprettStatsperiode(
         tilleggstrekk: Int,
