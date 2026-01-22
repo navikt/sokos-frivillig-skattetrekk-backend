@@ -12,5 +12,5 @@ data class DebitorFilter(
     @JsonProperty("fagomradeKode")
     val fagomradeKode: String? = null,
     @JsonProperty("visAvsluttede")
-    val visAvsluttede: Boolean? = null,
+    val visAvsluttede: Boolean,
 )
