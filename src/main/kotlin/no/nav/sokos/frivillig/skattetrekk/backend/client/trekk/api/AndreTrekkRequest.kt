@@ -25,8 +25,6 @@ data class AndreTrekkRequest(
     val trekktypeKode: String,
     @JsonProperty("tssEksternId")
     val tssEksternId: String? = null,
-    @JsonProperty("kreditorKid")
-    val kreditorKid: String? = null,
     @JsonProperty("kreditorRef")
     val kreditorRef: String? = null,
     @JsonFormat(pattern = "yyyy-MM-dd", timezone = "Europe/Oslo")

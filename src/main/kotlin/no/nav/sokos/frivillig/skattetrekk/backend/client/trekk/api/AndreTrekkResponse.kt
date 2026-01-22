@@ -13,7 +13,6 @@ data class AndreTrekkResponse(
     val kreditor: Bruker?,
     val kreditorAvdelingsnr: String?,
     val kreditorRef: String?,
-    val kreditorKid: String?,
     val tssEksternId: String?,
     val prioritet: String?,
     @JsonFormat(pattern = "yyyy-MM-dd", timezone = "Europe/Oslo")

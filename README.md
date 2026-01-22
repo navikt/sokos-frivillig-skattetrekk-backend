@@ -1,7 +1,5 @@
 # sokos-frivillig-skattetrekk-backend
 
-# Innholdsoversikt
-
 * [1. Funksjonelle krav](#1-funksjonelle-krav)
 * [2. Utviklingsmiljø](#2-utviklingsmiljø)
 * [3. Programvarearkitektur](#3-programvarearkitektur)
@@ -21,12 +19,12 @@ Integrerer mot [sokos-oppdrag-proxy](https://github.com/navikt/sokos-oppdrag-pro
 
 ### Forutsetninger
 
-* Java 21
-* [Gradle >= 9](https://gradle.org/)
+* Java 25
+* [Gradle](https://gradle.org/)
 
 ### Bygge prosjekt
 
-`./gradlew build shadowJar`
+`./gradlew build installDist`
 
 ### Lokal utvikling
 
@@ -34,7 +32,7 @@ Kjør `./setupLocalEnvironment.sh` for å sette opp prosjektet lokalt.
 
 # 3. Programvarearkitektur
 
-[System diagram](./dokumentasjon/system-diagram.md)
+TODO: Legg til en enkel beskrivelse av programvarearkitektur her.
 
 # 4. Deployment
 
@@ -80,11 +78,17 @@ kubectl logs -f sokos-frivillig-skattetrekk-backend-<POD-ID> --namespace okonomi
 ### Alarmer
 
 Applikasjonen bruker [Grafana Alerting](https://grafana.nav.cloud.nais.io/alerting/) for overvåkning og varsling.
+Dette er konfigurert via NAIS sin [alerting-integrasjon](https://doc.nais.io/observability/alerts).
 
 Alarmene overvåker metrics som:
 
 - HTTP-feilrater
 - JVM-metrikker
+
+Varsler blir sendt til følgende Slack-kanaler:
+
+- Dev-miljø: [#team-mob-alerts-dev](https://nav-it.slack.com/archives/C042SF2FEQM)
+- Prod-miljø: [#team-mob-alerts-prod](https://nav-it.slack.com/archives/C042ESY71GX)
 
 ### Grafana
 

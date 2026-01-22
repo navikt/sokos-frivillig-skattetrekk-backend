@@ -25,6 +25,14 @@ class TokenService(
         TOKEN_X,
     }
 
+    private fun getAuthentication(): JwtAuthenticationToken {
+        val auth =
+            SecurityContextHolder.getContext().authentication
+                ?: throw IllegalStateException("No JWT token found.")
+
+        return auth as? JwtAuthenticationToken ?: throw IllegalStateException("JWT token not found.")
+    }
+
     fun getEgressToken(
         scope: String,
         audience: String? = null,
@@ -56,11 +64,11 @@ class TokenService(
     }
 
     fun determineRequestingPid(): String {
-        SecurityContextHolder.getContext().authentication.let {
-            if (determineTokenType() == TokenType.TOKEN_X) {
-                return it.name
-            }
-            return ""
+        val auth = getAuthentication()
+        return if (determineTokenType() == TokenType.TOKEN_X) {
+            auth.name
+        } else {
+            ""
         }
     }
 

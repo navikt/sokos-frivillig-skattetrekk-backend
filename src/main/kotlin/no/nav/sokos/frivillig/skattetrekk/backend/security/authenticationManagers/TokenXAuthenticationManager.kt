@@ -27,7 +27,9 @@ class TokenXAuthenticationManager(
             )
         }
 
-    override fun authenticate(authentication: Authentication): Authentication = authProvider.authenticate(authentication)
+    override fun authenticate(authentication: Authentication): Authentication =
+        authProvider.authenticate(authentication)
+            ?: throw IllegalStateException("TokenX authentication failed and returned null")
 
     private fun createJwtConverter() =
         JwtGrantedAuthoritiesConverter().apply {

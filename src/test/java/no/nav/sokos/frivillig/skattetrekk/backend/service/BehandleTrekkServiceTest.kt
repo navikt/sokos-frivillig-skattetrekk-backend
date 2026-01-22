@@ -2,6 +2,7 @@ package no.nav.sokos.frivillig.skattetrekk.backend.service
 
 import java.math.BigDecimal
 import java.time.LocalDate
+import java.time.temporal.TemporalAdjusters
 
 import io.mockk.every
 import io.mockk.mockk
@@ -40,7 +41,7 @@ class BehandleTrekkServiceTest {
                     sats = BigDecimal.valueOf(20),
                     ansvarligEnhetId = "NAV Enhet",
                     fom = LocalDate.parse("2025-05-01"),
-                    tom = LocalDate.parse("2025-12-31"),
+                    tom = LocalDate.now().plusMonths(3).with(TemporalAdjusters.lastDayOfMonth()),
                 ),
             )
         every { trekkClientMock.opphorAndreTrekk(eq(pid), any()) } returns Unit
@@ -109,7 +110,7 @@ class BehandleTrekkServiceTest {
                     sats = BigDecimal.valueOf(20),
                     ansvarligEnhetId = "NAV Enhet",
                     fom = LocalDate.parse("2025-06-01"),
-                    tom = LocalDate.parse("2025-12-31"),
+                    tom = LocalDate.now().plusMonths(3).with(TemporalAdjusters.lastDayOfMonth()),
                 ),
             )
         every { trekkClientMock.opphorAndreTrekk(eq(pid), any()) } returns Unit
@@ -150,7 +151,7 @@ class BehandleTrekkServiceTest {
                     sats = BigDecimal.valueOf(20),
                     ansvarligEnhetId = "NAV Enhet",
                     fom = LocalDate.parse("2025-05-01"),
-                    tom = LocalDate.parse("2025-12-31"),
+                    tom = LocalDate.now().plusMonths(3).with(TemporalAdjusters.lastDayOfMonth()),
                 ),
             )
         every { trekkClientMock.opphorAndreTrekk(eq(pid), any()) } returns Unit
@@ -571,7 +572,6 @@ class BehandleTrekkServiceTest {
                 kreditor = null,
                 kreditorAvdelingsnr = null,
                 kreditorRef = null,
-                kreditorKid = null,
                 tssEksternId = null,
                 prioritet = null,
                 prioritetFom = null,
