@@ -45,6 +45,7 @@ class TrekkClient(
                         filter =
                             DebitorFilter(
                                 trekktypeKode = trekkType.name,
+                                visAvsluttede = false,
                             ),
                     ),
             )
