@@ -26,7 +26,7 @@ val micrometerVersion = "1.16.2"
 val kotlinLoggingVersion = "3.0.5"
 val janionVersion = "3.1.12"
 val mockkVersion = "1.14.7"
-val jacksonDatabindVersion = "2.20.1"
+val jacksonDatabindVersion = "2.21.0"
 
 dependencies {
 
