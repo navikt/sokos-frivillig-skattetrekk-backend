@@ -6,7 +6,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     kotlin("jvm") version "2.3.0"
     kotlin("plugin.spring") version "2.3.0"
-    id("org.springframework.boot") version "4.0.1"
+    id("org.springframework.boot") version "4.0.2"
     id("io.spring.dependency-management") version "1.1.7"
     id("org.jlleitschuh.gradle.ktlint") version "14.0.1"
     id("org.jetbrains.kotlinx.kover") version "0.9.4"
@@ -26,7 +26,7 @@ val micrometerVersion = "1.16.2"
 val kotlinLoggingVersion = "3.0.5"
 val janionVersion = "3.1.12"
 val mockkVersion = "1.14.7"
-val jacksonDatabindVersion = "2.20.1"
+val jacksonDatabindVersion = "2.21.0"
 
 dependencies {
 
