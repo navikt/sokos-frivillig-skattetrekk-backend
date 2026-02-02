@@ -1,6 +1,5 @@
 package no.nav.sokos.frivillig.skattetrekk.backend.security
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
@@ -18,10 +17,9 @@ class SetPidFilterTest {
     private val tokenService = mock(TokenService::class.java)
 
     private val filter = SetPidFilter(tokenService)
-    private val objectMapper = ObjectMapper()
 
     // Mock request objekt
-    val request = mock(HttpServletRequest::class.java)
+    val request: HttpServletRequest = mock(HttpServletRequest::class.java)
 
     @BeforeEach
     fun setupContext() {
