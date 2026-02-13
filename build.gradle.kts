@@ -20,13 +20,14 @@ repositories {
     mavenCentral()
 }
 
-val logstashVersion = "9.0"
-val logbackVersion = "1.5.27"
-val micrometerVersion = "1.16.2"
+val toolsJacksonVersion = "3.0.0"
+val jacksonAnnotationsVersion = "2.17.0"
 val kotlinLoggingVersion = "3.0.5"
 val janionVersion = "3.1.12"
+val logbackVersion = "1.5.27"
+val logstashVersion = "9.0"
+val micrometerVersion = "1.16.2"
 val mockkVersion = "1.14.9"
-val jacksonDatabindVersion = "2.21.0"
 
 dependencies {
 
@@ -37,8 +38,9 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
 
-    // Jackson
-    implementation("com.fasterxml.jackson.core:jackson-databind:$jacksonDatabindVersion")
+    implementation("tools.jackson.core:jackson-databind:$toolsJacksonVersion")
+    implementation("tools.jackson.core:jackson-core:$toolsJacksonVersion")
+    implementation("com.fasterxml.jackson.core:jackson-annotations:$jacksonAnnotationsVersion")
 
     // Logging
     implementation("io.github.microutils:kotlin-logging-jvm:$kotlinLoggingVersion")
