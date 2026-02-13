@@ -4,12 +4,12 @@ import org.gradle.kotlin.dsl.withType
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    kotlin("jvm") version "2.3.0"
-    kotlin("plugin.spring") version "2.3.0"
-    id("org.springframework.boot") version "4.0.1"
+    kotlin("jvm") version "2.3.10"
+    kotlin("plugin.spring") version "2.3.10"
+    id("org.springframework.boot") version "4.0.2"
     id("io.spring.dependency-management") version "1.1.7"
     id("org.jlleitschuh.gradle.ktlint") version "14.0.1"
-    id("org.jetbrains.kotlinx.kover") version "0.9.4"
+    id("org.jetbrains.kotlinx.kover") version "0.9.5"
 
     application
 }
@@ -20,25 +20,26 @@ repositories {
     mavenCentral()
 }
 
-val logstashVersion = "9.0"
-val logbackVersion = "1.5.25"
-val micrometerVersion = "1.16.2"
+val toolsJacksonVersion = "3.0.0"
 val kotlinLoggingVersion = "3.0.5"
 val janionVersion = "3.1.12"
-val mockkVersion = "1.14.7"
-val jacksonDatabindVersion = "2.20.1"
+val logbackVersion = "1.5.27"
+val logstashVersion = "9.0"
+val micrometerVersion = "1.16.2"
+val mockkVersion = "1.14.9"
 
 dependencies {
 
     // Spring Boot
     implementation("org.springframework.boot:spring-boot-starter-webmvc")
     implementation("org.springframework.boot:spring-boot-starter-webflux")
+    implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
 
-    // Jackson
-    implementation("com.fasterxml.jackson.core:jackson-databind:$jacksonDatabindVersion")
+    implementation("tools.jackson.core:jackson-databind:$toolsJacksonVersion")
+    implementation("tools.jackson.core:jackson-core:$toolsJacksonVersion")
 
     // Logging
     implementation("io.github.microutils:kotlin-logging-jvm:$kotlinLoggingVersion")
