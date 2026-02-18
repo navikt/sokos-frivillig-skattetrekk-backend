@@ -10,7 +10,7 @@ updates:
       kotlin-plugins:
         patterns:
           - "jvm"
-          - "plugin.serialization"
+          - "plugin.spring"
         update-types:
           - minor
           - patch
@@ -20,4 +20,4 @@ updates:
           - patch
         exclude-patterns:
           - "jvm"
-          - "plugin.serialization"
+          - "plugin.spring"
