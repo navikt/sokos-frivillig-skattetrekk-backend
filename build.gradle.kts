@@ -23,7 +23,7 @@ repositories {
 val toolsJacksonVersion = "3.0.4"
 val kotlinLoggingVersion = "3.0.5"
 val janionVersion = "3.1.12"
-val logbackVersion = "1.5.29"
+val logbackVersion = "1.5.32"
 val logstashVersion = "9.0"
 val micrometerVersion = "1.16.3"
 val mockkVersion = "1.14.9"
