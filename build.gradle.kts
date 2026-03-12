@@ -20,7 +20,8 @@ repositories {
     mavenCentral()
 }
 
-val toolsJacksonVersion = "3.0.4"
+val toolsJacksonVersion = "3.1.0"
+val jacksonAnnotationVersion = "2.21"
 val kotlinLoggingVersion = "3.0.5"
 val janionVersion = "3.1.12"
 val logbackVersion = "1.5.32"
@@ -40,6 +41,7 @@ dependencies {
 
     implementation("tools.jackson.core:jackson-databind:$toolsJacksonVersion")
     implementation("tools.jackson.core:jackson-core:$toolsJacksonVersion")
+    implementation("com.fasterxml.jackson.core:jackson-annotations:$jacksonAnnotationVersion")
 
     // Logging
     implementation("io.github.microutils:kotlin-logging-jvm:$kotlinLoggingVersion")
