@@ -61,6 +61,17 @@ dependencies {
     testImplementation("io.mockk:mockk-jvm:$mockkVersion")
 }
 
+configurations.all {
+    resolutionStrategy {
+        eachDependency {
+            if (requested.group == "tools.jackson.core" && requested.name == "jackson-core") {
+                useVersion("3.1.0")
+                because("jackson-core has Nesting Depth Constraint Bypass in `UTF8DataInputJsonParser` potentially allowing Resource Exhaustion. Affected version >= 3.0.0, < 3.1.0")
+            }
+        }
+    }
+}
+
 application {
     mainClass.set("no.nav.sokos.frivillig.skattetrekk.backend.ApplicationKt")
 }
