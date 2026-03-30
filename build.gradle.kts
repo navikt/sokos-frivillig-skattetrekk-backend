@@ -68,14 +68,6 @@ configurations.all {
                 useVersion("3.1.0")
                 because("jackson-core has Nesting Depth Constraint Bypass in `UTF8DataInputJsonParser` potentially allowing Resource Exhaustion. Affected version >= 3.0.0, < 3.1.0")
             }
-            if (requested.group == "org.springframework.security" && requested.name == "spring-security-web") {
-                useVersion("7.0.4")
-                because("Spring Security HTTP Headers Are not Written Under Some Conditions. Affected version >= 7.0.0, < 7.0.4")
-            }
-            if (requested.group == "org.springframework.boot" && requested.name == "spring-boot-starter-actuator") {
-                useVersion("4.0.4")
-                because("Spring Boot has an Authentication Bypass under Actuator Health groups paths. Affected version >= 4.0.0-M1, < 4.0.4")
-            }
         }
     }
 }
