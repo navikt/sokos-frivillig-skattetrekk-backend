@@ -4,8 +4,8 @@ import org.gradle.kotlin.dsl.withType
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    kotlin("jvm") version "2.3.20"
-    kotlin("plugin.spring") version "2.3.20"
+    kotlin("jvm") version "2.3.10"
+    kotlin("plugin.spring") version "2.3.10"
     id("org.springframework.boot") version "4.0.3"
     id("io.spring.dependency-management") version "1.1.7"
     id("org.jlleitschuh.gradle.ktlint") version "14.2.0"
@@ -67,6 +67,14 @@ configurations.all {
             if (requested.group == "tools.jackson.core" && requested.name == "jackson-core") {
                 useVersion("3.1.0")
                 because("jackson-core has Nesting Depth Constraint Bypass in `UTF8DataInputJsonParser` potentially allowing Resource Exhaustion. Affected version >= 3.0.0, < 3.1.0")
+            }
+            if (requested.group == "org.springframework.security" && requested.name == "spring-security-web") {
+                useVersion("7.0.4")
+                because("Spring Security HTTP Headers Are not Written Under Some Conditions. Affected version >= 7.0.0, < 7.0.4")
+            }
+            if (requested.group == "org.springframework.boot" && requested.name == "spring-boot-starter-actuator") {
+                useVersion("4.0.4")
+                because("Spring Boot has an Authentication Bypass under Actuator Health groups paths. Affected version >= 4.0.0-M1, < 4.0.4")
             }
         }
     }
