@@ -20,7 +20,7 @@ repositories {
     mavenCentral()
 }
 
-val toolsJacksonVersion = "3.1.1"
+val toolsJacksonVersion = "3.1.2"
 val jacksonAnnotationVersion = "2.21"
 val kotlinLoggingVersion = "3.0.5"
 val janionVersion = "3.1.12"
