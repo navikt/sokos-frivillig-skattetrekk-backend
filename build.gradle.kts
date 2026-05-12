@@ -66,7 +66,7 @@ configurations.all {
         eachDependency {
             if (requested.group == "io.netty" && requested.name == "netty-codec-http2") {
                 useVersion("4.2.13.Final")
-                because("Netty HTTP/2 CONTINUATION Frame Flood DoS via Zero-Byte Frame Bypass. Affected version >= 4.2.0.Alpha1, < 4.2.10.Final")
+                because("Netty: HttpContentDecompressor maxAllocation bypass when Content-Encoding set to br/zstd/snappy leads to decompression bomb DoS >= 4.2.0.Alpha1, <= 4.2.12.Final")
             }
         }
     }
