@@ -64,10 +64,6 @@ dependencies {
 configurations.all {
     resolutionStrategy {
         eachDependency {
-            if (requested.group == "tools.jackson.core" && requested.name == "jackson-core") {
-                useVersion("3.1.0")
-                because("jackson-core has Nesting Depth Constraint Bypass in `UTF8DataInputJsonParser` potentially allowing Resource Exhaustion. Affected version >= 3.0.0, < 3.1.0")
-            }
             if (requested.group == "io.netty" && requested.name == "netty-codec-http2") {
                 useVersion("4.2.13.Final")
                 because("Netty HTTP/2 CONTINUATION Frame Flood DoS via Zero-Byte Frame Bypass. Affected version >= 4.2.0.Alpha1, < 4.2.10.Final")
