@@ -64,9 +64,31 @@ dependencies {
 configurations.all {
     resolutionStrategy {
         eachDependency {
+            if (requested.group == "io.netty" && requested.name == "netty-codec-http") {
+                useVersion("4.2.13.Final")
+                because("If HttpClientCodec is configured, there are use cases when a response body from one request, can be parsed as another's. CVE-2026-42584 >= 4.2.0.Alpha1, <= 4.2.12.Final")
+            }
             if (requested.group == "io.netty" && requested.name == "netty-codec-http2") {
                 useVersion("4.2.13.Final")
                 because("Netty: HttpContentDecompressor maxAllocation bypass when Content-Encoding set to br/zstd/snappy leads to decompression bomb DoS >= 4.2.0.Alpha1, <= 4.2.12.Final")
+            }
+            if (requested.group == "io.netty" && requested.name == "netty-codec-dns") {
+                useVersion("4.2.13.Final")
+                because("CVE-2026-42579 >= 4.2.0.Alpha1, <= 4.2.12.Final")
+            }
+            if (requested.group == "io.netty" && requested.name == "netty-codec-http3") {
+                useVersion("4.2.13.Final")
+                because(
+                    "When Netty decodes HTTP/3 headers, it sometimes runs new byte[length] using a length from the wire before checking that many bytes are really there. A small malicious header can claim a huge length (on the order of a gigabyte). CVE-2026-42582 >= 4.2.0.Alpha1, <= 4.2.12.Final",
+                )
+            }
+            if (requested.group == "io.netty" && requested.name == "netty-transport-native-epoll") {
+                useVersion("4.2.13.Final")
+                because("CVE-2026-42577 >= 4.2.0.Alpha1, <= 4.2.12.Final")
+            }
+            if (requested.group == "io.netty" && requested.name == "netty-codec-compression") {
+                useVersion("4.2.13.Final")
+                because("Lz4FrameDecoder allocates a ByteBuf of size decompressedLength (up to 32 MB per block) before LZ4 runs.  CVE-2026-42583 >= 4.2.0.Alpha1, <= 4.2.12.Final")
             }
         }
     }
