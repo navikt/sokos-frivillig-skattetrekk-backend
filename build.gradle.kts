@@ -73,6 +73,10 @@ configurations.all {
                 useVersion("4.2.13.Final")
                 because("Align Netty to 4.2.13.Final due to CVE-2026-42579")
             }
+            if (requested.group == "org.apache.tomcat.embed") {
+                useVersion("11.0.22")
+                because("Tomcat 11.0.22 fixes CVE-2026-41284, CVE-2026-43513, CVE-2026-42498, CVE-2026-43512, CVE-2026-43515")
+            }
         }
     }
 }
