@@ -75,7 +75,11 @@ configurations.all {
             }
             if (requested.group == "org.apache.tomcat.embed") {
                 useVersion("11.0.22")
-                because("Tomcat 11.0.22 fixes CVE-2026-41284, CVE-2026-43513, CVE-2026-42498, CVE-2026-43512, CVE-2026-43515")
+                because(
+                    "Tomcat 11.0.22 fixes CVE-2026-41284, CVE-2026-43513, CVE-2026-42498, CVE-2026-43512, CVE-2026-43515. " +
+                        "Versions affected: Apache Tomcat 11.0.0-M1 to 11.0.21, 10.1.0-M1 to 10.1.54, 9.0.0.M1 to 9.0.117. " +
+                        "Older, unsupported versions may also be affected.",
+                )
             }
         }
     }
