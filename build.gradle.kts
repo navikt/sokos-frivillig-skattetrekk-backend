@@ -20,6 +20,13 @@ repositories {
     mavenCentral()
 }
 
+// Override Spring Boot BOM-versjoner for å fikse CVE-er.
+// Disse properties leses av Spring Boot dependency-management og endrer
+// constraintene i BOM-en direkte, slik at GitHub Dependency Graph
+// rapporterer riktige (oppgraderte) versjoner.
+extra["tomcat.version"] = "11.0.22" // CVE-2026-41284, CVE-2026-43513, CVE-2026-42498, CVE-2026-43512, CVE-2026-43515
+extra["netty.version"] = "4.2.13.Final" // CVE-2026-42579
+
 val toolsJacksonVersion = "3.1.3"
 val jacksonAnnotationVersion = "2.21"
 val kotlinLoggingVersion = "3.0.5"
@@ -59,31 +66,6 @@ dependencies {
     }
     testImplementation("org.springframework.security:spring-security-test")
     testImplementation("io.mockk:mockk-jvm:$mockkVersion")
-
-    constraints {
-        implementation("io.netty:netty-common:4.2.13.Final") {
-            because("Align Netty to 4.2.13.Final due to CVE-2026-42579")
-        }
-    }
-}
-
-configurations.all {
-    resolutionStrategy {
-        eachDependency {
-            if (requested.group == "io.netty") {
-                useVersion("4.2.13.Final")
-                because("Align Netty to 4.2.13.Final due to CVE-2026-42579")
-            }
-            if (requested.group == "org.apache.tomcat.embed") {
-                useVersion("11.0.22")
-                because(
-                    "Tomcat 11.0.22 fixes CVE-2026-41284, CVE-2026-43513, CVE-2026-42498, CVE-2026-43512, CVE-2026-43515. " +
-                        "Versions affected: Apache Tomcat 11.0.0-M1 to 11.0.21, 10.1.0-M1 to 10.1.54, 9.0.0.M1 to 9.0.117. " +
-                        "Older, unsupported versions may also be affected.",
-                )
-            }
-        }
-    }
 }
 
 application {
