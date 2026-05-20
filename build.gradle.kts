@@ -59,6 +59,12 @@ dependencies {
     }
     testImplementation("org.springframework.security:spring-security-test")
     testImplementation("io.mockk:mockk-jvm:$mockkVersion")
+
+    constraints {
+        implementation("io.netty:netty-common:4.2.13.Final") {
+            because("Align Netty to 4.2.13.Final due to CVE-2026-42579")
+        }
+    }
 }
 
 configurations.all {
