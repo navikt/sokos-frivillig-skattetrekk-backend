@@ -10,7 +10,7 @@ on:
       - '.editorconfig'
       - 'setupLocalEnvironment.sh'
       - 'dokumentasjon/**'
-      - '.github/codeql-trivy-scan.yaml'
+      - '.github/codeql-scan.yaml'
       - '.github/workflows/deploy.yaml'
       - '.github/workflows/digestabot-automerge.yaml'
       - '.github/workflows/digestabot-update.yaml'
