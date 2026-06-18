@@ -27,13 +27,13 @@ repositories {
 extra["tomcat.version"] = "11.0.22" // CVE-2026-41284, CVE-2026-43513, CVE-2026-42498, CVE-2026-43512, CVE-2026-43515
 extra["netty.version"] = "4.2.15.Final" // CVE-2026-44249, CVE-2026-45416
 
-val toolsJacksonVersion = "3.1.4"
+val toolsJacksonVersion = "3.2.0"
 val jacksonAnnotationVersion = "2.22"
 val kotlinLoggingVersion = "3.0.5"
 val janionVersion = "3.1.12"
 val logbackVersion = "1.5.34"
 val logstashVersion = "9.0"
-val micrometerVersion = "1.16.5"
+val micrometerVersion = "1.17.0"
 val mockkVersion = "1.14.11"
 
 dependencies {
