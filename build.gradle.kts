@@ -30,7 +30,6 @@ extra["netty.version"] = "4.2.15.Final" // CVE-2026-44249, CVE-2026-45416
 val toolsJacksonVersion = "3.2.0"
 val jacksonAnnotationVersion = "2.22"
 val kotlinLoggingVersion = "3.0.5"
-val janionVersion = "3.1.12"
 val logbackVersion = "1.5.34"
 val logstashVersion = "9.0"
 val micrometerVersion = "1.17.0"
@@ -52,7 +51,6 @@ dependencies {
 
     // Logging
     implementation("io.github.microutils:kotlin-logging-jvm:$kotlinLoggingVersion")
-    runtimeOnly("org.codehaus.janino:janino:$janionVersion")
     runtimeOnly("ch.qos.logback:logback-classic:$logbackVersion")
     runtimeOnly("ch.qos.logback:logback-core:$logbackVersion")
     runtimeOnly("net.logstash.logback:logstash-logback-encoder:$logstashVersion")
