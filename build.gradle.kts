@@ -6,7 +6,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     kotlin("jvm") version "2.3.21"
     kotlin("plugin.spring") version "2.3.21"
-    id("org.springframework.boot") version "4.0.6"
+    id("org.springframework.boot") version "4.1.0"
     id("io.spring.dependency-management") version "1.1.7"
     id("org.jlleitschuh.gradle.ktlint") version "14.2.0"
     id("org.jetbrains.kotlinx.kover") version "0.9.8"
@@ -27,10 +27,10 @@ repositories {
 extra["tomcat.version"] = "11.0.22" // CVE-2026-41284, CVE-2026-43513, CVE-2026-42498, CVE-2026-43512, CVE-2026-43515
 extra["netty.version"] = "4.2.15.Final" // CVE-2026-44249, CVE-2026-45416
 
-val toolsJacksonVersion = "3.2.0"
+val toolsJacksonVersion = "3.2.1"
 val jacksonAnnotationVersion = "2.22"
 val kotlinLoggingVersion = "3.0.5"
-val logbackVersion = "1.5.34"
+val logbackVersion = "1.5.38"
 val logstashVersion = "9.0"
 val micrometerVersion = "1.17.0"
 val mockkVersion = "1.14.11"
