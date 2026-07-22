@@ -61,6 +61,7 @@ dependencies {
     // Test dependencies
     testImplementation("org.springframework.boot:spring-boot-starter-test-classic") {
         exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
+        exclude(group = "org.springframework.boot", module = "spring-boot-grpc-test")
     }
     testImplementation("org.springframework.security:spring-security-test")
     testImplementation("io.mockk:mockk-jvm:$mockkVersion")
