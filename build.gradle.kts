@@ -6,7 +6,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     kotlin("jvm") version "2.4.0"
     kotlin("plugin.spring") version "2.4.0"
-    id("org.springframework.boot") version "4.0.6"
+    id("org.springframework.boot") version "4.1.0"
     id("io.spring.dependency-management") version "1.1.7"
     id("org.jlleitschuh.gradle.ktlint") version "14.2.0"
     id("org.jetbrains.kotlinx.kover") version "0.9.8"
@@ -61,6 +61,7 @@ dependencies {
     // Test dependencies
     testImplementation("org.springframework.boot:spring-boot-starter-test-classic") {
         exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
+        exclude(group = "org.springframework.boot", module = "spring-boot-grpc-test")
     }
     testImplementation("org.springframework.security:spring-security-test")
     testImplementation("io.mockk:mockk-jvm:$mockkVersion")
