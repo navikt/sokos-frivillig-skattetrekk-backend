@@ -25,7 +25,7 @@ repositories {
 // constraintene i BOM-en direkte, slik at GitHub Dependency Graph
 // rapporterer riktige (oppgraderte) versjoner.
 extra["tomcat.version"] = "11.0.22" // CVE-2026-41284, CVE-2026-43513, CVE-2026-42498, CVE-2026-43512, CVE-2026-43515
-extra["netty.version"] = "4.2.15.Final" // CVE-2026-44249, CVE-2026-45416
+extra["netty.version"] = "4.2.16.Final" // Multiple versions of netty has vulnerable dependencies. Affected version < 4.2.15.Final
 
 val toolsJacksonVersion = "3.2.1"
 val jacksonAnnotationVersion = "2.22"
