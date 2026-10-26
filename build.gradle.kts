@@ -9,7 +9,7 @@ plugins {
     id("org.springframework.boot") version "4.1.1"
     id("io.spring.dependency-management") version "1.1.7"
     id("org.jlleitschuh.gradle.ktlint") version "14.2.0"
-    id("org.jetbrains.kotlinx.kover") version "0.9.9"
+    id("org.jetbrains.kotlinx.kover") version "0.9.11"
 
     application
 }
@@ -30,7 +30,7 @@ extra["netty.version"] = "4.2.16.Final" // Multiple versions of netty has vulner
 val toolsJacksonVersion = "3.2.3"
 val jacksonAnnotationVersion = "2.22"
 val kotlinLoggingVersion = "3.0.5"
-val logbackVersion = "1.6.3"
+val logbackVersion = "1.6.5"
 val logstashVersion = "9.0"
 val micrometerVersion = "1.17.1"
 val mockkVersion = "1.14.11"
