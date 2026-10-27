@@ -60,7 +60,6 @@ spec:
       rules:
         - application: sokos-oppdrag-proxy-q2
           namespace: beregningsplattform
-          cluster: dev-fss
         - application: logging
           namespace: nais-system
 
@@ -68,8 +67,8 @@ spec:
     - name: SPRING_PROFILES_ACTIVE
       value: default
     - name: TREKK_URL
-      value: http://sokos-oppdrag-proxy-q2.okonomi.svc.nais.local
+      value: http://sokos-oppdrag-proxy-q2.beregningsplattform.svc.nais.local
     - name: TREKK_SCOPE
-      value: api://dev-fss.okonomi.sokos-oppdrag-proxy-q2/.default
+      value: api://dev-fss.beregningsplattform.sokos-oppdrag-proxy-q2/.default
     - name: TREKK_AUDIENCE
-      value: dev-fss:okonomi:sokos-oppdrag-proxy-q2
+      value: dev-fss:beregningsplattform:sokos-oppdrag-proxy-q2
