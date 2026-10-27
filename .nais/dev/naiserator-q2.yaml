@@ -59,7 +59,8 @@ spec:
     outbound:
       rules:
         - application: sokos-oppdrag-proxy-q2
-          namespace: okonomi
+          namespace: beregningsplattform
+          cluster: dev-fss
         - application: logging
           namespace: nais-system
 
