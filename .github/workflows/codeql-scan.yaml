@@ -14,7 +14,7 @@ jobs:
       contents: read
       security-events: write
     name: CodeQL Scan
-    uses: navikt/mob-gha-workflows/.github/workflows/codeql-scan.yaml@0cb394acad3eeb12d518aa51c3fade5ebaab7557 # ratchet:navikt/mob-gha-workflows/.github/workflows/codeql-scan.yaml@v1.2.2
+    uses: navikt/mob-gha-workflows/.github/workflows/codeql-scan.yaml@944df49a7f5010d7f56b2e519ad65ac5cd322a0b # ratchet:navikt/mob-gha-workflows/.github/workflows/codeql-scan.yaml@v1.2.3
     secrets: inherit
     with:
       language: 'kotlin'
