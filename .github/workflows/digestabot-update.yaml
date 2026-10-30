@@ -15,4 +15,4 @@ jobs:
       pull-requests: write
       id-token: write
     name: Digestabot Update
-    uses: navikt/mob-gha-workflows/.github/workflows/digestabot-update.yaml@944df49a7f5010d7f56b2e519ad65ac5cd322a0b # ratchet:navikt/mob-gha-workflows/.github/workflows/digestabot-update.yaml@v1.2.3
+    uses: navikt/skatt-og-trekk-gha-workflows/.github/workflows/digestabot-update.yaml@b8cff5a3c59930ec72712250cb435a4e51d96bd4 # ratchet:navikt/skatt-og-trekk-gha-workflows/.github/workflows/digestabot-update.yaml@v1.1.2
