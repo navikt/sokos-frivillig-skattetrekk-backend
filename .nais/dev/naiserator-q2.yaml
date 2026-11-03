@@ -48,7 +48,7 @@ spec:
     inbound:
       rules:
         - application: sokos-frivillig-skattetrekk-frontend-q2
-          namespace: okonomi
+          namespace: skatt-og-trekk
           cluster: dev-gcp
         - application: tokenx-token-generator
           namespace: nais
