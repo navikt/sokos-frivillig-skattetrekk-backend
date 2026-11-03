@@ -48,7 +48,7 @@ spec:
     inbound:
       rules:
         - application: sokos-frivillig-skattetrekk-frontend
-          namespace: okonomi
+          namespace: skatt-og-trekk
           cluster: prod-gcp
     outbound:
       rules:
