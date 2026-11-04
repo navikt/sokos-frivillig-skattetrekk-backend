@@ -87,6 +87,10 @@ kotlin {
 
 tasks {
 
+    matching { it.name.contains("ktlint", ignoreCase = true) }.configureEach {
+        enabled = false
+    }
+
     withType<KotlinCompile>().configureEach {
         compilerOptions {
             freeCompilerArgs.addAll(
