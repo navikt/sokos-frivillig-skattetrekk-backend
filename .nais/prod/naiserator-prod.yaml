@@ -2,15 +2,14 @@ apiVersion: "nais.io/v1alpha1"
 kind: "Application"
 metadata:
   name: sokos-frivillig-skattetrekk-backend
-  namespace: okonomi
+  namespace: skatt-og-trekk
   labels:
-    team: okonomi
+    team: skatt-og-trekk
 spec:
   image: "{{{ image }}}"
   port: 8080
   ingresses:
-    - https://sokos-frivillig-skattetrekk-backend.intern.nav.no
-    - https://sokos-frivillig-skattetrekk-backend.prod-fss-pub.nais.io
+    - https://frivillig-skattetrekk-backend.intern.nav.no
   liveness:
     path: actuator/health/liveness
     initialDelay: 30
@@ -48,20 +47,20 @@ spec:
     inbound:
       rules:
         - application: sokos-frivillig-skattetrekk-frontend
-          namespace: okonomi
+          namespace: skatt-og-trekk
           cluster: prod-gcp
     outbound:
       rules:
-        - application: sokos-oppdrag-proxy
-          namespace: beregningsplattform
         - application: logging
           namespace: nais-system
+      external:
+        - host: sokos-oppdrag-proxy.prod-fss-pub.nais.io
 
   env:
     - name: SPRING_PROFILES_ACTIVE
       value: default
     - name: TREKK_URL
-      value: http://sokos-oppdrag-proxy.beregningsplattform.svc.nais.local
+      value: https://sokos-oppdrag-proxy.prod-fss-pub.nais.io
     - name: TREKK_SCOPE
       value: api://prod-fss.beregningsplattform.sokos-oppdrag-proxy/.default
     - name: TREKK_AUDIENCE
