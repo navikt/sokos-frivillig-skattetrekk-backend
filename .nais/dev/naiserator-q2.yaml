@@ -61,7 +61,8 @@ spec:
           cluster: dev-fss
         - application: logging
           namespace: nais-system
-
+      external:
+        - host: sokos-oppdrag-proxy-q2.intern.dev.nav.no
   env:
     - name: SPRING_PROFILES_ACTIVE
       value: default
