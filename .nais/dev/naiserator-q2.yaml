@@ -2,9 +2,9 @@ apiVersion: "nais.io/v1alpha1"
 kind: "Application"
 metadata:
   name: sokos-frivillig-skattetrekk-backend-q2
-  namespace: okonomi
+  namespace: skatt-og-trekk
   labels:
-    team: okonomi
+    team: skatt-og-trekk
 spec:
   image: "{{{ image }}}"
   port: 8080
