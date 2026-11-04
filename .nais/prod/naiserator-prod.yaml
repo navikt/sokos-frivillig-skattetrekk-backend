@@ -53,6 +53,7 @@ spec:
       rules:
         - application: sokos-oppdrag-proxy
           namespace: beregningsplattform
+          cluster: prod-fss
         - application: logging
           namespace: nais-system
 

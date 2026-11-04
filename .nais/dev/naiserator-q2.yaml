@@ -59,6 +59,7 @@ spec:
       rules:
         - application: sokos-oppdrag-proxy-q2
           namespace: beregningsplattform
+          cluster: dev-fss
         - application: logging
           namespace: nais-system
 
