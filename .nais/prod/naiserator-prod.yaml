@@ -9,7 +9,7 @@ spec:
   image: "{{{ image }}}"
   port: 8080
   ingresses:
-    - https://sokos-frivillig-skattetrekk-backend.intern.nav.no
+    - https://frivillig-skattetrekk-backend.intern.nav.no
   liveness:
     path: actuator/health/liveness
     initialDelay: 30
@@ -51,17 +51,16 @@ spec:
           cluster: prod-gcp
     outbound:
       rules:
-        - application: sokos-oppdrag-proxy
-          namespace: beregningsplattform
-          cluster: prod-fss
         - application: logging
           namespace: nais-system
+      external:
+        - host: sokos-oppdrag-proxy.prod-fss-pub.nais.io
 
   env:
     - name: SPRING_PROFILES_ACTIVE
       value: default
     - name: TREKK_URL
-      value: http://sokos-oppdrag-proxy.beregningsplattform.svc.nais.local
+      value: https://sokos-oppdrag-proxy.prod-fss-pub.nais.io
     - name: TREKK_SCOPE
       value: api://prod-fss.beregningsplattform.sokos-oppdrag-proxy/.default
     - name: TREKK_AUDIENCE

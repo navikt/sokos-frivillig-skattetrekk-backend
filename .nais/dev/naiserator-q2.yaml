@@ -64,7 +64,7 @@ spec:
     - name: SPRING_PROFILES_ACTIVE
       value: default
     - name: TREKK_URL
-      value:  https://sokos-oppdrag-proxy-q2.dev-fss-pub.nais.io
+      value: https://sokos-oppdrag-proxy-q2.dev-fss-pub.nais.io
     - name: TREKK_SCOPE
       value: api://dev-fss.beregningsplattform.sokos-oppdrag-proxy-q2/.default
     - name: TREKK_AUDIENCE
