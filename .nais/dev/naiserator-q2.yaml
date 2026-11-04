@@ -9,7 +9,7 @@ spec:
   image: "{{{ image }}}"
   port: 8080
   ingresses:
-    - https://sokos-frivillig-skattetrekk-backend-q2.intern.dev.nav.no
+    - https://frivillig-skattetrekk-backend-q2.intern.dev.nav.no
   liveness:
     path: actuator/health/liveness
     initialDelay: 30
