@@ -59,12 +59,12 @@ spec:
         - application: logging
           namespace: nais-system
       external:
-        - host: sokos-oppdrag-proxy-q2.intern.dev.nav.no
+        - host: sokos-oppdrag-proxy-q2.dev-fss-pub.nais.io
   env:
     - name: SPRING_PROFILES_ACTIVE
       value: default
     - name: TREKK_URL
-      value: https://sokos-oppdrag-proxy-q2.intern.dev.nav.no
+      value:  https://sokos-oppdrag-proxy-q2.dev-fss-pub.nais.io
     - name: TREKK_SCOPE
       value: api://dev-fss.beregningsplattform.sokos-oppdrag-proxy-q2/.default
     - name: TREKK_AUDIENCE
