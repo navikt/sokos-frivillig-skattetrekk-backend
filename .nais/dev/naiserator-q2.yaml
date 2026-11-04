@@ -42,7 +42,6 @@ spec:
     autoInstrumentation:
       enabled: true
       runtime: java
-  webproxy: true
   accessPolicy:
     inbound:
       rules:
@@ -67,7 +66,7 @@ spec:
     - name: SPRING_PROFILES_ACTIVE
       value: default
     - name: TREKK_URL
-      value: https://sokos-oppdrag-proxy-q2.dev-fss-pub.nais.io
+      value: http://sokos-oppdrag-proxy-q2.beregningsplattform.svc.nais.local
     - name: TREKK_SCOPE
       value: api://dev-fss.beregningsplattform.sokos-oppdrag-proxy-q2/.default
     - name: TREKK_AUDIENCE
