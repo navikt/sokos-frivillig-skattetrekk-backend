@@ -7,8 +7,8 @@ if [ $? -gt 0 ]; then
 fi
 
 # Suppress kubectl config output
-kubectl config use-context dev-fss
-kubectl config set-context --current --namespace=okonomi
+kubectl config use-context dev-gcp
+kubectl config set-context --current --namespace=skatt-og-trekk
 
 # Get pod name
 POD_NAME=$(kubectl get pods --no-headers | grep sokos-frivillig-skattetrekk-backend-q2 | head -n1 | awk '{print $1}')

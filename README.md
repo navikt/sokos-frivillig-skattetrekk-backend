@@ -39,8 +39,7 @@ TODO: Legg til en enkel beskrivelse av programvarearkitektur her.
 Distribusjon av tjenesten er gjort med bruk av Github Actions.
 [sokos-oppdrag CI / CD](https://github.com/navikt/sokos-frivillig-skattetrekk-backend/actions)
 
-Push/merge til main branch direkte er ikke mulig. Det må opprettes PR og godkjennes før merge til main branch.
-Når PR er merged til main branch vil Github Actions bygge og deploye til dev-fss og prod-fss.
+Når main branch oppdateres vil Github Actions bygge og deploye til dev-gcp og prod-gcp.
 Har også mulighet for å deploye manuelt til testmiljø ved å deploye PR.
 
 
@@ -52,8 +51,6 @@ Applikasjonen bruker [AzureAD](https://docs.nais.io/security/auth/azure-ad/) aut
 
 ### Logging
 
-https://logs.adeo.no.
-
 Feilmeldinger og infomeldinger som ikke innheholder sensitive data logges til [Grafana Loki](https://docs.nais.io/observability/logging/#grafana-loki).  
 Sensitive meldinger logges til [Team Logs](https://doc.nais.io/observability/logging/how-to/team-logs/).
 
@@ -62,17 +59,17 @@ Sensitive meldinger logges til [Team Logs](https://doc.nais.io/observability/log
 For dev-gcp:
 
 ```shell script
-kubectl config use-context dev-fss
-kubectl get pods -n okonomi | grep sokos-frivillig-skattetrekk-backend
-kubectl logs -f sokos-frivillig-skattetrekk-backend-<POD-ID> --namespace okonomi -c sokos-frivillig-skattetrekk-backend
+kubectl config use-context dev-gcp
+kubectl get pods -n skatt-og-trekk | grep sokos-frivillig-skattetrekk-backend
+kubectl logs -f sokos-frivillig-skattetrekk-backend-<POD-ID> --namespace skatt-og-trekk -c sokos-frivillig-skattetrekk-backend
 ```
 
 For prod-gcp:
 
 ```shell script
-kubectl config use-context prod-fss
-kubectl get pods -n okonomi | grep sokos-frivillig-skattetrekk-backend
-kubectl logs -f sokos-frivillig-skattetrekk-backend-<POD-ID> --namespace okonomi -c sokos-frivillig-skattetrekk-backend
+kubectl config use-context prod-gcp
+kubectl get pods -n skatt-og-trekk | grep sokos-frivillig-skattetrekk-backend
+kubectl logs -f sokos-frivillig-skattetrekk-backend-<POD-ID> --namespace skatt-og-trekk -c sokos-frivillig-skattetrekk-backend
 ```
 
 ### Alarmer
@@ -87,12 +84,12 @@ Alarmene overvåker metrics som:
 
 Varsler blir sendt til følgende Slack-kanaler:
 
-- Dev-miljø: [#team-mob-alerts-dev](https://nav-it.slack.com/archives/C042SF2FEQM)
-- Prod-miljø: [#team-mob-alerts-prod](https://nav-it.slack.com/archives/C042ESY71GX)
+- Dev-miljø: [#utbetaling-skatt-og-trekk-alarm-dev](https://nav-it.slack.com/archives/C0C047NGLDB)
+- Prod-miljø: [#utbetaling-skatt-og-trekk-alarm-prod](https://nav-it.slack.com/archives/C0C08KX79R8)
 
 ### Grafana
 
-- [appavn](url)
+- [sokos-frivillig-skattetrekk-backend](https://grafana.nav.cloud.nais.io/goto/sfhr27?orgId=default)
 
 ---
 
