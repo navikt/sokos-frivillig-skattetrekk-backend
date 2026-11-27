@@ -2,12 +2,18 @@ package no.nav.sokos.frivillig.skattetrekk.backend.security
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonProperty
+import io.ktor.client.HttpClient
+import io.ktor.client.call.body
+import io.ktor.client.plugins.ClientRequestException
+import io.ktor.client.plugins.ServerResponseException
+import io.ktor.client.plugins.expectSuccess
+import io.ktor.client.request.forms.submitForm
+import io.ktor.client.statement.bodyAsText
+import io.ktor.http.parameters
+import kotlinx.coroutines.runBlocking
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.http.MediaType
 import org.springframework.stereotype.Service
-import org.springframework.util.LinkedMultiValueMap
-import org.springframework.web.reactive.function.client.WebClient
 
 @Service
 class AzureAdService(
@@ -18,7 +24,7 @@ class AzureAdService(
     @Value("\${oauth2.azureAd.tokenEndpoint}")
     private val endpoint: String,
     @Qualifier("webClientProxy")
-    private val webClient: WebClient,
+    private val webClient: HttpClient,
 ) {
     @JsonIgnoreProperties(ignoreUnknown = true)
     data class ClientCredentialsTokenResponse(
@@ -26,19 +32,23 @@ class AzureAdService(
     )
 
     fun retrieveClientCredentialsToken(scope: List<String>): String? =
-        webClient
-            .post()
-            .uri(endpoint)
-            .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-            .bodyValue(
-                LinkedMultiValueMap<String, String>().apply {
-                    add("grant_type", "client_credentials")
-                    add("client_id", clientId)
-                    add("client_secret", clientSecret)
-                    add("scope", scope.joinToString(" "))
+        runBlocking {
+            val response = webClient.submitForm(
+                url = endpoint,
+                formParameters = parameters {
+                    append("grant_type", "client_credentials")
+                    append("client_id", clientId)
+                    append("client_secret", clientSecret)
+                    append("scope", scope.joinToString(" "))
                 },
-            ).retrieve()
-            .bodyToMono(ClientCredentialsTokenResponse::class.java)
-            .block()
-            ?.accessToken
+            ) {
+                expectSuccess = false
+            }
+            val body = response.bodyAsText()
+            when (response.status.value) {
+                in 400..499 -> throw ClientRequestException(response, body)
+                in 500..599 -> throw ServerResponseException(response, body)
+            }
+            if (body.isEmpty()) null else response.body<ClientCredentialsTokenResponse>().accessToken
+        }
 }

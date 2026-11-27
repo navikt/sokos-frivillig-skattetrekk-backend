@@ -26,6 +26,7 @@ repositories {
 // rapporterer riktige (oppgraderte) versjoner.
 extra["tomcat.version"] = "11.0.22" // CVE-2026-41284, CVE-2026-43513, CVE-2026-42498, CVE-2026-43512, CVE-2026-43515
 extra["netty.version"] = "4.2.16.Final" // Multiple versions of netty has vulnerable dependencies. Affected version < 4.2.15.Final
+extra["kotlin-coroutines.version"] = "1.11.0" // Required by Ktor 3.6.1
 
 val toolsJacksonVersion = "3.2.4"
 val jacksonAnnotationVersion = "2.22"
@@ -34,16 +35,20 @@ val logbackVersion = "1.6.6"
 val logstashVersion = "9.0"
 val micrometerVersion = "1.17.2"
 val mockkVersion = "1.14.11"
+val ktorVersion = "3.6.1"
 
 dependencies {
 
     // Spring Boot
     implementation("org.springframework.boot:spring-boot-starter-webmvc")
-    implementation("org.springframework.boot:spring-boot-starter-webflux")
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
+
+    implementation("io.ktor:ktor-client-cio:$ktorVersion")
+    implementation("io.ktor:ktor-client-content-negotiation:$ktorVersion")
+    implementation("io.ktor:ktor-serialization-jackson3:$ktorVersion")
 
     implementation("tools.jackson.core:jackson-databind:$toolsJacksonVersion")
     implementation("tools.jackson.core:jackson-core:$toolsJacksonVersion")
@@ -65,6 +70,7 @@ dependencies {
     }
     testImplementation("org.springframework.security:spring-security-test")
     testImplementation("io.mockk:mockk-jvm:$mockkVersion")
+    testImplementation("io.ktor:ktor-client-mock:$ktorVersion")
 }
 
 application {

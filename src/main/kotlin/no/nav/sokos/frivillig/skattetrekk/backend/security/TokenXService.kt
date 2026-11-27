@@ -13,12 +13,17 @@ import com.nimbusds.jose.crypto.RSASSASigner
 import com.nimbusds.jose.jwk.RSAKey
 import com.nimbusds.jwt.JWTClaimsSet
 import com.nimbusds.jwt.SignedJWT
+import io.ktor.client.HttpClient
+import io.ktor.client.call.body
+import io.ktor.client.plugins.ClientRequestException
+import io.ktor.client.plugins.ServerResponseException
+import io.ktor.client.request.forms.submitForm
+import io.ktor.client.statement.bodyAsText
+import io.ktor.http.parameters
+import kotlinx.coroutines.runBlocking
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.http.MediaType
 import org.springframework.stereotype.Service
-import org.springframework.util.LinkedMultiValueMap
-import org.springframework.web.reactive.function.client.WebClient
 import tools.jackson.databind.ObjectMapper
 
 @Service
@@ -30,7 +35,7 @@ class TokenXService(
     @Value("\${oauth2.tokenX.clientId}")
     private val clientId: String,
     @Qualifier("webClientProxy")
-    private val webClient: WebClient,
+    private val httpClient: HttpClient,
 ) {
     companion object {
         internal const val PARAMS_GRANT_TYPE = "grant_type"
@@ -62,24 +67,25 @@ class TokenXService(
     fun exchangeIngressTokenToEgressToken(
         subjectToken: String,
         audience: String,
-    ): String? =
-        webClient
-            .post()
-            .uri(endpoint)
-            .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-            .bodyValue(
-                LinkedMultiValueMap<String, String>().apply {
-                    add(PARAMS_GRANT_TYPE, GRANT_TYPE)
-                    add(PARAMS_SUBJECT_TOKEN_TYPE, SUBJECT_TOKEN_TYPE)
-                    add(PARAMS_SUBJECT_TOKEN, subjectToken)
-                    add(PARAMS_AUDIENCE, audience)
-                    add(PARAMS_CLIENT_ASSERTION, createAssertionToken())
-                    add(PARAMS_CLIENT_ASSERTION_TYPE, CLIENT_ASSERTION_TYPE)
-                },
-            ).retrieve()
-            .bodyToMono(TokenXResponse::class.java)
-            .block()
-            ?.accessToken
+    ): String? = runBlocking {
+        val response = httpClient.submitForm(
+            url = endpoint,
+            formParameters = parameters {
+                append(PARAMS_GRANT_TYPE, GRANT_TYPE)
+                append(PARAMS_SUBJECT_TOKEN_TYPE, SUBJECT_TOKEN_TYPE)
+                append(PARAMS_SUBJECT_TOKEN, subjectToken)
+                append(PARAMS_AUDIENCE, audience)
+                append(PARAMS_CLIENT_ASSERTION, createAssertionToken())
+                append(PARAMS_CLIENT_ASSERTION_TYPE, CLIENT_ASSERTION_TYPE)
+            },
+        )
+        val responseText = response.bodyAsText()
+        when (response.status.value) {
+            in 400..499 -> throw ClientRequestException(response, responseText)
+            in 500..599 -> throw ServerResponseException(response, responseText)
+        }
+        if (responseText.isEmpty()) null else response.body<TokenXResponse>().accessToken
+    }
 
     private fun createAssertionToken(): String {
         val now = Date.from(Instant.now())
