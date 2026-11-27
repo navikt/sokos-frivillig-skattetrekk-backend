@@ -1,3 +1,21 @@
+Brukte KI til å forklare hva migrering ville innebære, som under.
+Deretter tilsvarende i 3 steg: 
+-  utgående klienter/kall,
+-  autentisering og plugging/wiring
+-  toppnivå med endepunkter og sikkerhet, pluss gradle-avhengigheter
+
+Etter hvert steg:
+-  kjørte tester
+-  startet app lokalt
+- hentet token fra https://tokenx-token-generator.intern.dev.nav.no/api/obo?aud=dev-gcp:skatt-og-trekk:sokos-frivillig-skattetrekk-backend-q2
+- brukte token i lokalt kall til GET/POST
+- post må gjøres først med 0 for å fjerne trekk, så ny verdi for å lage nytt trekk
+- pushet og deployet til Q2
+- testet fra frontend https://sokos-frivillig-skattetrekk-frontend-q2.intern.dev.nav.no/utbetalinger/frivillig-skattetrekk/
+
+TODO push siste steg, test i Q2, legg PR til review
+TODO kan bli nye metrics-navn, noen endrede feilmeldinger
+
 TASK: Show me how to exchange spring framework with ktor
 
 Configured authentication: Managed by agent

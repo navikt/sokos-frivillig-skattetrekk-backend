@@ -2,14 +2,9 @@ package no.nav.sokos.frivillig.skattetrekk.backend.security
 
 import java.lang.IllegalStateException
 
-import org.springframework.beans.factory.annotation.Value
-import org.springframework.stereotype.Service
-
 import no.nav.sokos.frivillig.skattetrekk.backend.config.AppId
 
-@Service
 class TokenService(
-    @Value("\${oauth2.tokenX.issuer}")
     private val tokenXIssuer: String,
     private val tokenXService: TokenXService,
     private val azureAdService: AzureAdService,

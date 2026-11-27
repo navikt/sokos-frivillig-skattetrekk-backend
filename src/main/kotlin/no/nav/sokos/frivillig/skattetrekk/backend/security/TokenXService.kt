@@ -21,20 +21,12 @@ import io.ktor.client.request.forms.submitForm
 import io.ktor.client.statement.bodyAsText
 import io.ktor.http.parameters
 import kotlinx.coroutines.runBlocking
-import org.springframework.beans.factory.annotation.Qualifier
-import org.springframework.beans.factory.annotation.Value
-import org.springframework.stereotype.Service
 import tools.jackson.databind.ObjectMapper
 
-@Service
 class TokenXService(
-    @Value("\${oauth2.tokenX.tokenEndpoint}")
     private val endpoint: String,
-    @Value("\${oauth2.tokenX.privateJwk}")
     private val privateJwk: String,
-    @Value("\${oauth2.tokenX.clientId}")
     private val clientId: String,
-    @Qualifier("webClientProxy")
     private val httpClient: HttpClient,
 ) {
     companion object {

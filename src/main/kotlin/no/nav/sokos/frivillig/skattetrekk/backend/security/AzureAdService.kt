@@ -11,19 +11,11 @@ import io.ktor.client.request.forms.submitForm
 import io.ktor.client.statement.bodyAsText
 import io.ktor.http.parameters
 import kotlinx.coroutines.runBlocking
-import org.springframework.beans.factory.annotation.Qualifier
-import org.springframework.beans.factory.annotation.Value
-import org.springframework.stereotype.Service
 
-@Service
 class AzureAdService(
-    @Value("\${oauth2.azureAd.clientId}")
     private val clientId: String,
-    @Value("\${oauth2.azureAd.clientSecret}")
     private val clientSecret: String,
-    @Value("\${oauth2.azureAd.tokenEndpoint}")
     private val endpoint: String,
-    @Qualifier("webClientProxy")
     private val webClient: HttpClient,
 ) {
     @JsonIgnoreProperties(ignoreUnknown = true)
