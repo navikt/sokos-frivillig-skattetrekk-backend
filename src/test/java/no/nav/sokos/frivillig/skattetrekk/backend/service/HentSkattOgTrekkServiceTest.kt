@@ -19,21 +19,21 @@ import no.nav.sokos.frivillig.skattetrekk.backend.client.trekk.api.TrekkInfo
 import no.nav.sokos.frivillig.skattetrekk.backend.client.trekk.api.Trekkalternativ
 import no.nav.sokos.frivillig.skattetrekk.backend.client.trekk.api.Trekkstatus
 import no.nav.sokos.frivillig.skattetrekk.backend.client.trekk.api.Trekktype
+import no.nav.sokos.frivillig.skattetrekk.backend.security.RequestContext
 
 class HentSkattOgTrekkServiceTest {
+    private val context = RequestContext(pid = "12345678901", issuer = "issuer", acr = "Level4", bearerToken = "bearer")
     private val trekkClientMock = mockk<TrekkClient>()
     private val hentSkattOgTrekkService = HentSkattOgTrekkService(trekkClientMock)
 
     @Test
     fun `tom respons når det ikke finnes hverken skattetrekk eller frivillig skattettrekk`() {
-        val fnr = "12345678901"
+        every { trekkClientMock.finnTrekkListe(context, TrekkTypeCode.FRIS) } returns emptyList()
+        every { trekkClientMock.finnTrekkListe(context, TrekkTypeCode.FSKT) } returns emptyList()
 
-        every { trekkClientMock.finnTrekkListe(fnr, TrekkTypeCode.FRIS) } returns emptyList()
-        every { trekkClientMock.finnTrekkListe(fnr, TrekkTypeCode.FSKT) } returns emptyList()
-
-        val result = hentSkattOgTrekkService.hentSkattetrekk(fnr)
-        verify(exactly = 1) { trekkClientMock.finnTrekkListe(fnr, TrekkTypeCode.FRIS) }
-        verify(exactly = 1) { trekkClientMock.finnTrekkListe(fnr, TrekkTypeCode.FSKT) }
+        val result = hentSkattOgTrekkService.hentSkattetrekk(context)
+        verify(exactly = 1) { trekkClientMock.finnTrekkListe(context, TrekkTypeCode.FRIS) }
+        verify(exactly = 1) { trekkClientMock.finnTrekkListe(context, TrekkTypeCode.FSKT) }
         verify(exactly = 0) { trekkClientMock.hentSkattOgTrekk(any(), any()) }
         assertNotNull(result)
         assertNotNull(result?.data?.skattetrekk)
@@ -46,7 +46,7 @@ class HentSkattOgTrekkServiceTest {
         val fnr = "12345678901"
         val trekkVedtakId = 1L
 
-        every { trekkClientMock.finnTrekkListe(fnr, TrekkTypeCode.FRIS) } returns
+        every { trekkClientMock.finnTrekkListe(context, TrekkTypeCode.FRIS) } returns
             listOf(
                 byggTrekkInfo(
                     fnr,
@@ -59,19 +59,19 @@ class HentSkattOgTrekkServiceTest {
                     BigDecimal(1000),
                 ),
             )
-        every { trekkClientMock.finnTrekkListe(fnr, TrekkTypeCode.FSKT) } returns emptyList()
+        every { trekkClientMock.finnTrekkListe(context, TrekkTypeCode.FSKT) } returns emptyList()
 
-        every { trekkClientMock.hentSkattOgTrekk(fnr, trekkVedtakId) } returns
+        every { trekkClientMock.hentSkattOgTrekk(context, trekkVedtakId) } returns
             byggHentSkattOgTrekkResponse(
                 skattetrekkTrekkVedtakId = trekkVedtakId,
                 frivilligSkattetrekkTrekkVedtakId = null,
             )
 
-        val result = hentSkattOgTrekkService.hentSkattetrekk(fnr)
+        val result = hentSkattOgTrekkService.hentSkattetrekk(context)
 
-        verify(exactly = 1) { trekkClientMock.finnTrekkListe(fnr, TrekkTypeCode.FRIS) }
-        verify(exactly = 1) { trekkClientMock.finnTrekkListe(fnr, TrekkTypeCode.FSKT) }
-        verify(exactly = 1) { trekkClientMock.hentSkattOgTrekk(fnr, trekkVedtakId) }
+        verify(exactly = 1) { trekkClientMock.finnTrekkListe(context, TrekkTypeCode.FRIS) }
+        verify(exactly = 1) { trekkClientMock.finnTrekkListe(context, TrekkTypeCode.FSKT) }
+        verify(exactly = 1) { trekkClientMock.hentSkattOgTrekk(context, trekkVedtakId) }
 
         assertNotNull(result)
         assertNotNull(result?.data?.skattetrekk)

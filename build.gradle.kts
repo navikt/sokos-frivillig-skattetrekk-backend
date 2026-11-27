@@ -5,9 +5,6 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     kotlin("jvm") version "2.4.21"
-    kotlin("plugin.spring") version "2.4.21"
-    id("org.springframework.boot") version "4.1.2"
-    id("io.spring.dependency-management") version "1.1.7"
     id("org.jlleitschuh.gradle.ktlint") version "14.2.0"
     id("org.jetbrains.kotlinx.kover") version "0.9.11"
 
@@ -20,12 +17,6 @@ repositories {
     mavenCentral()
 }
 
-// Override Spring Boot BOM-versjoner for å fikse CVE-er.
-// Disse properties leses av Spring Boot dependency-management og endrer
-// constraintene i BOM-en direkte, slik at GitHub Dependency Graph
-// rapporterer riktige (oppgraderte) versjoner.
-extra["tomcat.version"] = "11.0.22" // CVE-2026-41284, CVE-2026-43513, CVE-2026-42498, CVE-2026-43512, CVE-2026-43515
-extra["netty.version"] = "4.2.16.Final" // Multiple versions of netty has vulnerable dependencies. Affected version < 4.2.15.Final
 
 val toolsJacksonVersion = "3.2.4"
 val jacksonAnnotationVersion = "2.22"
@@ -34,16 +25,22 @@ val logbackVersion = "1.6.6"
 val logstashVersion = "9.0"
 val micrometerVersion = "1.17.2"
 val mockkVersion = "1.14.11"
+val ktorVersion = "3.6.1"
 
 dependencies {
 
-    // Spring Boot
-    implementation("org.springframework.boot:spring-boot-starter-webmvc")
-    implementation("org.springframework.boot:spring-boot-starter-webflux")
-    implementation("org.springframework.boot:spring-boot-starter-web")
-    implementation("org.springframework.boot:spring-boot-starter-actuator")
-    implementation("org.springframework.boot:spring-boot-starter-security")
-    implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
+    implementation(platform("io.netty:netty-bom:4.2.16.Final"))
+    implementation("io.ktor:ktor-server-netty:$ktorVersion")
+    implementation("io.ktor:ktor-server-auth-jwt:$ktorVersion")
+    implementation("io.ktor:ktor-server-content-negotiation:$ktorVersion")
+    implementation("io.ktor:ktor-server-status-pages:$ktorVersion")
+    implementation("io.ktor:ktor-server-metrics-micrometer:$ktorVersion")
+    implementation("com.auth0:jwks-rsa:0.22.1")
+    implementation("com.nimbusds:nimbus-jose-jwt:10.4.2")
+
+    implementation("io.ktor:ktor-client-cio:$ktorVersion")
+    implementation("io.ktor:ktor-client-content-negotiation:$ktorVersion")
+    implementation("io.ktor:ktor-serialization-jackson3:$ktorVersion")
 
     implementation("tools.jackson.core:jackson-databind:$toolsJacksonVersion")
     implementation("tools.jackson.core:jackson-core:$toolsJacksonVersion")
@@ -59,12 +56,11 @@ dependencies {
     implementation("io.micrometer:micrometer-registry-prometheus:$micrometerVersion")
 
     // Test dependencies
-    testImplementation("org.springframework.boot:spring-boot-starter-test-classic") {
-        exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
-        exclude(group = "org.springframework.boot", module = "spring-boot-grpc-test")
-    }
-    testImplementation("org.springframework.security:spring-security-test")
+    testImplementation("org.junit.jupiter:junit-jupiter:5.13.4")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+    testImplementation("io.ktor:ktor-server-test-host:$ktorVersion")
     testImplementation("io.mockk:mockk-jvm:$mockkVersion")
+    testImplementation("io.ktor:ktor-client-mock:$ktorVersion")
 }
 
 application {
