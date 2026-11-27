@@ -13,18 +13,24 @@ import org.springframework.context.annotation.Configuration
 class WebClientConfiguration {
     @Bean("webClientProxy", destroyMethod = "close")
     fun webClientProxy(): KtorHttpClient =
-        KtorHttpClient(CIO) {
-            expectSuccess = true
-            engine {
-                System.getenv("HTTP_PROXY")?.let { proxy = ProxyBuilder.http(Url(it)) }
-            }
-            install(ContentNegotiation) { jackson() }
-        }
+        createProxyHttpClient { System.getenv("HTTP_PROXY") }
 
     @Bean("trekkHttpClient", destroyMethod = "close")
     fun trekkHttpClient(): KtorHttpClient =
-        KtorHttpClient(CIO) {
-            expectSuccess = true
-            install(ContentNegotiation) { jackson() }
-        }
+        createTrekkHttpClient()
 }
+
+fun createProxyHttpClient(proxyUrl: () -> String?): KtorHttpClient =
+    KtorHttpClient(CIO) {
+        expectSuccess = true
+        engine {
+            proxyUrl()?.let { proxy = ProxyBuilder.http(Url(it)) }
+        }
+        install(ContentNegotiation) { jackson() }
+    }
+
+fun createTrekkHttpClient(): KtorHttpClient =
+    KtorHttpClient(CIO) {
+        expectSuccess = true
+        install(ContentNegotiation) { jackson() }
+    }

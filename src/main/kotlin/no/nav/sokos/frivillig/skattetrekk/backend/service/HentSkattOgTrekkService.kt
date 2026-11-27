@@ -3,7 +3,6 @@ package no.nav.sokos.frivillig.skattetrekk.backend.service
 import java.time.LocalDate
 
 import mu.KotlinLogging
-import org.springframework.stereotype.Service
 
 import no.nav.sokos.frivillig.skattetrekk.backend.client.trekk.TrekkClient
 import no.nav.sokos.frivillig.skattetrekk.backend.client.trekk.api.AndreTrekkResponse
@@ -20,24 +19,24 @@ import no.nav.sokos.frivillig.skattetrekk.backend.controller.models.FrivilligSka
 import no.nav.sokos.frivillig.skattetrekk.backend.controller.models.FrivilligSkattetrekkMessageCode
 import no.nav.sokos.frivillig.skattetrekk.backend.controller.models.FrivilligSkattetrekkType
 import no.nav.sokos.frivillig.skattetrekk.backend.controller.models.TrekkDto
+import no.nav.sokos.frivillig.skattetrekk.backend.security.RequestContext
 import no.nav.sokos.frivillig.skattetrekk.backend.util.isDateInPeriod
 
 private val logger = KotlinLogging.logger {}
 private const val TREKK_KODE_LOPP: String = "LOPP" // Prosenttrekk
 
-@Service
 class HentSkattOgTrekkService(
     private val trekkClient: TrekkClient,
 ) {
-    fun hentSkattetrekk(pid: String): FrivilligSkattetrekkInitResponse? {
+    fun hentSkattetrekk(context: RequestContext): FrivilligSkattetrekkInitResponse? {
         try {
             logger.info("Finner trekkliste for forskuddsskatt og frivillig skattetrekk")
-            val forskuddsTrekkListe = trekkClient.finnTrekkListe(pid, TrekkTypeCode.FSKT)
-            val tilleggsTrekkInfoListe = trekkClient.finnTrekkListe(pid, TrekkTypeCode.FRIS)
+            val forskuddsTrekkListe = trekkClient.finnTrekkListe(context, TrekkTypeCode.FSKT)
+            val tilleggsTrekkInfoListe = trekkClient.finnTrekkListe(context, TrekkTypeCode.FRIS)
 
             logger.info("Henter skatt og trekk for forskuddsskatt og frivillig skattetrekk")
-            val skattetrekk = finnSkattetrekk(pid, forskuddsTrekkListe)
-            val tillegstrekkVedtakListe = finnTilleggstrekkListe(pid, tilleggsTrekkInfoListe)
+            val skattetrekk = finnSkattetrekk(context, forskuddsTrekkListe)
+            val tillegstrekkVedtakListe = finnTilleggstrekkListe(context, tilleggsTrekkInfoListe)
 
             return createSkattetrekkInitResponse(skattetrekk, tillegstrekkVedtakListe, mutableListOf())
         } catch (e: OppdragUtilgjengeligException) {
@@ -172,7 +171,7 @@ class HentSkattOgTrekkService(
         }
 
     private fun finnSkattetrekk(
-        pid: String,
+        context: RequestContext,
         trekkInfoListe: List<TrekkInfo>?,
     ): Skattetrekk? {
         val skattetrekk: Skattetrekk? = null
@@ -180,17 +179,17 @@ class HentSkattOgTrekkService(
         if (trekkInfoListe != null) {
             val forskuddskatt = if (trekkInfoListe.isNotEmpty()) trekkInfoListe[0] else null
             if (forskuddskatt?.trekkvedtakId != null) {
-                return trekkClient.hentSkattOgTrekk(pid, forskuddskatt.trekkvedtakId)?.skattetrekk
+                return trekkClient.hentSkattOgTrekk(context, forskuddskatt.trekkvedtakId)?.skattetrekk
             }
         }
         return skattetrekk
     }
 
     private fun finnTilleggstrekkListe(
-        pid: String,
+        context: RequestContext,
         tilleggsTrekkInfoListe: List<TrekkInfo>?,
     ) = tilleggsTrekkInfoListe
         ?.map {
-            if (it.trekkvedtakId != null) trekkClient.hentSkattOgTrekk(pid, it.trekkvedtakId)?.andreTrekk else null
+            if (it.trekkvedtakId != null) trekkClient.hentSkattOgTrekk(context, it.trekkvedtakId)?.andreTrekk else null
         } ?: emptyList()
 }

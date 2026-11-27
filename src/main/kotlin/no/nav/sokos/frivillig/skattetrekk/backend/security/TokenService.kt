@@ -2,11 +2,7 @@ package no.nav.sokos.frivillig.skattetrekk.backend.security
 
 import java.lang.IllegalStateException
 
-import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.security.core.context.SecurityContextHolder
-import org.springframework.security.oauth2.jwt.Jwt
-import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken
 import org.springframework.stereotype.Service
 
 import no.nav.sokos.frivillig.skattetrekk.backend.config.AppId
@@ -18,64 +14,40 @@ class TokenService(
     private val tokenXService: TokenXService,
     private val azureAdService: AzureAdService,
 ) {
-    private val log = LoggerFactory.getLogger(TokenService::class.java)
 
     enum class TokenType {
         AZURE_AD_CLIENT_CREDENTIALS,
         TOKEN_X,
     }
 
-    private fun getAuthentication(): JwtAuthenticationToken {
-        val auth =
-            SecurityContextHolder.getContext().authentication
-                ?: throw IllegalStateException("No JWT token found.")
-
-        return auth as? JwtAuthenticationToken ?: throw IllegalStateException("JWT token not found.")
-    }
-
     fun getEgressToken(
         scope: String,
         audience: String? = null,
-        pid: String,
+        context: RequestContext,
         appId: AppId,
     ): String? =
-        SecurityContextHolder.getContext().authentication.let {
-            val token = (it as JwtAuthenticationToken).token
+        context.let {
             val scopes = listOf(scope)
 
-            when (typeOf(token, pid, appId)) {
+            when (typeOf(context, appId)) {
                 TokenType.TOKEN_X ->
                     audience?.let { audience ->
-                        tokenXService.exchangeIngressTokenToEgressToken(token.tokenValue, audience)
+                        tokenXService.exchangeIngressTokenToEgressToken(context.bearerToken, audience)
                     } ?: throw EgressAudienceMissingException()
                 TokenType.AZURE_AD_CLIENT_CREDENTIALS -> azureAdService.retrieveClientCredentialsToken(scopes)
             }
         }
 
-    fun determineTokenType(): TokenType {
-        SecurityContextHolder.getContext().authentication.let {
-            val token = (it as JwtAuthenticationToken).token
-            val issuer = token.getClaim<String>("iss")
-            if (issuer == tokenXIssuer) {
-                return TokenType.TOKEN_X
-            }
-            throw IllegalStateException("Unknown token type")
+    fun determineTokenType(context: RequestContext): TokenType {
+        if (context.issuer == tokenXIssuer) {
+            return TokenType.TOKEN_X
         }
+        throw IllegalStateException("Unknown token type")
     }
 
-    fun determineRequestingPid(): String {
-        val auth = getAuthentication()
-        return if (determineTokenType() == TokenType.TOKEN_X) {
-            auth.name
-        } else {
-            ""
-        }
-    }
-
-    fun getInnloggingstype(): Innloggingstype {
-        SecurityContextHolder.getContext().authentication.let {
-            val token = (it as JwtAuthenticationToken).token
-            val acr = token.getClaim<String>("acr")
+    fun getInnloggingstype(context: RequestContext): Innloggingstype {
+        context.let {
+            val acr = context.acr
             if ("Level4" == acr || "idporten-loa-high" == acr) {
                 return Innloggingstype.LEVEL4
             }
@@ -87,11 +59,10 @@ class TokenService(
     }
 
     private fun typeOf(
-        jwt: Jwt,
-        pid: String,
+        context: RequestContext,
         appId: AppId,
     ): TokenType {
-        val issuer = jwt.getClaim<String>("iss")
+        val issuer = context.issuer
         if (issuer == tokenXIssuer) {
             if (appId.supportsTokenX) {
                 return TokenType.TOKEN_X

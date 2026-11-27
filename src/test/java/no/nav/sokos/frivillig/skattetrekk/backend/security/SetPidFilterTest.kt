@@ -8,6 +8,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.`when`
+import org.mockito.ArgumentMatchers.any
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.core.context.SecurityContextImpl
 import org.springframework.security.oauth2.jwt.Jwt
@@ -31,7 +32,7 @@ class SetPidFilterTest {
                         null,
                         null,
                         mapOf("test" to "test"),
-                        mapOf("test" to "test"),
+                        mapOf("sub" to "00000000001"),
                     ),
                 ),
             ),
@@ -50,8 +51,8 @@ class SetPidFilterTest {
 
         `when`(request.getHeader("Authorization")).thenReturn("Test")
         `when`(request.getHeader("pid")).thenReturn(pid)
-        `when`(tokenService.determineTokenType()).thenReturn(TokenService.TokenType.TOKEN_X)
-        `when`(tokenService.determineRequestingPid()).thenReturn(pid)
+        `when`(tokenService.determineTokenType(any(RequestContext::class.java) ?: RequestContext("", null, null, "")))
+            .thenReturn(TokenService.TokenType.TOKEN_X)
 
         filter.doFilter(request, response, filterChain)
 

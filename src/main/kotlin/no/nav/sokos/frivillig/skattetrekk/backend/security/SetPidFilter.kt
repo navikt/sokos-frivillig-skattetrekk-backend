@@ -28,11 +28,11 @@ class SetPidFilter(
         val authHeader = request.getHeader("Authorization")
         if (authHeader != null) {
             try {
-                if (tokenService.determineTokenType() != TokenService.TokenType.TOKEN_X) throw UnauthorizedException()
+                val authentication = SecurityContextHolder.getContext().authentication as JwtAuthenticationToken
+                val context = authentication.toRequestContext()
+                if (tokenService.determineTokenType(context) != TokenService.TokenType.TOKEN_X) throw UnauthorizedException()
 
-                val requestingPid = tokenService.determineRequestingPid()
-                (SecurityContextHolder.getContext().authentication as JwtAuthenticationToken).details =
-                    AuthenticatedUserDetails(requestingPid)
+                authentication.details = AuthenticatedUserDetails(context.pid)
 
                 filterChain.doFilter(request, response)
             } catch (e: Exception) {

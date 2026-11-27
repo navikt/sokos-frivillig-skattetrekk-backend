@@ -3,7 +3,6 @@ package no.nav.sokos.frivillig.skattetrekk.backend.service
 import java.time.LocalDate
 
 import mu.KotlinLogging
-import org.springframework.stereotype.Service
 
 import no.nav.sokos.frivillig.skattetrekk.backend.client.trekk.TrekkClient
 import no.nav.sokos.frivillig.skattetrekk.backend.client.trekk.api.AndreTrekkRequest
@@ -18,23 +17,23 @@ import no.nav.sokos.frivillig.skattetrekk.backend.client.trekk.api.Satsperiode
 import no.nav.sokos.frivillig.skattetrekk.backend.client.trekk.api.Sporing
 import no.nav.sokos.frivillig.skattetrekk.backend.client.trekk.api.Sporingsdetalj
 import no.nav.sokos.frivillig.skattetrekk.backend.client.trekk.api.TrekkInfo
+import no.nav.sokos.frivillig.skattetrekk.backend.security.RequestContext
 import no.nav.sokos.frivillig.skattetrekk.backend.util.isDateInPeriod
 
 private val logger = KotlinLogging.logger {}
 private const val ANSVARLIG_ENHET = "4819"
 
-@Service
 class BehandleTrekkService(
     private val trekkClient: TrekkClient,
 ) {
     fun behandleTrekk(
-        pid: String,
+        context: RequestContext,
         tilleggstrekk: Int,
         satsType: SatsType,
     ) {
         val virkningsdato = LocalDate.now().plusMonths(1L).withDayOfMonth(1)
 
-        val frivilligeSkattetrekk = trekkClient.finnTrekkListe(pid, TrekkTypeCode.FRIS)
+        val frivilligeSkattetrekk = trekkClient.finnTrekkListe(context, TrekkTypeCode.FRIS)
         val lopendeTilleggstrekk = frivilligeSkattetrekk.findLopendeTrekk()
         val nesteTilleggstrekk = frivilligeSkattetrekk.nesteTrekkPeriode()
 
@@ -42,12 +41,12 @@ class BehandleTrekkService(
             // Opphør løpende trekk
             lopendeTilleggstrekk?.let {
                 if (it.fortsetterEtterVirkningsdato(virkningsdato)) {
-                    opphoerTrekk(pid, it.trekkvedtakId!!)
+                    opphoerTrekk(context, it.trekkvedtakId!!)
                 }
             }
 
             // Opphør fremtidig trekk
-            nesteTilleggstrekk?.let { opphoerTrekk(pid, it.trekkvedtakId!!) }
+            nesteTilleggstrekk?.let { opphoerTrekk(context, it.trekkvedtakId!!) }
         } else if ((lopendeTilleggstrekk == null && nesteTilleggstrekk == null) ||
             (
                 lopendeTilleggstrekk != null &&
@@ -57,23 +56,23 @@ class BehandleTrekkService(
                     nesteTilleggstrekk == null
             )
         ) {
-            opprettTrekk(pid, tilleggstrekk, satsType, virkningsdato)
+            opprettTrekk(context, tilleggstrekk, satsType, virkningsdato)
         } else {
             if (lopendeTilleggstrekk?.fortsetterEtterVirkningsdato(virkningsdato) == true) {
                 // Kan ikke oppdatere et krone trekk med prosentrekk fordi da feiler oppdrag med følgende melding:
                 // Ukjent feilkode B725006F feil var Prosenttrekk kan ikke overstige 100%
                 if (skalOppdatereSammeTrekkType(satsType, TrekkalternativKode.valueOf(lopendeTilleggstrekk.trekkalternativ?.kode!!))) {
-                    oppdaterTrekk(pid, lopendeTilleggstrekk.trekkvedtakId!!, tilleggstrekk, satsType)
+                    oppdaterTrekk(context, lopendeTilleggstrekk.trekkvedtakId!!, tilleggstrekk, satsType)
                 } else {
-                    opphoerTrekk(pid, lopendeTilleggstrekk.trekkvedtakId!!)
-                    opprettTrekk(pid, tilleggstrekk, satsType, virkningsdato)
+                    opphoerTrekk(context, lopendeTilleggstrekk.trekkvedtakId!!)
+                    opprettTrekk(context, tilleggstrekk, satsType, virkningsdato)
                 }
             } else {
                 if (skalOppdatereSammeTrekkType(satsType, TrekkalternativKode.valueOf(nesteTilleggstrekk?.trekkalternativ?.kode!!))) {
-                    oppdaterTrekk(pid, nesteTilleggstrekk.trekkvedtakId!!, tilleggstrekk, satsType)
+                    oppdaterTrekk(context, nesteTilleggstrekk.trekkvedtakId!!, tilleggstrekk, satsType)
                 } else {
-                    opphoerTrekk(pid, nesteTilleggstrekk.trekkvedtakId!!)
-                    opprettTrekk(pid, tilleggstrekk, satsType, virkningsdato)
+                    opphoerTrekk(context, nesteTilleggstrekk.trekkvedtakId!!)
+                    opprettTrekk(context, tilleggstrekk, satsType, virkningsdato)
                 }
             }
         }
@@ -101,7 +100,7 @@ class BehandleTrekkService(
     }
 
     fun opprettTrekk(
-        pid: String,
+        context: RequestContext,
         tilleggstrekk: Int,
         satsType: SatsType,
         gjelderFraOgMed: LocalDate,
@@ -119,10 +118,10 @@ class BehandleTrekkService(
             logger.info("Oppretter nytt frivillig skattetrekk")
             val trekkOpprettet =
                 trekkClient.opprettAndreTrekk(
-                    pid,
+                    context,
                     OpprettAndreTrekkRequest(
                         Kilde.PPO1.name,
-                        opprettNyttTrekkRequest(pid, tilleggstrekk, trekkalternativKode.name, ANSVARLIG_ENHET, gjelderFraOgMed),
+                        opprettNyttTrekkRequest(context, tilleggstrekk, trekkalternativKode.name, ANSVARLIG_ENHET, gjelderFraOgMed),
                     ),
                 )
 
@@ -133,13 +132,13 @@ class BehandleTrekkService(
     }
 
     fun oppdaterTrekk(
-        pid: String,
+        context: RequestContext,
         trekkvedtakId: Long,
         tilleggstrekk: Int,
         satsType: SatsType,
     ) {
         val trekkalternativKode = if (satsType == SatsType.KRONER) TrekkalternativKode.LOPM else TrekkalternativKode.LOPP
-        val andreTrekkResponse = trekkClient.hentSkattOgTrekk(pid, trekkvedtakId)?.andreTrekk
+        val andreTrekkResponse = trekkClient.hentSkattOgTrekk(context, trekkvedtakId)?.andreTrekk
         if (andreTrekkResponse != null) {
             val sorterteSatsperioder = andreTrekkResponse.satsperiodeListe?.sortedBy { it.fom } ?: emptyList()
             val nySatsperiode = opprettStatsperiode(tilleggstrekk, LocalDate.now().plusMonths(1).withDayOfMonth(1))
@@ -167,18 +166,18 @@ class BehandleTrekkService(
                     andreTrekk = andreTrekkRequest,
                     kilde = Kilde.PPO1.name,
                 )
-            trekkClient.oppdaterAndreTrekk(pid, oppdaterAndreTrekkRequest)
+            trekkClient.oppdaterAndreTrekk(context, oppdaterAndreTrekkRequest)
         }
     }
 
     fun opphoerTrekk(
-        pid: String,
+        context: RequestContext,
         trekkvedtakId: Long,
     ) {
         val opphorDato = LocalDate.now().plusMonths(1L).withDayOfMonth(1)
         // Opphør løpende trekk, om det finnes
         logger.info("Opphører løpende trekk")
-        opphorTrekk(pid, trekkvedtakId, opphorDato)
+        opphorTrekk(context, trekkvedtakId, opphorDato)
     }
 
     private fun skalOppretteNyttTrekk(
@@ -198,12 +197,13 @@ class BehandleTrekkService(
     }
 
     private fun opprettNyttTrekkRequest(
-        pid: String,
+        context: RequestContext,
         tilleggstrekk: Int,
         trekkalternativKode: String,
         brukersNavEnhet: String,
         trekkGjelderFraOgMed: LocalDate,
     ): AndreTrekkRequest {
+        val pid = context.pid
         val sisteDagDetteAret = LocalDate.of(trekkGjelderFraOgMed.year, 12, 31)
         return AndreTrekkRequest(
             gyldigTom = sisteDagDetteAret,
@@ -267,12 +267,12 @@ class BehandleTrekkService(
     }
 
     fun opphorTrekk(
-        pid: String,
+        context: RequestContext,
         trekkvedtakId: Long,
         opphorFom: LocalDate,
     ) {
         val opphorAndreTrekkRequest = OpphorAndreTrekkRequest(kilde = Kilde.PPO1.name, trekkvedtakId, opphorFom)
-        trekkClient.opphorAndreTrekk(pid, opphorAndreTrekkRequest)
+        trekkClient.opphorAndreTrekk(context, opphorAndreTrekkRequest)
     }
 
     fun isFremtidig(

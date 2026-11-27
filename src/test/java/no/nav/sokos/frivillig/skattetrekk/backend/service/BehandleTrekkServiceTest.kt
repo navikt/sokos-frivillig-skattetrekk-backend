@@ -21,9 +21,10 @@ import no.nav.sokos.frivillig.skattetrekk.backend.client.trekk.api.SatsType
 import no.nav.sokos.frivillig.skattetrekk.backend.client.trekk.api.Satsperiode
 import no.nav.sokos.frivillig.skattetrekk.backend.client.trekk.api.TrekkInfo
 import no.nav.sokos.frivillig.skattetrekk.backend.client.trekk.api.Trekktype
+import no.nav.sokos.frivillig.skattetrekk.backend.security.RequestContext
 
 class BehandleTrekkServiceTest {
-    private val pid = "12345678910"
+    private val pid = RequestContext(pid = "12345678910", issuer = "issuer", acr = "Level4", bearerToken = "bearer")
     private val trekkClientMock = mockk<TrekkClient>()
     private val behandleTrekkService =
         BehandleTrekkService(
@@ -232,7 +233,7 @@ class BehandleTrekkServiceTest {
 
         val trekkVedtakId = behandleTrekkService.opprettTrekk(pid, 20, SatsType.PROSENT, LocalDate.parse("2025-01-01"))
 
-        verify(exactly = 1) { trekkClientMock.opprettAndreTrekk(eq(pid), any()) }
+        verify(exactly = 1) { trekkClientMock.opprettAndreTrekk(eq(pid), match { it.andreTrekk.debitorOffnr == pid.pid }) }
         verify(exactly = 0) { trekkClientMock.opphorAndreTrekk(eq(pid), any()) }
 
         assertEquals(1L, trekkVedtakId)

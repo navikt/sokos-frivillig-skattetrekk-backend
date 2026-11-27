@@ -1,6 +1,7 @@
 package no.nav.sokos.frivillig.skattetrekk.backend.controller
 
 import org.springframework.http.HttpStatus
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
@@ -11,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController
 
 import no.nav.sokos.frivillig.skattetrekk.backend.controller.models.BehandleRequest
 import no.nav.sokos.frivillig.skattetrekk.backend.controller.models.FrivilligSkattetrekkInitResponse
-import no.nav.sokos.frivillig.skattetrekk.backend.security.SecurityContextUtil
+import no.nav.sokos.frivillig.skattetrekk.backend.security.toRequestContext
 import no.nav.sokos.frivillig.skattetrekk.backend.service.BehandleTrekkService
 import no.nav.sokos.frivillig.skattetrekk.backend.service.HentSkattOgTrekkService
 import no.nav.sokos.frivillig.skattetrekk.backend.service.Validering
@@ -23,16 +24,18 @@ class SkattetrekkController(
     private val behandleTrekkService: BehandleTrekkService,
 ) {
     @GetMapping(produces = ["application/json"])
-    fun getSkattetrekk(): FrivilligSkattetrekkInitResponse? = skattetrekkService.hentSkattetrekk(SecurityContextUtil.getPidFromContext())
+    fun getSkattetrekk(authentication: JwtAuthenticationToken): FrivilligSkattetrekkInitResponse? =
+        skattetrekkService.hentSkattetrekk(authentication.toRequestContext())
 
     @PostMapping
     fun behandleFrivilligSkattetrekk(
         @RequestBody request: BehandleRequest,
+        authentication: JwtAuthenticationToken,
     ) {
         val valideringsListe = Validering.valider(request.value, request.satsType)
         if (valideringsListe.isEmpty()) {
             behandleTrekkService.behandleTrekk(
-                SecurityContextUtil.getPidFromContext(),
+                authentication.toRequestContext(),
                 request.value,
                 request.satsType,
             )

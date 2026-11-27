@@ -16,6 +16,7 @@ import io.mockk.every
 import io.mockk.mockk
 import no.nav.sokos.frivillig.skattetrekk.backend.config.AppId
 import no.nav.sokos.frivillig.skattetrekk.backend.controller.ClientException
+import no.nav.sokos.frivillig.skattetrekk.backend.security.RequestContext
 import no.nav.sokos.frivillig.skattetrekk.backend.security.TokenService
 import no.nav.sokos.frivillig.skattetrekk.backend.service.TrekkTypeCode
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -26,8 +27,9 @@ import org.junit.jupiter.api.Test
 import java.io.ByteArrayOutputStream
 
 class TrekkClientTest {
+    private val context = RequestContext(pid = "123", issuer = "issuer", acr = "Level4", bearerToken = "bearer")
     private val tokens = mockk<TokenService> {
-        every { getEgressToken("scope", "audience", "123", AppId.OPPDRAG_REST_PROXY) } returns "token"
+        every { getEgressToken("scope", "audience", context, AppId.OPPDRAG_REST_PROXY) } returns "token"
     }
 
     @Test
@@ -48,7 +50,7 @@ class TrekkClientTest {
             expectSuccess = true
             install(ContentNegotiation) { jackson() }
         }.use {
-            assertEquals(emptyList<Any>(), client(it).finnTrekkListe("123", TrekkTypeCode.FRIS))
+            assertEquals(emptyList<Any>(), client(it).finnTrekkListe(context, TrekkTypeCode.FRIS))
         }
     }
 
@@ -58,8 +60,8 @@ class TrekkClientTest {
             expectSuccess = true
             install(ContentNegotiation) { jackson() }
         }.use {
-            assertEquals(emptyList<Any>(), client(it).finnTrekkListe("123", TrekkTypeCode.FRIS))
-            assertNull(client(it).hentSkattOgTrekk("123", 42))
+            assertEquals(emptyList<Any>(), client(it).finnTrekkListe(context, TrekkTypeCode.FRIS))
+            assertNull(client(it).hentSkattOgTrekk(context, 42))
         }
     }
 
@@ -69,14 +71,14 @@ class TrekkClientTest {
             expectSuccess = true
             install(ContentNegotiation) { jackson() }
         }.use {
-            val error = assertThrows(ClientException::class.java) { client(it).hentSkattOgTrekk("123", 42) }
+            val error = assertThrows(ClientException::class.java) { client(it).hentSkattOgTrekk(context, 42) }
             assertEquals("trekk-api", error.service)
             assertTrue(!error.message!!.contains("Failed to fetch trekkliste"))
         }
         HttpClient(MockEngine { throw IllegalStateException("network") }) {
             install(ContentNegotiation) { jackson() }
         }.use {
-            val error = assertThrows(ClientException::class.java) { client(it).hentSkattOgTrekk("123", 42) }
+            val error = assertThrows(ClientException::class.java) { client(it).hentSkattOgTrekk(context, 42) }
             assertTrue(error.message!!.contains("Failed to fetch trekkliste: network"))
         }
     }
